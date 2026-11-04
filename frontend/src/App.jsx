@@ -1,427 +1,80 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { animatePageEnter, initScrollAnimations, refreshScrollAnimations } from './utils/animations.js';
-import TopNavBar from './components/TopNavBar.jsx';
-import SideDrawer from './components/SideDrawer.jsx';
+import React, { useRef, useEffect } from 'react';
+import NavBar from './components/NavBar.jsx';
+import HeroSection from './components/HeroSection.jsx';
+import TestimonialsSection from './components/TestimonialsSection.jsx';
+import GallerySection from './components/GallerySection.jsx';
+import BookingSection from './components/BookingSection.jsx';
+import EyewearSection from './components/EyewearSection.jsx';
 import Footer from './components/Footer.jsx';
-import ProductDetailModal from './components/ProductDetailModal.jsx';
-import CategoryEnquiryModal from './components/CategoryEnquiryModal.jsx';
-import LightboxModal from './components/LightboxModal.jsx';
-import ReviewModal from './components/ReviewModal.jsx';
-import WhatsAppChatWidget from './components/WhatsAppChatWidget.jsx';
-
-import HomeView from './views/HomeView.jsx';
-import AboutView from './views/AboutView.jsx';
-import EyewearView from './views/EyewearView.jsx';
-import EyeCareView from './views/EyeCareView.jsx';
-import DoctorView from './views/DoctorView.jsx';
-import GalleryView from './views/GalleryView.jsx';
-import TestimonialsView from './views/TestimonialsView.jsx';
-import CommunityView from './views/CommunityView.jsx';
-import ArticleReaderView from './views/ArticleReaderView.jsx';
-import OrderView from './views/OrderView.jsx';
-
-import { PRODUCTS, GALLERY_ITEMS, INITIAL_TESTIMONIALS, ARTICLES } from './data/mockData.js';
+import { initScrollAnimations } from './utils/animations.js';
 
 export default function App() {
-  // --- ROUTING STATE ---
-  const getInitialRoute = () => {
-    const hash = window.location.hash.replace('#', '');
-    const validRoutes = [
-      'home', 'about', 'eyewear', 'eye-care', 'doctor',
-      'gallery', 'testimonials', 'community', 'article-reader', 'order'
-    ];
-    return validRoutes.includes(hash) ? hash : 'home';
+  const homeRef = useRef(null);
+  const testimonialsRef = useRef(null);
+  const galleryRef = useRef(null);
+  const bookingRef = useRef(null);
+  const eyewearRef = useRef(null);
+
+  const sectionRefs = {
+    home: homeRef,
+    testimonials: testimonialsRef,
+    gallery: galleryRef,
+    booking: bookingRef,
+    eyewear: eyewearRef,
   };
 
-  const [activeRoute, setActiveRoute] = useState(getInitialRoute);
+  const scrollTo = (section) => {
+    const ref = sectionRefs[section];
+    if (ref && ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
-  const navigate = useCallback((route) => {
-    const validRoutes = [
-      'home', 'about', 'eyewear', 'eye-care', 'doctor',
-      'gallery', 'testimonials', 'community', 'article-reader', 'order'
-    ];
-    const target = validRoutes.includes(route) ? route : 'home';
-    setActiveRoute(target);
-    window.location.hash = `#${target}`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '') || 'home';
-      setActiveRoute(hash);
-    };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  const mainRef = useRef(null);
-
-  // Initialize global scroll reveal engine on app mount
   useEffect(() => {
     initScrollAnimations();
   }, []);
 
-  // Smooth anime.js transition between views and refresh scroll animations
-  useEffect(() => {
-    if (mainRef.current) {
-      animatePageEnter(mainRef.current);
-    }
-    const timer = setTimeout(() => {
-      refreshScrollAnimations();
-    }, 50);
-    return () => clearTimeout(timer);
-  }, [activeRoute]);
-
-  // --- MODAL & OVERLAY STATES ---
-  const [productModalId, setProductModalId] = useState(null);
-  const [categoryEnquiryData, setCategoryEnquiryData] = useState({
-    isOpen: false,
-    category: null,
-    sampleProduct: null
-  });
-  const [lightboxIndex, setLightboxIndex] = useState(null);
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
-  // --- DATA & FILTER STATES ---
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [galleryCategory, setGalleryCategory] = useState('All');
-  const [selectedArticleId, setSelectedArticleId] = useState('art-1');
-  const [preloadedService, setPreloadedService] = useState('Comprehensive Eye Exam');
-  const [preloadedNotes, setPreloadedNotes] = useState('');
-  const [testimonials, setTestimonials] = useState(INITIAL_TESTIMONIALS);
-
-  // Close all modals on ESC
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setProductModalId(null);
-        setCategoryEnquiryData({ isOpen: false, category: null, sampleProduct: null });
-        setLightboxIndex(null);
-        setIsReviewModalOpen(false);
-        setIsDrawerOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // Prevent background scroll when modal/drawer is open
-  useEffect(() => {
-    const isAnyModalOpen =
-      productModalId !== null ||
-      categoryEnquiryData.isOpen ||
-      lightboxIndex !== null ||
-      isReviewModalOpen ||
-      isDrawerOpen;
-    if (isAnyModalOpen) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-  }, [productModalId, categoryEnquiryData.isOpen, lightboxIndex, isReviewModalOpen, isDrawerOpen]);
-
-  // --- ACETERNITY MOVING BORDER SCANNER ---
-  useEffect(() => {
-    const initMovingBorders = () => {
-      const EXCLUDE = [
-        '[aria-label]',
-        '[data-nav-target]',
-        '[data-drawer-tab]',
-        '.p-1', '.p-2',
-        '.mbtn-outer button',
-        '.mbtn-outer a',
-      ];
-
-      const CTA_SELECTORS = [
-        'button.bg-primary',
-        'button.bg-inverse-surface',
-        'button.bg-white.text-on-surface',
-        'button.bg-surface-container.border',
-        'a.bg-primary',
-        'a.bg-surface-container.border',
-      ];
-
-      const excludeSelector = EXCLUDE.join(',');
-
-      CTA_SELECTORS.forEach((sel) => {
-        document.querySelectorAll(sel).forEach((el) => {
-          if (el.matches(excludeSelector)) return;
-          if (el.closest('.mbtn-outer')) return;
-          const text = el.innerText ? el.innerText.trim() : '';
-          if (!text) return;
-
-          const outer = document.createElement('span');
-          outer.className = 'mbtn-outer';
-
-          const isFullWidth = el.classList.contains('w-full');
-          if (isFullWidth) outer.classList.add('mbtn-w-full');
-
-          if (el.classList.contains('rounded-full')) outer.classList.add('mbtn-r-full');
-          else if (el.classList.contains('rounded-2xl')) outer.classList.add('mbtn-r-2xl');
-          else if (el.classList.contains('rounded-xl')) outer.classList.add('mbtn-r-xl');
-
-          const displayRe = /^(hidden|flex|inline-flex|(sm|md|lg|xl):(?:hidden|flex|inline-flex|block|inline))$/;
-          const toMove = [...el.classList].filter((c) => displayRe.test(c));
-          toMove.forEach((c) => {
-            el.classList.remove(c);
-            outer.classList.add(c);
-          });
-          if (!outer.classList.contains('hidden')) {
-            outer.style.display = outer.classList.contains('flex') ? 'inline-flex' : 'inline-flex';
-          }
-
-          const rotor = document.createElement('span');
-          rotor.className = 'mbtn-rotor';
-          rotor.setAttribute('aria-hidden', 'true');
-
-          if (el.parentNode) {
-            el.parentNode.insertBefore(outer, el);
-            outer.appendChild(rotor);
-            outer.appendChild(el);
-          }
-        });
-      });
-    };
-
-    const timer = setTimeout(initMovingBorders, 100);
-    return () => clearTimeout(timer);
-  }, [activeRoute, productModalId, lightboxIndex]);
-
-  // --- ACTIONS & HANDLERS ---
-  const handleOpenCategoryEnquiry = (categoryName = 'General Eyewear Consultation', sampleProduct = null) => {
-    setCategoryEnquiryData({
-      isOpen: true,
-      category: categoryName,
-      sampleProduct: sampleProduct
-    });
-  };
-
-  const handleCloseCategoryEnquiry = () => {
-    setCategoryEnquiryData({ isOpen: false, category: null, sampleProduct: null });
-  };
-
-  const handleQuickEnquireWhatsApp = (categoryOrItem, sampleName = null) => {
-    let text = `Hello Dey Optical, I would like to enquire about your "${categoryOrItem}" collection.`;
-    if (sampleName) {
-      text += ` Specifically regarding styles like "${sampleName}".`;
-    }
-    text += ` Could you share available models and consultation trial options?`;
-    window.open(`https://wa.me/919830000000?text=${encodeURIComponent(text)}`, '_blank');
-  };
-
-  const handleOpenBookingModal = (serviceName) => {
-    if (serviceName) {
-      setPreloadedService(serviceName);
-    }
-    navigate('order');
-  };
-
-  const handleBookFrameTrial = (product) => {
-    setProductModalId(null);
-    setPreloadedService('Frame Consultation & Trial');
-    setPreloadedNotes(`Interested in trial for: ${product.name} (${product.material || product.category})`);
-    navigate('order');
-  };
-
-  const handleOpenArticle = (artId) => {
-    setSelectedArticleId(artId);
-    navigate('article-reader');
-  };
-
-  const handleCategoryFilter = (cat, searchQ) => {
-    setSelectedCategory(cat);
-    navigate('eyewear');
-  };
-
-  const handleOpenLightbox = (idx) => {
-    setLightboxIndex(idx);
-  };
-
-  const handleNextLightbox = () => {
-    if (lightboxIndex !== null) {
-      setLightboxIndex((lightboxIndex + 1) % GALLERY_ITEMS.length);
-    }
-  };
-
-  const handlePrevLightbox = () => {
-    if (lightboxIndex !== null) {
-      setLightboxIndex((lightboxIndex - 1 + GALLERY_ITEMS.length) % GALLERY_ITEMS.length);
-    }
-  };
-
-  const handleSubmitReview = (newReview) => {
-    setTestimonials((prev) => [newReview, ...prev]);
-  };
-
-  const activeProduct = PRODUCTS.find((p) => p.id === productModalId);
-  const activeLightboxItem = lightboxIndex !== null ? GALLERY_ITEMS[lightboxIndex] : null;
-  const activeArticle = ARTICLES.find((a) => a.id === selectedArticleId);
-
   return (
-    <div className="bg-background text-on-surface antialiased font-body-md text-body-md selection:bg-tertiary-fixed selection:text-on-tertiary-fixed flex flex-col min-h-screen">
-      {/* 1. TOP NAVIGATION BAR */}
-      <TopNavBar
-        activeRoute={activeRoute}
-        navigate={navigate}
-        setCategoryFilter={handleCategoryFilter}
-        filterGallery={(cat) => {
-          setGalleryCategory(cat);
-          navigate('gallery');
-        }}
-        openArticle={handleOpenArticle}
-        openBookingModal={handleOpenBookingModal}
-        openCategoryEnquiry={handleOpenCategoryEnquiry}
-        toggleConsultationChat={() => setIsChatOpen((prev) => !prev)}
-        toggleMobileDrawer={(open) => setIsDrawerOpen(open)}
-      />
+    <div className="flex flex-col min-h-screen bg-background text-on-surface">
+      <NavBar scrollTo={scrollTo} />
 
-      {/* 2. MOBILE DRAWER - Accessible via Top-Right Three-Bar Menu */}
-      <SideDrawer
-        isOpen={isDrawerOpen}
-        toggleMobileDrawer={setIsDrawerOpen}
-        activeRoute={activeRoute}
-        navigate={navigate}
-        setCategoryFilter={handleCategoryFilter}
-        filterGallery={(cat) => {
-          setGalleryCategory(cat);
-          navigate('gallery');
-        }}
-        openArticle={handleOpenArticle}
-        openReviewModal={() => setIsReviewModalOpen(true)}
-        openCategoryEnquiry={handleOpenCategoryEnquiry}
-      />
+      <main className="flex-1">
+        <section ref={homeRef} id="home">
+          <HeroSection scrollTo={scrollTo} />
+        </section>
 
-      {/* 3. ROUTED VIEWS CONTAINER */}
-      <main ref={mainRef} className="flex-grow">
-        {activeRoute === 'home' && (
-          <HomeView
-            navigate={navigate}
-            setCategoryFilter={handleCategoryFilter}
-            openBookingModal={handleOpenBookingModal}
-            openProductModal={(id) => setProductModalId(id)}
-            quickEnquireWhatsApp={handleQuickEnquireWhatsApp}
-            openCategoryEnquiry={handleOpenCategoryEnquiry}
-            openLightbox={handleOpenLightbox}
-            openArticle={handleOpenArticle}
-          />
-        )}
+        <section ref={testimonialsRef} id="testimonials">
+          <TestimonialsSection />
+        </section>
 
-        {activeRoute === 'about' && (
-          <AboutView
-            navigate={navigate}
-            openBookingModal={handleOpenBookingModal}
-          />
-        )}
+        <section ref={galleryRef} id="gallery">
+          <GallerySection />
+        </section>
 
-        {activeRoute === 'eyewear' && (
-          <EyewearView
-            navigate={navigate}
-            selectedCategory={selectedCategory}
-            setCategoryFilter={setSelectedCategory}
-            openCategoryEnquiry={handleOpenCategoryEnquiry}
-            openProductModal={(id) => setProductModalId(id)}
-            quickEnquireCategoryWhatsApp={handleQuickEnquireWhatsApp}
-            openBookingModal={handleOpenBookingModal}
-          />
-        )}
+        <section ref={bookingRef} id="booking">
+          <BookingSection />
+        </section>
 
-        {activeRoute === 'eye-care' && (
-          <EyeCareView
-            navigate={navigate}
-            openBookingModal={handleOpenBookingModal}
-          />
-        )}
-
-        {activeRoute === 'doctor' && (
-          <DoctorView
-            navigate={navigate}
-            openBookingModal={handleOpenBookingModal}
-          />
-        )}
-
-        {activeRoute === 'gallery' && (
-          <GalleryView
-            navigate={navigate}
-            galleryCategory={galleryCategory}
-            setGalleryCategory={setGalleryCategory}
-            openLightbox={handleOpenLightbox}
-          />
-        )}
-
-        {activeRoute === 'testimonials' && (
-          <TestimonialsView
-            navigate={navigate}
-            testimonials={testimonials}
-            openReviewModal={() => setIsReviewModalOpen(true)}
-          />
-        )}
-
-        {activeRoute === 'community' && (
-          <CommunityView
-            navigate={navigate}
-            openArticle={handleOpenArticle}
-          />
-        )}
-
-        {activeRoute === 'article-reader' && (
-          <ArticleReaderView
-            article={activeArticle}
-            navigate={navigate}
-          />
-        )}
-
-        {activeRoute === 'order' && (
-          <OrderView
-            navigate={navigate}
-            preloadedService={preloadedService}
-            preloadedNotes={preloadedNotes}
-          />
-        )}
+        <section ref={eyewearRef} id="eyewear">
+          <EyewearSection />
+        </section>
       </main>
 
-      {/* 4. FOOTER */}
-      <Footer navigate={navigate} />
+      <Footer scrollTo={scrollTo} />
 
-      {/* 5. MODALS & OVERLAYS */}
-      <ProductDetailModal
-        product={activeProduct}
-        isOpen={productModalId !== null}
-        onClose={() => setProductModalId(null)}
-        onQuickEnquire={handleQuickEnquireWhatsApp}
-        onOpenCategoryEnquiry={handleOpenCategoryEnquiry}
-        onBookFrameTrial={handleBookFrameTrial}
-      />
-
-      <CategoryEnquiryModal
-        isOpen={categoryEnquiryData.isOpen}
-        onClose={handleCloseCategoryEnquiry}
-        initialCategory={categoryEnquiryData.category}
-        sampleProduct={categoryEnquiryData.sampleProduct}
-      />
-
-      <LightboxModal
-        item={activeLightboxItem}
-        isOpen={lightboxIndex !== null}
-        onClose={() => setLightboxIndex(null)}
-        onNext={handleNextLightbox}
-        onPrev={handlePrevLightbox}
-      />
-
-      <ReviewModal
-        isOpen={isReviewModalOpen}
-        onClose={() => setIsReviewModalOpen(false)}
-        onSubmitReview={handleSubmitReview}
-      />
-
-      {/* 6. FLOATING WHATSAPP CHAT WIDGET */}
-      <WhatsAppChatWidget
-        isOpen={isChatOpen}
-        toggleConsultationChat={() => setIsChatOpen((prev) => !prev)}
-      />
-
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/919830000000?text=Hello%20Dey%20Optical%2C%20I%20would%20like%20to%20enquire%20about%20your%20services."
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95"
+        style={{ background: '#25D366' }}
+      >
+        <svg viewBox="0 0 32 32" width="28" height="28" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.004 2.667C8.637 2.667 2.667 8.636 2.667 16c0 2.344.636 4.627 1.844 6.627L2.667 29.333l6.906-1.812A13.26 13.26 0 0016.004 29.333C23.37 29.333 29.333 23.364 29.333 16S23.37 2.667 16.004 2.667zm0 2.4c5.955 0 10.796 4.84 10.796 10.933 0 6.093-4.841 10.933-10.796 10.933a10.76 10.76 0 01-5.481-1.5l-.389-.232-4.096 1.075 1.095-3.985-.256-.406a10.78 10.78 0 01-1.669-5.885C5.208 9.907 10.05 5.067 16.004 5.067zm-3.063 5.2c-.197 0-.518.074-.79.37-.272.296-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.07c.148.197 2.07 3.248 5.07 4.428 2.49.983 3.002.787 3.542.737.54-.049 1.74-.712 1.986-1.4.247-.687.247-1.276.173-1.4-.074-.123-.272-.197-.567-.345-.296-.148-1.74-.857-2.012-.955-.271-.099-.468-.148-.665.148-.196.296-.762.955-.934 1.153-.173.197-.345.222-.64.074-.296-.148-1.248-.46-2.378-1.467-.879-.783-1.472-1.75-1.645-2.047-.172-.296-.018-.456.13-.603.133-.133.296-.345.444-.518.148-.173.197-.296.296-.493.099-.197.049-.37-.025-.518-.074-.148-.657-1.618-.912-2.21-.24-.577-.487-.498-.665-.507-.173-.007-.37-.01-.567-.01z" />
+        </svg>
+      </a>
     </div>
   );
 }
