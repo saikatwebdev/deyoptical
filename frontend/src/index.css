@@ -1,0 +1,372 @@
+/* Dey Optical Stylesheet */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.material-symbols-outlined.fill-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Subtle clinical frosted glass */
+.clinical-glass {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* View transition animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.view-section {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─────────────────────────────────────────────
+   Aceternity Moving Border — vanilla port
+   Works by placing a rotating conic-gradient
+   rotor behind the real button content.
+───────────────────────────────────────────── */
+.mbtn-outer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 1.5px;
+  overflow: hidden;
+  isolation: isolate;
+  vertical-align: middle;
+}
+
+.mbtn-outer.mbtn-r-full {
+  border-radius: 9999px;
+}
+
+.mbtn-outer.mbtn-r-xl {
+  border-radius: 0.75rem;
+}
+
+.mbtn-outer.mbtn-r-2xl {
+  border-radius: 1rem;
+}
+
+.mbtn-rotor {
+  position: absolute;
+  inset: 0;
+  width: 250%;
+  height: 250%;
+  top: -75%;
+  left: -75%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    transparent 150deg,
+    rgba(107, 216, 203, 0.90) 175deg,
+    rgba(0, 104, 95, 1.00) 200deg,
+    rgba(107, 216, 203, 0.90) 225deg,
+    transparent 250deg,
+    transparent 360deg
+  );
+  animation: mbtn-spin 3s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes mbtn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mbtn-outer > button,
+.mbtn-outer > a {
+  position: relative;
+  z-index: 1;
+  border: none !important;
+  outline: none;
+  flex: 1;
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mbtn-outer.mbtn-w-full {
+  display: flex;
+  width: 100%;
+}
+
+.mbtn-outer.mbtn-w-full > button,
+.mbtn-outer.mbtn-w-full > a {
+  flex: 1;
+  width: 100%;
+}
+
+[class*="grid"] > .mbtn-outer {
+  display: flex;
+  align-self: stretch;
+  width: 100%;
+}
+
+[class*="flex"] > .mbtn-outer:not(.mbtn-w-full) {
+  align-self: stretch;
+}
+
+.mbtn-outer:hover .mbtn-rotor {
+  animation-duration: 1.5s;
+}
+
+/* ── Aceternity 3D Card: base perspective wrapper ── */
+.ace-card-wrap {
+  perspective: 800px;
+  perspective-origin: center center;
+}
+
+.ace-card {
+  transform-style: preserve-3d;
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+  will-change: transform;
+}
+
+.ace-card:hover {
+  box-shadow:
+    0 20px 60px -10px rgba(0, 104, 95, 0.18),
+    0 8px 24px -4px rgba(0, 104, 95, 0.12),
+    0 0 0 1px rgba(0, 104, 95, 0.10);
+}
+
+.ace-card-icon {
+  transform: translateZ(24px);
+  transition: transform 0.12s ease-out;
+}
+
+.ace-card-stat {
+  transform: translateZ(18px);
+  transition: transform 0.12s ease-out;
+}
+
+.ace-card-label {
+  transform: translateZ(12px);
+  transition: transform 0.12s ease-out;
+}
+
+.ace-card-sub {
+  transform: translateZ(8px);
+  transition: transform 0.12s ease-out;
+}
+
+.ace-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(107, 216, 203, 0.12) 0%,
+    transparent 65%
+  );
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ace-card:hover::before {
+  opacity: 1;
+}
+
+/* Shared background-lines wrapper */
+.bg-lines-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-lines-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-lines-svg path {
+  stroke: rgba(0, 104, 95, 0.13);
+  stroke-width: 1;
+  fill: none;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: bgLinesDraw 3.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.bg-lines-svg path:nth-child(1)  { animation-delay: 0.00s; }
+.bg-lines-svg path:nth-child(2)  { animation-delay: 0.12s; }
+.bg-lines-svg path:nth-child(3)  { animation-delay: 0.24s; }
+.bg-lines-svg path:nth-child(4)  { animation-delay: 0.36s; }
+.bg-lines-svg path:nth-child(5)  { animation-delay: 0.48s; }
+.bg-lines-svg path:nth-child(6)  { animation-delay: 0.60s; }
+.bg-lines-svg path:nth-child(7)  { animation-delay: 0.72s; }
+.bg-lines-svg path:nth-child(8)  { animation-delay: 0.84s; }
+.bg-lines-svg path:nth-child(9)  { animation-delay: 0.96s; }
+.bg-lines-svg path:nth-child(10) { animation-delay: 1.08s; }
+.bg-lines-svg path:nth-child(11) { animation-delay: 1.20s; }
+.bg-lines-svg path:nth-child(12) { animation-delay: 0.06s; }
+.bg-lines-svg path:nth-child(13) { animation-delay: 0.18s; }
+.bg-lines-svg path:nth-child(14) { animation-delay: 0.30s; }
+.bg-lines-svg path:nth-child(15) { animation-delay: 0.42s; }
+.bg-lines-svg path:nth-child(16) { animation-delay: 0.54s; }
+.bg-lines-svg path:nth-child(17) { animation-delay: 0.66s; }
+.bg-lines-svg path:nth-child(18) { animation-delay: 0.78s; }
+.bg-lines-svg path:nth-child(19) { animation-delay: 0.90s; }
+.bg-lines-svg path:nth-child(20) { animation-delay: 1.02s; }
+
+@keyframes bgLinesDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+.bg-lines-wrap > *:not(.bg-lines-svg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Animated Testimonials: image stack ── */
+#at-image-stack {
+  position: relative;
+  height: 440px;
+  width: 100%;
+}
+
+.at-img-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  will-change: transform, opacity;
+  transition: transform 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+              opacity  0.45s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.at-img-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.at-img-card.at-active {
+  transform: rotate(0deg) translateY(0px) scale(1);
+  opacity: 1;
+  z-index: 5;
+}
+
+.at-img-card.at-behind-1 {
+  transform: rotate(4deg) translateY(-14px) scale(0.97);
+  opacity: 0.75;
+  z-index: 4;
+}
+
+.at-img-card.at-behind-2 {
+  transform: rotate(-3deg) translateY(-24px) scale(0.94);
+  opacity: 0.55;
+  z-index: 3;
+}
+
+.at-img-card.at-behind-3 {
+  transform: rotate(6deg) translateY(-32px) scale(0.91);
+  opacity: 0.35;
+  z-index: 2;
+}
+
+.at-img-card.at-hidden {
+  transform: rotate(0deg) translateY(60px) scale(0.88);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.at-img-card.at-exit {
+  transform: translateY(-80px) scale(0.94) rotate(-6deg);
+  opacity: 0;
+  z-index: 6;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 1, 1),
+              opacity 0.35s ease;
+}
+
+@keyframes at-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.at-text-anim {
+  animation: at-fade-up 0.45s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.at-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1.5px solid var(--md-sys-color-outline-variant, rgba(0,104,95,0.25));
+  background: var(--md-sys-color-surface-container-lowest, #fff);
+  color: var(--md-sys-color-primary, #00685f);
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.at-nav-btn:hover {
+  background: var(--md-sys-color-primary, #00685f);
+  color: #fff;
+  border-color: var(--md-sys-color-primary, #00685f);
+  transform: scale(1.08);
+}
+
+.at-star {
+  color: var(--md-sys-color-primary, #00685f);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Fade-Up Scroll Reveal Pre-State (Powered by anime.js Engine)
+   Elements start offset 24px with opacity 0 until IntersectionObserver fires.
+   prefers-reduced-motion is strictly respected (elements remain visible immediately).
+───────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  [data-animate="fade-up"]:not([data-animated="true"]) {
+    opacity: 0;
+    transform: translateY(24px);
+    will-change: opacity, transform;
+  }
+
+  [data-animate-stagger]:not([data-animated="true"]) > *:not([data-no-animate]) {
+    opacity: 0;
+    transform: translateY(24px);
+    will-change: opacity, transform;
+  }
+}
+
+/* Subtle, polished hover lift for interactive cards, maintaining consistency */
+.hover-lift {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px -8px rgba(0, 104, 95, 0.14),
+              0 4px 12px -2px rgba(0, 0, 0, 0.04);
+}
