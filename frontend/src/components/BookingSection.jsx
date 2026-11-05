@@ -79,7 +79,7 @@ export default function BookingSection() {
       `\nPlease confirm my appointment. Thank you!`
     );
 
-    window.open(`https://wa.me/919830000000?text=${msg}`, '_blank');
+    window.open(`https://wa.me/919064272877?text=${msg}`, '_blank');
     setSubmitted(true);
     if (successRef.current) animateFadeUp(successRef.current, { duration: 500 });
   };
@@ -180,7 +180,7 @@ export default function BookingSection() {
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="material-symbols-outlined text-primary text-[18px]">call</span>
-                  <a href="tel:+919830000000" className="hover:text-primary transition-colors">+91 98300 00000</a>
+                  <a href="tel:+919064272877" className="hover:text-primary transition-colors">+91 90642 72877</a>
                 </div>
               </div>
             </div>

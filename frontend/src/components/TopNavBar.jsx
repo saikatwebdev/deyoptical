@@ -452,7 +452,7 @@ export default function TopNavBar({
             {/* Desktop WhatsApp Consultation */}
             <a
               className="inline-flex items-center gap-1.5 bg-surface-container border border-outline-variant/40 text-primary px-3 py-1.5 rounded-lg text-label-md font-label-md hover:bg-surface-container-high transition-all duration-150 active:scale-[0.98]"
-              href="https://wa.me/919830000000?text=Hello%20Dey%20Optical,%20I%20would%20like%20to%20consult%20an%20optometrist"
+              href="https://wa.me/919064272877?text=Hello%20Dey%20Optical,%20I%20would%20like%20to%20consult%20an%20optometrist"
               target="_blank"
               rel="noreferrer"
             >

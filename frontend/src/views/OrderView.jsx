@@ -39,7 +39,7 @@ export default function OrderView({
 
     const chosenDate = date || 'Earliest Available';
     const text = `*New Dey Optical Consultation Request*\nName: ${name}\nPhone: ${phone}\nService: ${service}\nPreferred Date: ${chosenDate}\nTime: ${time}\nNotes: ${notes || 'None'}`;
-    const waUrl = `https://wa.me/919830000000?text=${encodeURIComponent(text)}`;
+    const waUrl = `https://wa.me/919064272877?text=${encodeURIComponent(text)}`;
 
     setIsSuccess(true);
 

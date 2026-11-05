@@ -33,7 +33,7 @@ export default function Footer({ scrollTo }) {
               Kolkata's premier optometric clinic combining clinical precision with boutique eyewear curation. Expert care by Dr. Arindam Dey, M.Optom.
             </p>
             <a
-              href="https://wa.me/919830000000?text=Hello%20Dey%20Optical%2C%20I%20would%20like%20to%20enquire%20about%20your%20services."
+              href="https://wa.me/919064272877?text=Hello%20Dey%20Optical%2C%20I%20would%20like%20to%20enquire%20about%20your%20services."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[14px] transition-all duration-200 hover:scale-105 active:scale-95"
@@ -84,8 +84,8 @@ export default function Footer({ scrollTo }) {
               </div>
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
-                <a href="tel:+919830000000" className="text-[14px] text-white/70 hover:text-primary transition-colors duration-200">
-                  +91 98300 00000
+                <a href="tel:+919064272877" className="text-[14px] text-white/70 hover:text-primary transition-colors duration-200">
+                  +91 90642 72877
                 </a>
               </div>
             </div>

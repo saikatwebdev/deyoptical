@@ -36,7 +36,7 @@ export default function WhatsAppChatWidget({ isOpen, toggleConsultationChat }) {
           <div className="flex flex-col gap-1.5">
             <a
               className="text-left px-3 py-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant/30 rounded-lg text-body-sm font-body-sm text-primary flex items-center justify-between"
-              href="https://wa.me/918967961627?text=Hi%20Dey%20Optical,%20I%20would%20like%20to%20Book%20an%20Eye%20Test"
+              href="https://wa.me/919064272877?text=Hi%20Dey%20Optical,%20I%20would%20like%20to%20Book%20an%20Eye%20Test"
               target="_blank"
               rel="noreferrer"
             >
@@ -45,7 +45,7 @@ export default function WhatsAppChatWidget({ isOpen, toggleConsultationChat }) {
             </a>
             <a
               className="text-left px-3 py-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant/30 rounded-lg text-body-sm font-body-sm text-primary flex items-center justify-between"
-              href="https://wa.me/918967961627?text=Hi%20Dey%20Optical,%20I%20want%20to%20inquire%20about%20your%20lens%20and%20frame%20categories%20(Zeiss/Essilor)"
+              href="https://wa.me/919064272877?text=Hi%20Dey%20Optical,%20I%20want%20to%20inquire%20about%20your%20lens%20and%20frame%20categories%20(Zeiss/Essilor)"
               target="_blank"
               rel="noreferrer"
             >
@@ -54,7 +54,7 @@ export default function WhatsAppChatWidget({ isOpen, toggleConsultationChat }) {
             </a>
             <a
               className="text-left px-3 py-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant/30 rounded-lg text-body-sm font-body-sm text-primary flex items-center justify-between"
-              href="https://wa.me/918967961627?text=Hi%20Dey%20Optical,%20please%20send%20your%20exact%20store%20location"
+              href="https://wa.me/919064272877?text=Hi%20Dey%20Optical,%20please%20send%20your%20exact%20store%20location"
               target="_blank"
               rel="noreferrer"
             >
@@ -63,7 +63,7 @@ export default function WhatsAppChatWidget({ isOpen, toggleConsultationChat }) {
             </a>
             <a
               className="text-left px-3 py-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant/30 rounded-lg text-body-sm font-body-sm text-primary flex items-center justify-between"
-              href="https://wa.me/918967961627?text=Hi%20Dr.%20Dey,%20I%20have%20a%20clinical%20vision%20query"
+              href="https://wa.me/919064272877?text=Hi%20Dr.%20Dey,%20I%20have%20a%20clinical%20vision%20query"
               target="_blank"
               rel="noreferrer"
             >

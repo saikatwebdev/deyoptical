@@ -24,7 +24,7 @@ function CategoryCard({ cat }) {
       `Tagline: ${cat.tagline}\n\n` +
       `Could you please share more details, pricing, and availability? Thank you!`
     );
-    window.open(`https://wa.me/919830000000?text=${msg}`, '_blank');
+    window.open(`https://wa.me/919064272877?text=${msg}`, '_blank');
   };
 
   return (
@@ -229,7 +229,7 @@ export default function EyewearSection() {
                           `Hello Dey Optical! 👋\n\nI'm interested in: *${cat.name}*\n\n` +
                           `${cat.tagline}\n\nCould you share more details and pricing? Thank you!`
                         );
-                        window.open(`https://wa.me/919830000000?text=${msg}`, '_blank');
+                        window.open(`https://wa.me/919064272877?text=${msg}`, '_blank');
                       }}
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary font-bold text-[13px] hover:bg-primary/90 active:scale-95 transition-all duration-200 shadow-md self-start"
                     >
@@ -253,7 +253,7 @@ export default function EyewearSection() {
               <p className="text-[14px] text-on-surface-variant">Dr. Arindam Dey will recommend the perfect lens for your prescription and lifestyle.</p>
             </div>
             <a
-              href="https://wa.me/919830000000?text=Hello%20Dey%20Optical!%20I%20need%20help%20choosing%20the%20right%20eyewear%20for%20my%20needs."
+              href="https://wa.me/919064272877?text=Hello%20Dey%20Optical!%20I%20need%20help%20choosing%20the%20right%20eyewear%20for%20my%20needs."
               target="_blank"
               rel="noopener noreferrer"
               className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-2xl font-bold text-[15px] shadow-lg hover:bg-primary/90 hover:shadow-xl active:scale-95 transition-all duration-200 whitespace-nowrap"
