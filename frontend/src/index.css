@@ -21,6 +21,20 @@
   -webkit-backdrop-filter: blur(16px);
 }
 
+/* Typewriter blinking cursor strand */
+@keyframes typewriterBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.typewriter-cursor {
+  animation: typewriterBlink 0.8s ease-in-out infinite;
+}
+
 /* View transition animation */
 @keyframes fadeIn {
   from {

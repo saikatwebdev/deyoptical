@@ -24,12 +24,45 @@ const CHECKLIST = [
   'ZEISS, Essilor Crizal & Nova Lens Range',
 ];
 
+const TYPEWRITER_PHRASE = "You'll Like It.";
+
 export default function HeroSection({ scrollTo }) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [typewriterText, setTypewriterText] = useState(TYPEWRITER_PHRASE);
+  const [isDeleting, setIsDeleting] = useState(false);
   const headlineRef = useRef(null);
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
   const statsRef = useRef(null);
+
+  // Typewriter effect loop: types, pauses, deletes, pauses, and repeats
+  useEffect(() => {
+    let timer;
+
+    if (!isDeleting && typewriterText === TYPEWRITER_PHRASE) {
+      // Completed typing: pause for 2.2s before deleting
+      timer = setTimeout(() => {
+        setIsDeleting(true);
+      }, 2200);
+    } else if (isDeleting && typewriterText === '') {
+      // Completed deleting: brief 500ms pause before re-typing
+      timer = setTimeout(() => {
+        setIsDeleting(false);
+      }, 500);
+    } else {
+      // Typing or deleting step
+      const stepSpeed = isDeleting ? 60 : 110;
+      timer = setTimeout(() => {
+        setTypewriterText((prev) =>
+          isDeleting
+            ? TYPEWRITER_PHRASE.slice(0, prev.length - 1)
+            : TYPEWRITER_PHRASE.slice(0, prev.length + 1)
+        );
+      }, stepSpeed);
+    }
+
+    return () => clearTimeout(timer);
+  }, [typewriterText, isDeleting]);
 
   useEffect(() => {
     animateHeroHeadline(headlineRef.current);
@@ -80,11 +113,21 @@ export default function HeroSection({ scrollTo }) {
                 <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                 Bankura's Trusted Optometric Clinic
               </span>
-              <h1 className="text-[48px] md:text-[64px] lg:text-[72px] font-bold leading-[1.05] tracking-tight text-white mb-4">
+              <h1 className="text-[40px] sm:text-[54px] md:text-[64px] lg:text-[72px] font-bold leading-[1.08] tracking-tight text-white mb-4">
                 Try It.
                 <br />
-                <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #6bd8cb, #89f5e7)' }}>
-                  You'll Like It..
+                <span className="inline-flex items-center min-h-[1.15em] align-baseline whitespace-nowrap">
+                  <span
+                    className="text-transparent bg-clip-text"
+                    style={{ backgroundImage: 'linear-gradient(135deg, #6bd8cb, #89f5e7)' }}
+                  >
+                    {typewriterText || '\u200B'}
+                  </span>
+                  {/* Moving strand (blinking typewriter cursor) */}
+                  <span
+                    aria-hidden="true"
+                    className="inline-block w-[3px] sm:w-[4px] md:w-[5px] h-[0.82em] bg-gradient-to-b from-[#6bd8cb] to-[#89f5e7] ml-1 sm:ml-1.5 rounded-full shadow-[0_0_10px_rgba(107,216,203,0.85)] align-middle typewriter-cursor flex-shrink-0"
+                  />
                 </span>
               </h1>
             </div>
