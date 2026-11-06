@@ -60,14 +60,14 @@ export default function GallerySection() {
   const currentItem = lightbox ? lightbox.items[lightbox.index] : null;
 
   return (
-    <div className="py-24 bg-surface-container-low relative overflow-hidden">
+    <div className="py-16 bg-surface-container-low relative overflow-hidden">
       <div className="absolute inset-0 opacity-30" style={{
         backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(0,104,95,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0,104,95,0.06) 0%, transparent 50%)'
       }} />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div data-animate="fade-up" className="text-center mb-12">
+        <div data-animate="fade-up" className="text-center mb-8">
           <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4">
             <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>photo_library</span>
             Gallery
@@ -81,7 +81,7 @@ export default function GallerySection() {
         </div>
 
         {/* Filter Tabs */}
-        <div data-animate="fade-up" className="flex flex-wrap justify-center gap-2 mb-10">
+        <div data-animate="fade-up" className="flex flex-wrap justify-center gap-2 mb-7">
           {FILTERS.map((filter) => (
             <button
               key={filter}

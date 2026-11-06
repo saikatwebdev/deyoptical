@@ -125,14 +125,14 @@ function SubsectionHeader({ title, subtitle, icon }) {
 
 export default function EyewearSection() {
   return (
-    <div className="py-24 bg-gradient-to-b from-surface-container-low to-surface relative overflow-hidden">
+    <div className="py-16 bg-gradient-to-b from-surface-container-low to-surface relative overflow-hidden">
       {/* Background decor */}
       <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-0 w-72 h-72 bg-tertiary/5 rounded-full blur-3xl" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div data-animate="fade-up" className="text-center mb-16">
+        <div data-animate="fade-up" className="text-center mb-11">
           <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4">
             <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>eyeglasses</span>
             Eyewear Collection
@@ -148,7 +148,7 @@ export default function EyewearSection() {
         </div>
 
         {/* Spectacle Frames Subsection */}
-        <div data-animate="fade-up" className="mb-16">
+        <div data-animate="fade-up" className="mb-11">
           <SubsectionHeader
             title="Spectacle Frames"
             subtitle="Precision-engineered frames for every face shape and lifestyle"
@@ -246,7 +246,7 @@ export default function EyewearSection() {
         </div>
 
         {/* Bottom CTA */}
-        <div data-animate="fade-up" className="mt-16 text-center">
+        <div data-animate="fade-up" className="mt-11 text-center">
           <div className="inline-flex flex-col sm:flex-row gap-4 items-center bg-primary/5 border border-primary/20 rounded-3xl px-8 py-7">
             <div className="text-left">
               <h4 className="font-bold text-[18px] text-on-surface mb-1">Not sure which to choose?</h4>

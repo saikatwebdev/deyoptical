@@ -84,15 +84,15 @@ export default function SideDrawer({
         {/* Drawer Header */}
         <div className="flex items-center justify-between p-5 border-b border-outline-variant/30 bg-surface-container-lowest">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-xs">
-              <span className="material-symbols-outlined text-[22px]">visibility</span>
+            <div className="bg-white rounded-xl p-1 shadow-xs border border-outline-variant/30 flex items-center justify-center">
+              <img src="images/logo.png" alt="Dey Optical" className="h-9 w-auto object-contain" />
             </div>
             <div>
               <h2 className="text-title-md font-title-md font-semibold text-on-surface tracking-tight">
                 Dey Optical
               </h2>
               <p className="text-[11px] font-body-sm text-secondary">
-                Precision Eye Care &amp; Luxury Eyewear
+                Beliatore, Bankura
               </p>
             </div>
           </div>

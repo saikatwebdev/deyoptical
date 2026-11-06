@@ -372,14 +372,14 @@ export default function TestimonialsSection() {
   };
 
   return (
-    <div className="py-24 bg-gradient-to-b from-surface to-surface-container-low/50 relative overflow-hidden">
+    <div className="py-16 bg-gradient-to-b from-surface to-surface-container-low/50 relative overflow-hidden">
       {/* Background ambient blurs */}
       <div className="absolute top-10 left-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-tertiary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* ── Section Header ── */}
-        <div data-animate="fade-up" className="text-center mb-16">
+        <div data-animate="fade-up" className="text-center mb-11">
 
           <h2 className="text-[36px] md:text-[44px] font-bold text-on-surface tracking-tight leading-tight">
             Stories of Restored <span className="text-primary">Vision</span>
@@ -399,7 +399,7 @@ export default function TestimonialsSection() {
         </div>
 
         {/* ── Trust Metrics Strip ── */}
-        <div data-animate-stagger className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-14">
+        <div data-animate-stagger className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
           {[
             {
               icon: 'star',

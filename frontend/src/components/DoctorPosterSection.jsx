@@ -72,14 +72,14 @@ export default function DoctorPosterSection({ scrollTo }) {
   };
 
   return (
-    <div className="py-24 bg-gradient-to-b from-surface-container-low to-surface relative overflow-hidden">
+    <div className="py-16 bg-gradient-to-b from-surface-container-low to-surface relative overflow-hidden">
       {/* Background ambient lighting */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-tertiary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div data-animate="fade-up" className="text-center max-w-3xl mx-auto mb-16">
+        <div data-animate="fade-up" className="text-center max-w-3xl mx-auto mb-11">
           <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4">
             <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>
               stethoscope
@@ -220,13 +220,15 @@ export default function DoctorPosterSection({ scrollTo }) {
         </div>
 
         {/* ── Contact Information Banner (Dey Optical, Beliatore) ── */}
-        <div data-animate="fade-up" className="mt-14 max-w-5xl mx-auto">
+        <div data-animate="fade-up" className="mt-10 max-w-5xl mx-auto">
           <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 border border-outline-variant/30 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-                <span className="material-symbols-outlined text-[26px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  location_on
-                </span>
+              <div className="bg-white rounded-2xl p-1.5 sm:p-2 shadow-xs border border-outline-variant/30 flex items-center justify-center flex-shrink-0">
+                <img
+                  src="images/logo.png"
+                  alt="Dey Optical Beliatore"
+                  className="h-10 sm:h-12 w-auto object-contain"
+                />
               </div>
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-wider text-primary">

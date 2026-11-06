@@ -47,20 +47,22 @@ export default function NavBar({ scrollTo }) {
           {/* Logo */}
           <button
             onClick={() => handleNav('home')}
-            className="flex items-center gap-2.5 group focus:outline-none"
+            className="flex items-center gap-2.5 group focus:outline-none cursor-pointer"
           >
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200 group-hover:scale-105">
-              <span className="material-symbols-outlined text-on-primary text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                visibility
-              </span>
+            <div className="bg-white rounded-xl p-1 sm:p-1.5 shadow-sm border border-outline-variant/30 flex items-center group-hover:shadow-md transition-all duration-200 group-hover:scale-105">
+              <img
+                src="images/logo.png"
+                alt="Dey Optical"
+                className="h-8 sm:h-10 w-auto object-contain"
+              />
             </div>
-            <div className="leading-tight">
-              <span className={`font-bold text-[18px] tracking-tight transition-colors duration-300 ${scrolled ? 'text-primary' : 'text-primary'}`}>
+            <div className="hidden sm:flex flex-col text-left leading-tight">
+              <span className={`text-[12px] font-bold tracking-wider uppercase transition-colors duration-300 ${scrolled ? 'text-primary' : 'text-primary-fixed drop-shadow-sm'}`}>
                 Dey Optical
               </span>
-              <div className={`text-[11px] font-medium tracking-widest uppercase transition-colors duration-300 ${scrolled ? 'text-secondary' : 'text-secondary'}`}>
-                Precision Eyecare
-              </div>
+              <span className={`text-[10px] font-medium transition-colors duration-300 ${scrolled ? 'text-secondary' : 'text-white/85'}`}>
+                Beliatore, Bankura
+              </span>
             </div>
           </button>
 

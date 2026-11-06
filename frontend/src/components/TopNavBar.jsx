@@ -41,12 +41,15 @@ export default function TopNavBar({
             navigate('home');
           }}
         >
-          <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm group-hover:bg-primary-container transition-colors">
-            <span className="material-symbols-outlined text-headline-sm">eyeglasses</span>
+          <div className="bg-white rounded-xl p-1 shadow-xs border border-outline-variant/30 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <img src="images/logo.png" alt="Dey Optical" className="h-9 w-auto object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="text-headline-md font-headline-md font-semibold tracking-tight text-on-surface">
               Dey Optical
+            </span>
+            <span className="text-[11px] text-secondary font-medium tracking-wide">
+              Beliatore, Bankura
             </span>
           </div>
         </a>

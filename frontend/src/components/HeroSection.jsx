@@ -84,7 +84,7 @@ export default function HeroSection({ scrollTo }) {
                 Try It.
                 <br />
                 <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #6bd8cb, #89f5e7)' }}>
-                  You'll LIke It..
+                  You'll Like It..
                 </span>
               </h1>
             </div>
@@ -157,7 +157,7 @@ export default function HeroSection({ scrollTo }) {
       </div>
 
       {/* ── ABOUT SECTION ── */}
-      <div className="py-16 sm:py-20 lg:py-24 bg-surface">
+      <div className="py-11 sm:py-14 lg:py-16 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left: Text */}
