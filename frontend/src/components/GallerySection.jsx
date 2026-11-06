@@ -2,24 +2,17 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GALLERY_ITEMS } from '../data/mockData.js';
 import { animateModalIn, animateStagger } from '../utils/animations.js';
 
-const FILTERS = ['All', 'Store', 'Lab', 'Eye Testing', 'Eyewear'];
-
 export default function GallerySection() {
-  const [activeFilter, setActiveFilter] = useState('All');
   const [lightbox, setLightbox] = useState(null); // { index: number, items: array }
   const modalRef = useRef(null);
   const gridRef = useRef(null);
-
-  const filtered = activeFilter === 'All'
-    ? GALLERY_ITEMS
-    : GALLERY_ITEMS.filter((g) => g.cat === activeFilter);
 
   useEffect(() => {
     if (gridRef.current) {
       const cards = gridRef.current.querySelectorAll('.gallery-card');
       animateStagger(cards, { duration: 400, delay: 60 });
     }
-  }, [activeFilter]);
+  }, []);
 
   useEffect(() => {
     if (lightbox !== null && modalRef.current) {
@@ -31,7 +24,7 @@ export default function GallerySection() {
   }, [lightbox]);
 
   const openLightbox = (index) => {
-    setLightbox({ index, items: filtered });
+    setLightbox({ index, items: GALLERY_ITEMS });
   };
 
   const closeLightbox = useCallback(() => setLightbox(null), []);
@@ -61,40 +54,29 @@ export default function GallerySection() {
 
   return (
     <div className="py-16 bg-surface-container-low relative overflow-hidden">
-      <div className="absolute inset-0 opacity-30" style={{
-        backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(0,104,95,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0,104,95,0.06) 0%, transparent 50%)'
-      }} />
+      <div
+        className="absolute inset-0 opacity-30 pointer-events-none"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 20% 50%, rgba(0,104,95,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0,104,95,0.06) 0%, transparent 50%)',
+        }}
+      />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div data-animate="fade-up" className="text-center mb-8">
-          <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4">
-            <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>photo_library</span>
+        <div data-animate="fade-up" className="text-center mb-10">
+          <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-3">
+            <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+              photo_library
+            </span>
             Gallery
           </span>
-          <h2 className="text-[36px] md:text-[42px] font-bold text-on-surface tracking-tight leading-tight mb-3">
+          <h2 className="text-[34px] sm:text-[38px] md:text-[42px] font-bold text-on-surface tracking-tight leading-tight mb-3">
             Inside Dey Optical
           </h2>
-          <p className="text-[16px] text-on-surface-variant max-w-xl mx-auto">
-            Take a visual tour of our clinic, state-of-the-art lab, and eyewear showroom.
+          <p className="text-[15px] sm:text-[16px] text-on-surface-variant max-w-xl mx-auto leading-relaxed">
+            Take a visual tour of our clinic, state-of-the-art lab, diagnostic instruments, and eyewear showroom.
           </p>
-        </div>
-
-        {/* Filter Tabs */}
-        <div data-animate="fade-up" className="flex flex-wrap justify-center gap-2 mb-7">
-          {FILTERS.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-5 py-2.5 rounded-full text-[13px] font-bold tracking-wide transition-all duration-200 ${
-                activeFilter === filter
-                  ? 'bg-primary text-on-primary shadow-md scale-105'
-                  : 'bg-white text-on-surface-variant border border-outline-variant hover:border-primary hover:text-primary hover:bg-primary/5'
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
         </div>
 
         {/* Gallery Grid */}
@@ -102,7 +84,7 @@ export default function GallerySection() {
           ref={gridRef}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
         >
-          {filtered.map((item, idx) => (
+          {GALLERY_ITEMS.map((item, idx) => (
             <div
               key={item.id}
               className="gallery-card opacity-0 group relative rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
@@ -147,13 +129,6 @@ export default function GallerySection() {
             </div>
           ))}
         </div>
-
-        {filtered.length === 0 && (
-          <div className="text-center py-16 text-secondary">
-            <span className="material-symbols-outlined text-[48px] text-outline-variant mb-3">photo_library</span>
-            <p className="text-[16px]">No images in this category yet.</p>
-          </div>
-        )}
       </div>
 
       {/* Lightbox Modal */}
@@ -176,7 +151,7 @@ export default function GallerySection() {
             {/* Close button */}
             <button
               onClick={closeLightbox}
-              className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-20"
+              className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-20 cursor-pointer"
               aria-label="Close"
             >
               <span className="material-symbols-outlined text-white text-[22px]">close</span>
@@ -193,14 +168,14 @@ export default function GallerySection() {
               {/* Nav arrows */}
               <button
                 onClick={(e) => { e.stopPropagation(); lightboxPrev(); }}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Previous image"
               >
                 <span className="material-symbols-outlined text-white text-[24px]">arrow_back_ios</span>
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); lightboxNext(); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Next image"
               >
                 <span className="material-symbols-outlined text-white text-[24px]">arrow_forward_ios</span>
@@ -227,7 +202,7 @@ export default function GallerySection() {
                 <button
                   key={item.id}
                   onClick={() => setLightbox((lb) => ({ ...lb, index: idx }))}
-                  className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                  className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
                     idx === lightbox.index ? 'border-primary scale-110' : 'border-white/20 opacity-50 hover:opacity-75'
                   }`}
                 >
@@ -241,4 +216,3 @@ export default function GallerySection() {
     </div>
   );
 }
-
