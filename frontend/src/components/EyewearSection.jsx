@@ -250,10 +250,10 @@ export default function EyewearSection() {
           <div className="inline-flex flex-col sm:flex-row gap-4 items-center bg-primary/5 border border-primary/20 rounded-3xl px-8 py-7">
             <div className="text-left">
               <h4 className="font-bold text-[18px] text-on-surface mb-1">Not sure which to choose?</h4>
-              <p className="text-[14px] text-on-surface-variant">Dr. Arindam Dey will recommend the perfect lens for your prescription and lifestyle.</p>
+              <p className="text-[14px] text-on-surface-variant">Our clinical eye specialists will recommend the ideal lens and frame for your power and lifestyle.</p>
             </div>
             <a
-              href="https://wa.me/919064272877?text=Hello%20Dey%20Optical!%20I%20need%20help%20choosing%20the%20right%20eyewear%20for%20my%20needs."
+              href="https://wa.me/917551808245?text=Hello%20Dey%20Optical%20(Beliatore)!%20I%20need%20help%20choosing%20the%20right%20eyewear%20for%20my%20prescription."
               target="_blank"
               rel="noopener noreferrer"
               className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-2xl font-bold text-[15px] shadow-lg hover:bg-primary/90 hover:shadow-xl active:scale-95 transition-all duration-200 whitespace-nowrap"

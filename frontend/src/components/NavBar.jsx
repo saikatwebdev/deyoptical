@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const NAV_LINKS = [
   { label: 'Home', section: 'home' },
+  { label: 'Doctors', section: 'doctors' },
   { label: 'Testimonials', section: 'testimonials' },
   { label: 'Gallery', section: 'gallery' },
   { label: 'Eyewear', section: 'eyewear' },

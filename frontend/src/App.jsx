@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import NavBar from './components/NavBar.jsx';
 import HeroSection from './components/HeroSection.jsx';
+import DoctorPosterSection from './components/DoctorPosterSection.jsx';
 import TestimonialsSection from './components/TestimonialsSection.jsx';
 import GallerySection from './components/GallerySection.jsx';
 import BookingSection from './components/BookingSection.jsx';
@@ -10,6 +11,7 @@ import { initScrollAnimations } from './utils/animations.js';
 
 export default function App() {
   const homeRef = useRef(null);
+  const doctorsRef = useRef(null);
   const testimonialsRef = useRef(null);
   const galleryRef = useRef(null);
   const bookingRef = useRef(null);
@@ -17,6 +19,7 @@ export default function App() {
 
   const sectionRefs = {
     home: homeRef,
+    doctors: doctorsRef,
     testimonials: testimonialsRef,
     gallery: galleryRef,
     booking: bookingRef,
@@ -43,6 +46,10 @@ export default function App() {
           <HeroSection scrollTo={scrollTo} />
         </section>
 
+        <section ref={doctorsRef} id="doctors">
+          <DoctorPosterSection scrollTo={scrollTo} />
+        </section>
+
         <section ref={testimonialsRef} id="testimonials">
           <TestimonialsSection />
         </section>
@@ -64,11 +71,11 @@ export default function App() {
 
       {/* WhatsApp Floating Button */}
       <a
-        href="https://wa.me/919064272877?text=Hello%20Dey%20Optical%2C%20I%20would%20like%20to%20enquire%20about%20your%20services."
+        href="https://wa.me/917551808245?text=Hello%20Dey%20Optical%20(Beliatore)%2C%20I%20would%20like%20to%20enquire%20about%20your%20services%20and%20doctor%20appointments."
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95 cursor-pointer"
         style={{ background: '#25D366' }}
       >
         <svg viewBox="0 0 32 32" width="28" height="28" fill="white" xmlns="http://www.w3.org/2000/svg">

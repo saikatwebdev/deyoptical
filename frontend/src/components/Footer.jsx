@@ -2,6 +2,7 @@ import React from 'react';
 
 const QUICK_LINKS = [
   { label: 'Home', section: 'home' },
+  { label: 'Visiting Doctors', section: 'doctors' },
   { label: 'Testimonials', section: 'testimonials' },
   { label: 'Gallery', section: 'gallery' },
   { label: 'Book Appointment', section: 'booking' },
@@ -26,14 +27,14 @@ export default function Footer({ scrollTo }) {
               </div>
               <div>
                 <div className="font-bold text-[18px] text-white">Dey Optical</div>
-                <div className="text-[11px] text-white/50 tracking-widest uppercase font-medium">Precision Eyecare</div>
+                <div className="text-[11px] text-white/50 tracking-widest uppercase font-medium">Beliatore, Bankura</div>
               </div>
             </button>
             <p className="text-[14px] text-white/60 leading-relaxed mb-5">
-              Bankura's premier optometric clinic combining clinical precision with boutique eyewear curation. Expert care by Dr. Arindam Dey, M.Optom.
+              Beliatore's premier optometric centre combining clinical precision with boutique eyewear. Chamber consultations by Dr. Soumen Dandapath &amp; Optom. Apurbo Kumar Patra.
             </p>
             <a
-              href="https://wa.me/919064272877?text=Hello%20Dey%20Optical%2C%20I%20would%20like%20to%20enquire%20about%20your%20services."
+              href="https://wa.me/917551808245?text=Hello%20Dey%20Optical%20(Beliatore)%2C%20I%20would%20like%20to%20enquire%20about%20your%20services%20and%20doctor%20appointments."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[14px] transition-all duration-200 hover:scale-105 active:scale-95"
@@ -54,7 +55,7 @@ export default function Footer({ scrollTo }) {
                 <li key={link.section}>
                   <button
                     onClick={() => scrollTo(link.section)}
-                    className="text-[14px] text-white/60 hover:text-primary transition-colors duration-200 flex items-center gap-2 group"
+                    className="text-[14px] text-white/60 hover:text-primary transition-colors duration-200 flex items-center gap-2 group cursor-pointer"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors duration-200" />
                     {link.label}
@@ -66,27 +67,33 @@ export default function Footer({ scrollTo }) {
 
           {/* Contact */}
           <div>
-            <h4 className="text-[14px] font-bold text-white tracking-widest uppercase mb-5">Contact & Hours</h4>
+            <h4 className="text-[14px] font-bold text-white tracking-widest uppercase mb-5">Contact &amp; Hours</h4>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-primary text-[20px] mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
                 <div>
-                  <div className="text-[14px] text-white/80 font-medium">Dey Optical</div>
-                  <div className="text-[13px] text-white/50 mt-0.5">Bankura, West Bengal, India</div>
+                  <div className="text-[14px] text-white/90 font-semibold">Dey Optical, Beliatore</div>
+                  <div className="text-[13px] text-white/60 mt-0.5">Super Market Stall No-15 (Near Panchayat), Beliatore, Bankura</div>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-primary text-[20px] mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>schedule</span>
                 <div className="text-[13px] text-white/60 space-y-0.5">
-                  <div><span className="text-white/80">Mon – Sat:</span> 10:00 AM – 7:30 PM</div>
-                  <div><span className="text-white/80">Sunday:</span> 11:00 AM – 4:00 PM</div>
+                  <div><span className="text-white/80">Store:</span> Mon – Sat: 10:00 AM – 8:00 PM | Sun: 10:30 AM – 3:00 PM</div>
+                  <div><span className="text-primary font-medium">Chambers:</span> Sunday (11:30 AM - 1 PM) &bull; Thursday (9:30 AM - 11 AM)</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
-                <a href="tel:+919064272877" className="text-[14px] text-white/70 hover:text-primary transition-colors duration-200">
-                  +91 90642 72877
-                </a>
+                <div className="flex flex-wrap gap-x-3 text-[14px]">
+                  <a href="tel:+917551808245" className="text-white/80 hover:text-primary transition-colors duration-200 font-medium">
+                    7551808245
+                  </a>
+                  <span className="text-white/40">/</span>
+                  <a href="tel:+919434438460" className="text-white/80 hover:text-primary transition-colors duration-200 font-medium">
+                    9434438460
+                  </a>
+                </div>
               </div>
             </div>
           </div>

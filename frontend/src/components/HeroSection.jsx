@@ -93,7 +93,7 @@ export default function HeroSection({ scrollTo }) {
               ref={subtitleRef}
               className="opacity-0 text-[18px] md:text-[20px] text-white/80 font-normal leading-relaxed mb-8 max-w-lg"
             >
-              Premium eyecare, boutique eyewear, and precision lens fabrication — all under one roof. Expert diagnosis by Dr. Arindam Dey, M.Optom.
+              Premium eyecare, boutique eyewear, and precision lens fabrication in Beliatore. Chamber consultations by Senior Eye Specialists &amp; Phaco Surgeons.
             </p>
 
             <div ref={ctaRef} className="opacity-0 flex flex-wrap gap-4">
@@ -157,81 +157,96 @@ export default function HeroSection({ scrollTo }) {
       </div>
 
       {/* ── ABOUT SECTION ── */}
-      <div className="py-24 bg-surface">
+      <div className="py-16 sm:py-20 lg:py-24 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left: Text */}
             <div data-animate="fade-up">
-              <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-5">
+              <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4 sm:mb-5">
                 <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>info</span>
                 About the Clinic
               </span>
-              <h2 className="text-[36px] md:text-[42px] font-bold text-on-surface tracking-tight leading-tight mb-5">
-                Bankura's Premier<br />
-                <span className="text-primary">Optometric Clinic</span>
+              <h2 className="text-[30px] sm:text-[38px] md:text-[42px] font-bold text-on-surface tracking-tight leading-tight mb-4 sm:mb-5">
+                Beliatore's Trusted<br />
+                <span className="text-primary">Eye Care Centre</span>
               </h2>
-              <p className="text-[16px] text-on-surface-variant leading-relaxed mb-8">
-                Dey Optical blends clinical precision with boutique style to deliver a complete optical experience. From computerized vision testing and digital lens fabrication to curated frame collections — we provide evidence-based eyecare for every age and lifestyle.
+              <p className="text-[15px] sm:text-[16px] text-on-surface-variant leading-relaxed mb-6 sm:mb-8">
+                Dey Optical blends clinical diagnostic precision with comprehensive eyewear curation. Serving Beliatore and Bankura with visiting senior ophthalmic surgeons, computerized refraction, and premium lenses tailored for every visual need.
               </p>
 
-              <ul className="space-y-3 mb-10">
+              <ul className="space-y-2.5 sm:space-y-3 mb-8 sm:mb-10">
                 {CHECKLIST.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-[15px] text-on-surface-variant">
+                  <li key={item} className="flex items-start gap-3 text-[14px] sm:text-[15px] text-on-surface-variant">
                     <span className="mt-0.5 w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
                       <span className="material-symbols-outlined text-primary text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
                     </span>
-                    {item}
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
 
-              <button
-                onClick={() => scrollTo('booking')}
-                className="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-xl font-bold text-[15px] shadow-md hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200"
-              >
-                <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>event_available</span>
-                Schedule Your Eye Exam
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <button
+                  onClick={() => scrollTo('doctors')}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-xl font-bold text-[15px] shadow-md hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>stethoscope</span>
+                  <span>Visiting Doctors</span>
+                </button>
+                <button
+                  onClick={() => scrollTo('booking')}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-surface-container-high text-on-surface rounded-xl font-bold text-[15px] hover:bg-surface-container-highest active:scale-95 transition-all duration-200 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">calendar_month</span>
+                  <span>Book Appointment</span>
+                </button>
+              </div>
             </div>
 
-            {/* Right: Doctor card + image */}
-            <div data-animate="fade-up" className="relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+            {/* Right: Clinic showcase with Visiting Specialists badge (Fully Mobile Optimized) */}
+            <div data-animate="fade-up" className="relative mt-4 lg:mt-0">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border border-outline-variant/30">
                 <img
                   src="images/dey-carousel-1.jpg"
-                  alt="Dey Optical Clinic"
-                  className="w-full h-[420px] object-cover"
+                  alt="Dey Optical Beliatore Clinic"
+                  className="w-full h-80 sm:h-96 md:h-[420px] object-cover object-[center_35%]"
+                  loading="lazy"
                 />
-                {/* Overlay gradient at bottom */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                {/* Overlay gradient at bottom for text contrast */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent pointer-events-none" />
 
-                {/* Doctor card floating at bottom */}
-                <div className="absolute bottom-5 left-5 right-5 bg-white/95 backdrop-blur-md rounded-2xl p-5 flex items-center gap-4 shadow-xl">
-                  <div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-primary text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
-                  </div>
-                  <div>
-                    <div className="font-bold text-[16px] text-on-surface">Dr. Arindam Dey</div>
-                    <div className="text-[13px] text-secondary">M.Optom · 10+ Years Experience</div>
-                    <div className="flex items-center gap-1 mt-1">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i} className="material-symbols-outlined text-amber-400 text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                      ))}
-                      <span className="text-[12px] text-secondary ml-1">4.9 / 5.0</span>
+                {/* Visiting Specialists Floating Card (Responsive Stack on Mobile) */}
+                <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl p-3.5 sm:p-4.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl border border-white/60">
+                  <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center flex-shrink-0">
+                      <span className="material-symbols-outlined text-[22px] sm:text-[26px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                        stethoscope
+                      </span>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-[14px] sm:text-[16px] text-on-surface truncate">Visiting Specialists</div>
+                      <div className="text-[11px] sm:text-[13px] text-secondary font-medium truncate">
+                        Dr. S. Dandapath &bull; Optom. A. Patra
+                      </div>
+                      <div className="text-[10px] sm:text-[11px] font-semibold text-primary mt-0.5">
+                        Sunday &amp; Thursday Chambers
+                      </div>
                     </div>
                   </div>
-                  <div className="ml-auto">
-                    <span className="bg-primary/10 text-primary text-[11px] font-bold tracking-wide px-3 py-1 rounded-full">
-                      Available
-                    </span>
-                  </div>
+                  <button
+                    onClick={() => scrollTo('doctors')}
+                    className="w-full sm:w-auto px-4 py-2 sm:py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-[12px] sm:text-[13px] font-bold active:scale-[0.98] transition-all cursor-pointer whitespace-nowrap shadow-xs flex items-center justify-center gap-1.5"
+                  >
+                    <span>View Schedule</span>
+                    <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Floating accent badge */}
-              <div className="absolute -top-4 -right-4 bg-primary text-on-primary rounded-2xl px-4 py-3 shadow-xl">
-                <div className="text-[22px] font-bold leading-none">10+</div>
-                <div className="text-[11px] font-medium text-on-primary/80">Yrs Expertise</div>
+              {/* Floating accent badge - safely positioned on mobile to prevent horizontal viewport overflow */}
+              <div className="absolute top-3 right-3 sm:-top-3 sm:-right-3 bg-primary text-on-primary rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg border border-white/20">
+                <div className="text-[15px] sm:text-[18px] font-bold leading-none">Beliatore</div>
+                <div className="text-[10px] sm:text-[11px] font-medium text-on-primary/80">Bankura, WB</div>
               </div>
             </div>
           </div>

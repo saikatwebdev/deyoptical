@@ -3,34 +3,40 @@ import { animateFadeUp } from '../utils/animations.js';
 
 const SERVICES = [
   {
+    icon: 'medical_services',
+    name: 'Dr. Soumen Dandapath (Phaco Surgeon)',
+    desc: 'MBBS, DOMS · Senior Consultant · Every Sunday 11:30 AM – 1:00 PM',
+    duration: 'Sunday Chamber',
+  },
+  {
+    icon: 'eyeglasses',
+    name: 'Optom. Apurbo Kumar Patra (Clinical Optometrist)',
+    desc: 'D.OPT, R.I.O. · Kolkata Medical College · Every Thursday 9:30 AM – 11:00 AM',
+    duration: 'Thursday Chamber',
+  },
+  {
     icon: 'visibility',
-    name: 'Comprehensive Eye Exam',
-    desc: 'Full computerized auto-refraction, slit-lamp & retinal assessment',
-    duration: '45 min',
+    name: 'Comprehensive Computerized Eye Exam',
+    desc: 'Full digital auto-refraction, slit-lamp bio-check & vision assessment',
+    duration: '40 min',
   },
   {
     icon: 'lens',
-    name: 'Contact Lens Fitting',
-    desc: 'Corneal topography mapping & trial lens fitting session',
+    name: 'Contact Lens Fitting & Trial',
+    desc: 'Corneal curvature evaluation & trial lens fitting session',
     duration: '30 min',
   },
   {
     icon: 'blur_on',
     name: 'Progressive Lens Consultation',
-    desc: 'Point-by-point digital free-form progressive corridor fitting',
+    desc: 'Point-by-point digital free-form corridor measurement for presbyopia',
     duration: '30 min',
   },
   {
     icon: 'child_care',
-    name: 'Pediatric Eye Care',
-    desc: 'Gentle visual acuity & refractive screening for children',
-    duration: '40 min',
-  },
-  {
-    icon: 'build',
-    name: 'Frame Repair & Adjustment',
-    desc: 'Professional ultrasonic frame realignment & nose rest adjustment',
-    duration: '15 min',
+    name: 'Pediatric Eye Checkup',
+    desc: 'Gentle visual screening for school children & myopia monitoring',
+    duration: '30 min',
   },
 ];
 
@@ -69,17 +75,17 @@ export default function BookingSection() {
     setErrors({});
 
     const msg = encodeURIComponent(
-      `Hello Dey Optical! 🙏\n\nI'd like to book an appointment:\n\n` +
+      `Hello Dey Optical (Beliatore)! 🙏\n\nI'd like to book an appointment:\n\n` +
       `👤 Name: ${form.name}\n` +
       `📱 Phone: ${form.phone}\n` +
-      `🩺 Service: ${form.service}\n` +
+      `🩺 Doctor / Service: ${form.service}\n` +
       `📅 Date: ${form.date}\n` +
-      `🕐 Time: ${form.timeSlot}\n` +
+      `🕐 Time Slot: ${form.timeSlot}\n` +
       (form.notes ? `📝 Notes: ${form.notes}\n` : '') +
-      `\nPlease confirm my appointment. Thank you!`
+      `\nPlease confirm my appointment slot. Thank you!`
     );
 
-    window.open(`https://wa.me/919064272877?text=${msg}`, '_blank');
+    window.open(`https://wa.me/917551808245?text=${msg}`, '_blank');
     setSubmitted(true);
     if (successRef.current) animateFadeUp(successRef.current, { duration: 500 });
   };
@@ -120,68 +126,12 @@ export default function BookingSection() {
             <span className="text-primary">Appointment</span>
           </h2>
           <p className="text-[16px] text-on-surface-variant max-w-xl mx-auto">
-            Schedule a consultation with Dr. Arindam Dey. Confirm via WhatsApp — fast and convenient.
+            Book an appointment with our visiting eye surgeons &amp; optometrists or schedule a computerized vision test at Dey Optical, Beliatore.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Left: Services */}
-          <div data-animate="fade-up" className="space-y-5">
-            <h3 className="text-[20px] font-bold text-on-surface mb-6 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>medical_services</span>
-              Our Services
-            </h3>
-            {SERVICES.map((svc) => (
-              <div
-                key={svc.name}
-                onClick={() => setForm((f) => ({ ...f, service: svc.name }))}
-                className={`flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${form.service === svc.name
-                    ? 'border-primary bg-primary/5 shadow-md'
-                    : 'border-outline-variant/50 bg-surface-container-low hover:border-primary/40'
-                  }`}
-              >
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 ${form.service === svc.name ? 'bg-primary text-on-primary' : 'bg-primary/10 text-primary'
-                  }`}>
-                  <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>{svc.icon}</span>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-[15px] text-on-surface">{svc.name}</h4>
-                    <span className="text-[12px] text-secondary bg-surface-container px-2 py-0.5 rounded-full">{svc.duration}</span>
-                  </div>
-                  <p className="text-[13px] text-on-surface-variant mt-1">{svc.desc}</p>
-                </div>
-                {form.service === svc.name && (
-                  <span className="material-symbols-outlined text-primary text-[20px] flex-shrink-0 self-center" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                )}
-              </div>
-            ))}
 
-            {/* Clinic Info */}
-            <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-2xl">
-              <h4 className="font-bold text-[16px] text-on-surface mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
-                Clinic Information
-              </h4>
-              <div className="space-y-3 text-[14px] text-on-surface-variant">
-                <div className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary text-[18px]">map</span>
-                  <span>Dey Optical, Bankura, West Bengal, India</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary text-[18px]">schedule</span>
-                  <div>
-                    <div>Mon – Sat: 10:00 AM – 7:30 PM</div>
-                    <div>Sunday: 11:00 AM – 4:00 PM</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary text-[18px]">call</span>
-                  <a href="tel:+919064272877" className="hover:text-primary transition-colors">+91 90642 72877</a>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Right: Booking Form */}
           <div data-animate="fade-up">
