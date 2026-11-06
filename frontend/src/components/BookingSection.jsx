@@ -96,8 +96,7 @@ export default function BookingSection() {
   };
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 rounded-xl border ${
-      errors[field] ? 'border-error bg-error-container/20' : 'border-outline-variant bg-surface'
+    `w-full px-4 py-3 rounded-xl border ${errors[field] ? 'border-error bg-error-container/20' : 'border-outline-variant bg-surface'
     } text-on-surface text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 placeholder:text-outline`;
 
   return (
@@ -136,15 +135,13 @@ export default function BookingSection() {
               <div
                 key={svc.name}
                 onClick={() => setForm((f) => ({ ...f, service: svc.name }))}
-                className={`flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  form.service === svc.name
+                className={`flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${form.service === svc.name
                     ? 'border-primary bg-primary/5 shadow-md'
                     : 'border-outline-variant/50 bg-surface-container-low hover:border-primary/40'
-                }`}
+                  }`}
               >
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
-                  form.service === svc.name ? 'bg-primary text-on-primary' : 'bg-primary/10 text-primary'
-                }`}>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 ${form.service === svc.name ? 'bg-primary text-on-primary' : 'bg-primary/10 text-primary'
+                  }`}>
                   <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>{svc.icon}</span>
                 </div>
                 <div className="flex-1">
@@ -169,7 +166,7 @@ export default function BookingSection() {
               <div className="space-y-3 text-[14px] text-on-surface-variant">
                 <div className="flex items-start gap-3">
                   <span className="material-symbols-outlined text-primary text-[18px]">map</span>
-                  <span>Dey Optical, Kolkata, West Bengal, India</span>
+                  <span>Dey Optical, Bankura, West Bengal, India</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="material-symbols-outlined text-primary text-[18px]">schedule</span>

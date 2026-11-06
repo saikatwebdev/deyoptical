@@ -78,13 +78,13 @@ export default function HeroSection({ scrollTo }) {
             >
               <span className="inline-flex items-center gap-2 bg-primary/90 backdrop-blur-sm text-on-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6">
                 <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                Kolkata's Trusted Optometric Clinic
+                Bankura's Trusted Optometric Clinic
               </span>
               <h1 className="text-[48px] md:text-[64px] lg:text-[72px] font-bold leading-[1.05] tracking-tight text-white mb-4">
-                See Better.
+                Try It.
                 <br />
                 <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #6bd8cb, #89f5e7)' }}>
-                  Look Better.
+                  You'll LIke It..
                 </span>
               </h1>
             </div>
@@ -121,11 +121,10 @@ export default function HeroSection({ scrollTo }) {
             <button
               key={idx}
               onClick={() => setCurrentSlide(idx)}
-              className={`transition-all duration-300 rounded-full ${
-                idx === currentSlide
-                  ? 'w-8 h-2.5 bg-primary'
-                  : 'w-2.5 h-2.5 bg-white/50 hover:bg-white/80'
-              }`}
+              className={`transition-all duration-300 rounded-full ${idx === currentSlide
+                ? 'w-8 h-2.5 bg-primary'
+                : 'w-2.5 h-2.5 bg-white/50 hover:bg-white/80'
+                }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
@@ -168,7 +167,7 @@ export default function HeroSection({ scrollTo }) {
                 About the Clinic
               </span>
               <h2 className="text-[36px] md:text-[42px] font-bold text-on-surface tracking-tight leading-tight mb-5">
-                Kolkata's Premier<br />
+                Bankura's Premier<br />
                 <span className="text-primary">Optometric Clinic</span>
               </h2>
               <p className="text-[16px] text-on-surface-variant leading-relaxed mb-8">

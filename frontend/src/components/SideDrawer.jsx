@@ -59,29 +59,26 @@ export default function SideDrawer({
 
   const getTabClass = (target) => {
     const isActive = activeRoute === target;
-    return `w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-label-md font-label-md transition-all duration-150 ${
-      isActive
+    return `w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-label-md font-label-md transition-all duration-150 ${isActive
         ? 'bg-primary/10 text-primary font-semibold'
         : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low'
-    }`;
+      }`;
   };
 
   return (
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-on-background/50 backdrop-blur-xs z-50 transition-opacity duration-300 ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 bg-on-background/50 backdrop-blur-xs z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
         id="drawer-backdrop"
         onClick={() => toggleMobileDrawer(false)}
       />
 
       {/* Side Drawer - Slides smoothly from Top-Right */}
       <aside
-        className={`fixed inset-y-0 right-0 w-[88vw] max-w-[360px] z-50 bg-surface-container-lowest shadow-2xl border-l border-outline-variant/40 flex flex-col justify-between h-full transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed inset-y-0 right-0 w-[88vw] max-w-[360px] z-50 bg-surface-container-lowest shadow-2xl border-l border-outline-variant/40 flex flex-col justify-between h-full transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
         id="side-drawer"
       >
         {/* Drawer Header */}
@@ -132,20 +129,18 @@ export default function SideDrawer({
           </button>
 
           {/* 2. Eyewear Discovery (Accordion with all frame features) */}
-            <div className="rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-container-lowest">
+          <div className="rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-container-lowest">
             <button
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${
-                activeRoute === 'eyewear' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
-              }`}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${activeRoute === 'eyewear' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
+                }`}
               onClick={() => toggleSection('eyewear')}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px] text-primary">eyeglasses</span>
                 <span>Product Categories</span>
               </div>
-              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${
-                openSection === 'eyewear' ? 'rotate-180' : ''
-              }`}>
+              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${openSection === 'eyewear' ? 'rotate-180' : ''
+                }`}>
                 expand_more
               </span>
             </button>
@@ -223,18 +218,16 @@ export default function SideDrawer({
           {/* 3. Clinical Services (Accordion) */}
           <div className="rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-container-lowest">
             <button
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${
-                activeRoute === 'eye-care' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
-              }`}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${activeRoute === 'eye-care' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
+                }`}
               onClick={() => toggleSection('services')}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px] text-primary">medical_services</span>
                 <span>Clinical Services</span>
               </div>
-              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${
-                openSection === 'services' ? 'rotate-180' : ''
-              }`}>
+              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${openSection === 'services' ? 'rotate-180' : ''
+                }`}>
                 expand_more
               </span>
             </button>
@@ -290,18 +283,16 @@ export default function SideDrawer({
           {/* 5. Visual Gallery (Accordion) */}
           <div className="rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-container-lowest">
             <button
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${
-                activeRoute === 'gallery' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
-              }`}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${activeRoute === 'gallery' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
+                }`}
               onClick={() => toggleSection('gallery')}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px] text-primary">photo_library</span>
                 <span>Visual Gallery</span>
               </div>
-              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${
-                openSection === 'gallery' ? 'rotate-180' : ''
-              }`}>
+              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${openSection === 'gallery' ? 'rotate-180' : ''
+                }`}>
                 expand_more
               </span>
             </button>
@@ -346,18 +337,16 @@ export default function SideDrawer({
           {/* 6. Patient Stories & Reviews */}
           <div className="rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-container-lowest">
             <button
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${
-                activeRoute === 'testimonials' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
-              }`}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${activeRoute === 'testimonials' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
+                }`}
               onClick={() => toggleSection('testimonials')}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px] text-primary">rate_review</span>
                 <span>Patient Stories &amp; Reviews</span>
               </div>
-              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${
-                openSection === 'testimonials' ? 'rotate-180' : ''
-              }`}>
+              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${openSection === 'testimonials' ? 'rotate-180' : ''
+                }`}>
                 expand_more
               </span>
             </button>
@@ -391,18 +380,16 @@ export default function SideDrawer({
           {/* 7. Eye Health Journal (Articles) */}
           <div className="rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-container-lowest">
             <button
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${
-                activeRoute === 'community' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
-              }`}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 text-label-md font-label-md transition-colors ${activeRoute === 'community' ? 'text-primary font-semibold bg-primary/5' : 'text-on-surface'
+                }`}
               onClick={() => toggleSection('journal')}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px] text-primary">article</span>
                 <span>Eye Health Journal</span>
               </div>
-              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${
-                openSection === 'journal' ? 'rotate-180' : ''
-              }`}>
+              <span className={`material-symbols-outlined text-[18px] text-secondary transition-transform duration-200 ${openSection === 'journal' ? 'rotate-180' : ''
+                }`}>
                 expand_more
               </span>
             </button>
@@ -463,7 +450,7 @@ export default function SideDrawer({
           <div className="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 text-xs text-secondary space-y-1.5">
             <div className="flex items-center gap-2 text-on-surface font-medium">
               <span className="material-symbols-outlined text-[16px] text-primary">location_on</span>
-              <span>124 Park Street, Kolkata - 700016</span>
+              <span>124 Park Street, Bankura - 700016</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[16px] text-secondary">schedule</span>

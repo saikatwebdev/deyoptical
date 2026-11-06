@@ -82,14 +82,12 @@ function StarRating({ rating = 5, interactive = false, onRate }) {
             onClick={() => interactive && onRate && onRate(star)}
             onMouseEnter={() => interactive && setHovered(star)}
             onMouseLeave={() => interactive && setHovered(0)}
-            className={`focus:outline-none transition-transform ${
-              interactive ? 'cursor-pointer hover:scale-115' : 'cursor-default'
-            }`}
+            className={`focus:outline-none transition-transform ${interactive ? 'cursor-pointer hover:scale-115' : 'cursor-default'
+              }`}
           >
             <span
-              className={`material-symbols-outlined text-[20px] transition-colors duration-150 ${
-                filled ? 'text-amber-400' : 'text-outline-variant/60'
-              }`}
+              className={`material-symbols-outlined text-[20px] transition-colors duration-150 ${filled ? 'text-amber-400' : 'text-outline-variant/60'
+                }`}
               style={{ fontVariationSettings: `'FILL' ${filled ? 1 : 0}` }}
             >
               star
@@ -162,9 +160,8 @@ export function AnimatedTestimonials({
             return (
               <div
                 key={isActive ? `active-${testimonial.id || index}-${animSeed}` : `item-${testimonial.id || index}`}
-                className={`absolute inset-0 origin-bottom transition-all duration-500 ease-out ${
-                  isActive ? 'at-image-active' : ''
-                }`}
+                className={`absolute inset-0 origin-bottom transition-all duration-500 ease-out ${isActive ? 'at-image-active' : ''
+                  }`}
                 style={{
                   zIndex,
                   opacity: isActive ? 1 : Math.max(0.3, 0.8 - diff * 0.18),
@@ -281,11 +278,10 @@ export function AnimatedTestimonials({
                 key={idx}
                 onClick={() => handleSelect(idx)}
                 aria-label={`Jump to testimonial ${idx + 1}`}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  idx === active
+                className={`transition-all duration-300 rounded-full cursor-pointer ${idx === active
                     ? 'w-7 h-2 bg-primary'
                     : 'w-2 h-2 bg-outline-variant/60 hover:bg-primary/50'
-                }`}
+                  }`}
               />
             ))}
           </div>
@@ -384,12 +380,7 @@ export default function TestimonialsSection() {
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* ── Section Header ── */}
         <div data-animate="fade-up" className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4">
-            <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              reviews
-            </span>
-            Aceternity Animated Testimonials
-          </span>
+
           <h2 className="text-[36px] md:text-[44px] font-bold text-on-surface tracking-tight leading-tight">
             Stories of Restored <span className="text-primary">Vision</span>
           </h2>
@@ -533,7 +524,7 @@ export default function TestimonialsSection() {
                         type="text"
                         value={form.role}
                         onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
-                        placeholder="e.g. Architect, Kolkata"
+                        placeholder="e.g. Architect, Bankura"
                         className="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/50 bg-surface text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                     </div>

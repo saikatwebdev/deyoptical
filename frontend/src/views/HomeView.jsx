@@ -192,9 +192,8 @@ export default function HomeView({
           {heroSlides.map((slide, idx) => (
             <div
               key={idx}
-              className={`hero-slide absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
-                idx === heroIndex ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-              }`}
+              className={`hero-slide absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${idx === heroIndex ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                }`}
               data-index={idx}
             >
               <img
@@ -212,8 +211,8 @@ export default function HomeView({
         {/* Floating Overlay Content */}
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto pointer-events-auto">
           <h1 ref={heroHeadlineRef} className="text-display-mobile sm:text-display md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-white tracking-tight leading-[1.1] drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
-            See Better.<br />
-            <span className="text-primary-fixed">Look Better.</span>
+            Try It.<br />
+            <span className="text-primary-fixed">You'll LIke It..</span>
           </h1>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-8">
             <button
@@ -259,9 +258,8 @@ export default function HomeView({
               key={idx}
               aria-label={`Go to slide ${idx + 1}`}
               onClick={() => goToHeroSlide(idx)}
-              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                idx === heroIndex ? 'bg-primary w-7' : 'bg-white/40 hover:bg-white/70 w-2.5'
-              }`}
+              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${idx === heroIndex ? 'bg-primary w-7' : 'bg-white/40 hover:bg-white/70 w-2.5'
+                }`}
             />
           ))}
         </div>

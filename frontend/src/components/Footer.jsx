@@ -30,7 +30,7 @@ export default function Footer({ scrollTo }) {
               </div>
             </button>
             <p className="text-[14px] text-white/60 leading-relaxed mb-5">
-              Kolkata's premier optometric clinic combining clinical precision with boutique eyewear curation. Expert care by Dr. Arindam Dey, M.Optom.
+              Bankura's premier optometric clinic combining clinical precision with boutique eyewear curation. Expert care by Dr. Arindam Dey, M.Optom.
             </p>
             <a
               href="https://wa.me/919064272877?text=Hello%20Dey%20Optical%2C%20I%20would%20like%20to%20enquire%20about%20your%20services."
@@ -72,7 +72,7 @@ export default function Footer({ scrollTo }) {
                 <span className="material-symbols-outlined text-primary text-[20px] mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
                 <div>
                   <div className="text-[14px] text-white/80 font-medium">Dey Optical</div>
-                  <div className="text-[13px] text-white/50 mt-0.5">Kolkata, West Bengal, India</div>
+                  <div className="text-[13px] text-white/50 mt-0.5">Bankura, West Bengal, India</div>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -101,7 +101,7 @@ export default function Footer({ scrollTo }) {
           </p>
           <div className="flex items-center gap-2 text-[13px] text-white/40">
             <span className="material-symbols-outlined text-primary text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-            Crafted with care in Kolkata
+            Crafted with care in Bankura
           </div>
         </div>
       </div>

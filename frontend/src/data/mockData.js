@@ -348,7 +348,7 @@ export const INITIAL_TESTIMONIALS = [
     role: "Retired Professor",
     rating: 5,
     date: "2 weeks ago",
-    comment: "Clean, hygienic, and thoroughly polite staff. Their computerized testing gave me exact reading power for my bi-focals with zero distortion. Highly recommended in Kolkata."
+    comment: "Clean, hygienic, and thoroughly polite staff. Their computerized testing gave me exact reading power for my bi-focals with zero distortion. Highly recommended in Bankura."
   }
 ];
 
@@ -425,32 +425,32 @@ export const ARTICLES = [
 export const AT_DATA = [
   {
     quote: "Dr. Arindam Dey diagnosed my progressive corridor with exact precision. I spent years getting headaches from generic opticians. At Dey Optical, the vision clarity is crisp across laptop and mobile.",
-    name:  "Debashis Banerjee",
-    role:  "Software Architect",
-    img:   "images/dey-carousel-1.jpg"
+    name: "Debashis Banerjee",
+    role: "Software Architect",
+    img: "images/dey-carousel-1.jpg"
   },
   {
     quote: "The titanium frames are impossibly lightweight. Dr. Dey took the time to measure my optical center distance properly. Exceptional clinical honesty and a truly boutique collection!",
-    name:  "Ananya Sen",
-    role:  "Graphic Designer",
-    img:   "images/dey-carousel-2.jpg"
+    name: "Ananya Sen",
+    role: "Graphic Designer",
+    img: "images/dey-carousel-2.jpg"
   },
   {
-    quote: "Clean, hygienic, and thoroughly polite staff. Their computerised testing gave me exact reading power for my bi-focals with zero distortion. Highly recommended in Kolkata.",
-    name:  "Subrata Roy",
-    role:  "Retired Professor",
-    img:   "images/dey-carousel-3.jpg"
+    quote: "Clean, hygienic, and thoroughly polite staff. Their computerised testing gave me exact reading power for my bi-focals with zero distortion. Highly recommended in Bankura.",
+    name: "Subrata Roy",
+    role: "Retired Professor",
+    img: "images/dey-carousel-3.jpg"
   },
   {
     quote: "Finally found a place that takes children's eye care seriously. The paediatric examination was thorough and my daughter was completely at ease throughout. Perfect fit on her first pair of glasses!",
-    name:  "Priya Chakraborty",
-    role:  "School Teacher",
-    img:   "images/dey-carousel-4.jpg"
+    name: "Priya Chakraborty",
+    role: "School Teacher",
+    img: "images/dey-carousel-4.jpg"
   },
   {
     quote: "I came in after a cataract surgery referral and the post-op lens correction was spot on. The Essilor Crizal coating Dr. Dey recommended has eliminated all glare from my night drives.",
-    name:  "Rajat Mukherjee",
-    role:  "Senior Manager, TATA",
-    img:   "images/dey-carousel-5.jpg"
+    name: "Rajat Mukherjee",
+    role: "Senior Manager, TATA",
+    img: "images/dey-carousel-5.jpg"
   }
 ];
