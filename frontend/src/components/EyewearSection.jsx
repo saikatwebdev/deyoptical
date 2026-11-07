@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo } from 'react';
 import { PRODUCT_CATEGORIES } from '../data/mockData.js';
 
 const FRAME_CATEGORIES = PRODUCT_CATEGORIES.filter((c) =>
@@ -17,7 +17,7 @@ const ICON_MAP = {
   lens: 'blur_circular',
 };
 
-function CategoryCard({ cat }) {
+const CategoryCard = memo(function CategoryCard({ cat }) {
   const handleWhatsApp = () => {
     const msg = encodeURIComponent(
       `Hello Dey Optical! 👋\n\nI'm interested in: *${cat.name}*\n\n` +
@@ -36,6 +36,9 @@ function CategoryCard({ cat }) {
           alt={cat.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
+          decoding="async"
+          width="400"
+          height="192"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
@@ -104,9 +107,9 @@ function CategoryCard({ cat }) {
       </div>
     </div>
   );
-}
+});
 
-function SubsectionHeader({ title, subtitle, icon }) {
+const SubsectionHeader = memo(function SubsectionHeader({ title, subtitle, icon }) {
   return (
     <div className="flex items-center gap-4 mb-8">
       <div className="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center flex-shrink-0">
@@ -121,9 +124,9 @@ function SubsectionHeader({ title, subtitle, icon }) {
       <div className="flex-1 h-px bg-gradient-to-r from-outline-variant/40 to-transparent ml-4" />
     </div>
   );
-}
+});
 
-export default function EyewearSection() {
+function EyewearSectionComponent() {
   return (
     <div className="py-16 bg-gradient-to-b from-surface-container-low to-surface relative overflow-hidden">
       {/* Background decor */}
@@ -182,6 +185,9 @@ export default function EyewearSection() {
                       alt={cat.name}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       loading="lazy"
+                      decoding="async"
+                      width="400"
+                      height="240"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
                     <div className="absolute top-3 left-3">
@@ -269,4 +275,6 @@ export default function EyewearSection() {
     </div>
   );
 }
+
+export default memo(EyewearSectionComponent);
 

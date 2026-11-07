@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const QUICK_LINKS = [
   { label: 'Home', section: 'home' },
@@ -9,7 +9,7 @@ const QUICK_LINKS = [
   { label: 'Eyewear', section: 'eyewear' },
 ];
 
-export default function Footer({ scrollTo }) {
+function FooterComponent({ scrollTo }) {
   const year = new Date().getFullYear();
 
   return (
@@ -25,6 +25,10 @@ export default function Footer({ scrollTo }) {
                   src="images/logo.png"
                   alt="Dey Optical"
                   className="h-9 sm:h-11 w-auto object-contain"
+                  loading="lazy"
+                  decoding="async"
+                  width="140"
+                  height="44"
                 />
               </div>
               <div>
@@ -117,3 +121,5 @@ export default function Footer({ scrollTo }) {
     </footer>
   );
 }
+
+export default memo(FooterComponent);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import { animateHeroHeadline, animateFadeUp, animateStagger } from '../utils/animations.js';
 
 const CAROUSEL_IMAGES = [
@@ -26,31 +26,26 @@ const CHECKLIST = [
 
 const TYPEWRITER_PHRASE = "You'll Like It.";
 
-export default function HeroSection({ scrollTo }) {
-  const [currentSlide, setCurrentSlide] = useState(0);
+/**
+ * Isolated Typewriter leaf component.
+ * Prevents the entire full-page HeroSection from re-rendering every 60-110ms.
+ */
+const TypewriterHeadline = memo(function TypewriterHeadline() {
   const [typewriterText, setTypewriterText] = useState(TYPEWRITER_PHRASE);
   const [isDeleting, setIsDeleting] = useState(false);
-  const headlineRef = useRef(null);
-  const subtitleRef = useRef(null);
-  const ctaRef = useRef(null);
-  const statsRef = useRef(null);
 
-  // Typewriter effect loop: types, pauses, deletes, pauses, and repeats
   useEffect(() => {
     let timer;
 
     if (!isDeleting && typewriterText === TYPEWRITER_PHRASE) {
-      // Completed typing: pause for 2.2s before deleting
       timer = setTimeout(() => {
         setIsDeleting(true);
       }, 2200);
     } else if (isDeleting && typewriterText === '') {
-      // Completed deleting: brief 500ms pause before re-typing
       timer = setTimeout(() => {
         setIsDeleting(false);
       }, 500);
     } else {
-      // Typing or deleting step
       const stepSpeed = isDeleting ? 60 : 110;
       timer = setTimeout(() => {
         setTypewriterText((prev) =>
@@ -63,6 +58,30 @@ export default function HeroSection({ scrollTo }) {
 
     return () => clearTimeout(timer);
   }, [typewriterText, isDeleting]);
+
+  return (
+    <span className="inline-flex items-center min-h-[1.15em] align-baseline whitespace-nowrap">
+      <span
+        className="text-transparent bg-clip-text"
+        style={{ backgroundImage: 'linear-gradient(135deg, #6bd8cb, #89f5e7)' }}
+      >
+        {typewriterText || '\u200B'}
+      </span>
+      {/* Moving strand (blinking typewriter cursor) */}
+      <span
+        aria-hidden="true"
+        className="inline-block w-[3px] sm:w-[4px] md:w-[5px] h-[0.82em] bg-gradient-to-b from-[#6bd8cb] to-[#89f5e7] ml-1 sm:ml-1.5 rounded-full shadow-[0_0_10px_rgba(107,216,203,0.85)] align-middle typewriter-cursor flex-shrink-0"
+      />
+    </span>
+  );
+});
+
+function HeroSectionComponent({ scrollTo }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const headlineRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const ctaRef = useRef(null);
+  const statsRef = useRef(null);
 
   useEffect(() => {
     animateHeroHeadline(headlineRef.current);
@@ -94,6 +113,10 @@ export default function HeroSection({ scrollTo }) {
               alt={img.label}
               className="w-full h-full object-cover"
               loading={idx === 0 ? 'eager' : 'lazy'}
+              fetchPriority={idx === 0 ? 'high' : 'low'}
+              decoding="async"
+              width="1920"
+              height="1080"
             />
           </div>
         ))}
@@ -116,19 +139,7 @@ export default function HeroSection({ scrollTo }) {
               <h1 className="text-[40px] sm:text-[54px] md:text-[64px] lg:text-[72px] font-bold leading-[1.08] tracking-tight text-white mb-4">
                 Try It.
                 <br />
-                <span className="inline-flex items-center min-h-[1.15em] align-baseline whitespace-nowrap">
-                  <span
-                    className="text-transparent bg-clip-text"
-                    style={{ backgroundImage: 'linear-gradient(135deg, #6bd8cb, #89f5e7)' }}
-                  >
-                    {typewriterText || '\u200B'}
-                  </span>
-                  {/* Moving strand (blinking typewriter cursor) */}
-                  <span
-                    aria-hidden="true"
-                    className="inline-block w-[3px] sm:w-[4px] md:w-[5px] h-[0.82em] bg-gradient-to-b from-[#6bd8cb] to-[#89f5e7] ml-1 sm:ml-1.5 rounded-full shadow-[0_0_10px_rgba(107,216,203,0.85)] align-middle typewriter-cursor flex-shrink-0"
-                  />
-                </span>
+                <TypewriterHeadline />
               </h1>
             </div>
 
@@ -254,6 +265,9 @@ export default function HeroSection({ scrollTo }) {
                   alt="Dey Optical Beliatore Clinic"
                   className="w-full h-80 sm:h-96 md:h-[420px] object-cover object-[center_35%]"
                   loading="lazy"
+                  decoding="async"
+                  width="640"
+                  height="420"
                 />
                 {/* Overlay gradient at bottom for text contrast */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent pointer-events-none" />
@@ -298,4 +312,6 @@ export default function HeroSection({ scrollTo }) {
     </>
   );
 }
+
+export default memo(HeroSectionComponent);
 

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { GALLERY_ITEMS } from '../data/mockData.js';
 import { animateModalIn, animateStagger } from '../utils/animations.js';
 
-export default function GallerySection() {
+function GallerySectionComponent() {
   const [lightbox, setLightbox] = useState(null); // { index: number, items: array }
   const modalRef = useRef(null);
   const gridRef = useRef(null);
@@ -23,9 +23,9 @@ export default function GallerySection() {
     }
   }, [lightbox]);
 
-  const openLightbox = (index) => {
+  const openLightbox = useCallback((index) => {
     setLightbox({ index, items: GALLERY_ITEMS });
-  };
+  }, []);
 
   const closeLightbox = useCallback(() => setLightbox(null), []);
 
@@ -96,6 +96,9 @@ export default function GallerySection() {
                   alt={item.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   loading="lazy"
+                  decoding="async"
+                  width="600"
+                  height="450"
                 />
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -206,7 +209,15 @@ export default function GallerySection() {
                     idx === lightbox.index ? 'border-primary scale-110' : 'border-white/20 opacity-50 hover:opacity-75'
                   }`}
                 >
-                  <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    width="56"
+                    height="56"
+                  />
                 </button>
               ))}
             </div>
@@ -216,3 +227,5 @@ export default function GallerySection() {
     </div>
   );
 }
+
+export default memo(GallerySectionComponent);

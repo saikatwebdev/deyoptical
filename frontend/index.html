@@ -8,9 +8,18 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="apple-touch-icon" href="images/logo.png">
-  <!-- Google Fonts: Inter -->
+
+  <!-- Resource Hints & DNS Prefetch -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+
+  <!-- LCP & Brand Preloads (Eliminates Flash of Unstyled Content & Hero LCP Lag) -->
+  <link rel="preload" as="image" href="images/dey-carousel-1.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="images/logo.png">
+
+  <!-- Google Fonts: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
     rel="stylesheet">
   <!-- Material Symbols Outlined -->

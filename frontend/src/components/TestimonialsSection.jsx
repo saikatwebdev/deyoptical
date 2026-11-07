@@ -1,73 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import { AT_DATA } from '../data/mockData.js';
 import { animateModalIn } from '../utils/animations.js';
 
 // Pre-computed rotation angles for stacked card realism (Aceternity style)
 const ROTATIONS = [-6, 5, -8, 7, -4, 6, -5, 8];
 
-// Inject Aceternity-grade CSS keyframes once
-function injectStyles() {
-  if (typeof document === 'undefined' || document.getElementById('aceternity-at-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'aceternity-at-styles';
-  style.textContent = `
-    /* Word-by-word blur reveal (recreates framer-motion word stagger) */
-    @keyframes atWordBlurIn {
-      0% {
-        filter: blur(10px);
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      100% {
-        filter: blur(0px);
-        opacity: 1;
-        transform: translateY(0px);
-      }
-    }
-    .at-word-blur {
-      display: inline-block;
-      animation: atWordBlurIn 0.28s cubic-bezier(0.25, 1, 0.5, 1) both;
-    }
-
-    /* Name & role fade slide in */
-    @keyframes atMetaIn {
-      0% {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0px);
-      }
-    }
-    .at-meta-in {
-      animation: atMetaIn 0.32s cubic-bezier(0.25, 1, 0.5, 1) both;
-    }
-
-    /* Aceternity signature image entrance: lift up and settle into place */
-    @keyframes atImageLift {
-      0% {
-        opacity: 0.5;
-        transform: translateY(0px) scale(0.94) rotate(-3deg);
-      }
-      45% {
-        opacity: 0.95;
-        transform: translateY(-55px) scale(1.02) rotate(0deg);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0px) scale(1) rotate(0deg);
-      }
-    }
-    .at-image-active {
-      animation: atImageLift 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) both;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
 // ─── Star Rating Component ────────────────────────────────────────────────────
-function StarRating({ rating = 5, interactive = false, onRate }) {
+const StarRating = memo(function StarRating({ rating = 5, interactive = false, onRate }) {
   const [hovered, setHovered] = useState(0);
 
   return (
@@ -97,10 +36,10 @@ function StarRating({ rating = 5, interactive = false, onRate }) {
       })}
     </div>
   );
-}
+});
 
 // ─── Animated Word Component ──────────────────────────────────────────────────
-function AnimatedWord({ text, delay }) {
+const AnimatedWord = memo(function AnimatedWord({ text, delay }) {
   return (
     <span
       className="at-word-blur"
@@ -109,10 +48,10 @@ function AnimatedWord({ text, delay }) {
       {text}&nbsp;
     </span>
   );
-}
+});
 
 // ─── Aceternity Animated Testimonials Core Component ──────────────────────────
-export function AnimatedTestimonials({
+export const AnimatedTestimonials = memo(function AnimatedTestimonials({
   testimonials,
   autoplay = true,
   onOpenReviewModal,
@@ -131,10 +70,10 @@ export function AnimatedTestimonials({
     setAnimSeed((s) => s + 1);
   }, [testimonials.length]);
 
-  const handleSelect = (idx) => {
+  const handleSelect = useCallback((idx) => {
     setActive(idx);
     setAnimSeed((s) => s + 1);
-  };
+  }, []);
 
   useEffect(() => {
     if (!autoplay) return;
@@ -143,7 +82,7 @@ export function AnimatedTestimonials({
   }, [autoplay, handleNext]);
 
   const current = testimonials[active] || testimonials[0];
-  const words = current?.quote ? current.quote.split(' ') : [];
+  const words = useMemo(() => (current?.quote ? current.quote.split(' ') : []), [current?.quote]);
 
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 lg:gap-20 items-center">
@@ -176,6 +115,10 @@ export function AnimatedTestimonials({
                     alt={testimonial.name}
                     draggable={false}
                     className="h-full w-full object-cover object-center select-none"
+                    loading="lazy"
+                    decoding="async"
+                    width="448"
+                    height="384"
                   />
                   {/* Subtle vignette gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none" />
@@ -301,10 +244,10 @@ export function AnimatedTestimonials({
       </div>
     </div>
   );
-}
+});
 
 // ─── Section Wrapper with Header, Trust Strip, and Review Modal ───────────────
-export default function TestimonialsSection() {
+function TestimonialsSectionComponent() {
   const [testimonials, setTestimonials] = useState(() =>
     AT_DATA.map((t, idx) => ({
       ...t,
@@ -319,10 +262,6 @@ export default function TestimonialsSection() {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: '', role: '', rating: 5, comment: '' });
   const modalRef = useRef(null);
-
-  useEffect(() => {
-    injectStyles();
-  }, []);
 
   // Modal open animation & body scroll locking
   useEffect(() => {
@@ -575,3 +514,5 @@ export default function TestimonialsSection() {
     </div>
   );
 }
+
+export default memo(TestimonialsSectionComponent);

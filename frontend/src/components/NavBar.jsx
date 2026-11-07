@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 
 const NAV_LINKS = [
   { label: 'Home', section: 'home' },
@@ -8,31 +8,42 @@ const NAV_LINKS = [
   { label: 'Eyewear', section: 'eyewear' },
 ];
 
-export default function NavBar({ scrollTo }) {
+function NavBarComponent({ scrollTo }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 20;
+          setScrolled((prev) => (prev !== isScrolled ? isScrolled : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
+    if (!menuOpen) return;
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
       }
     };
-    if (menuOpen) document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
 
-  const handleNav = (section) => {
+  const handleNav = useCallback((section) => {
     scrollTo(section);
     setMenuOpen(false);
-  };
+  }, [scrollTo]);
 
   return (
     <header
@@ -53,6 +64,9 @@ export default function NavBar({ scrollTo }) {
               <img
                 src="images/logo.png"
                 alt="Dey Optical"
+                width="140"
+                height="40"
+                decoding="async"
                 className="h-8 sm:h-10 w-auto object-contain"
               />
             </div>
@@ -126,4 +140,6 @@ export default function NavBar({ scrollTo }) {
     </header>
   );
 }
+
+export default memo(NavBarComponent);
 

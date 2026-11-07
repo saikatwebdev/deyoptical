@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import NavBar from './components/NavBar.jsx';
 import HeroSection from './components/HeroSection.jsx';
 import DoctorPosterSection from './components/DoctorPosterSection.jsx';
@@ -17,24 +17,26 @@ export default function App() {
   const bookingRef = useRef(null);
   const eyewearRef = useRef(null);
 
-  const sectionRefs = {
-    home: homeRef,
-    doctors: doctorsRef,
-    testimonials: testimonialsRef,
-    gallery: galleryRef,
-    booking: bookingRef,
-    eyewear: eyewearRef,
-  };
-
-  const scrollTo = (section) => {
-    const ref = sectionRefs[section];
-    if (ref && ref.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollTo = useCallback((section) => {
+    const refMap = {
+      home: homeRef.current,
+      doctors: doctorsRef.current,
+      testimonials: testimonialsRef.current,
+      gallery: galleryRef.current,
+      booking: bookingRef.current,
+      eyewear: eyewearRef.current,
+    };
+    const target = refMap[section];
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
+  }, []);
 
   useEffect(() => {
-    initScrollAnimations();
+    const cleanup = initScrollAnimations();
+    return () => {
+      if (typeof cleanup === 'function') cleanup();
+    };
   }, []);
 
   return (

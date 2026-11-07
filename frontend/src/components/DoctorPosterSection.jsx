@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, memo } from 'react';
 
 const DOCTORS = [
   {
@@ -28,7 +28,7 @@ const DOCTORS = [
       `• Contact Number: \n` +
       `• Primary Eye Concern: \n\n` +
       `Please confirm the next available consultation slot. Thank you!`
-    ),
+    )
   },
   {
     id: 'optom-apurbo',
@@ -66,10 +66,10 @@ const CONTACT_PHONES = [
   { display: '9434438460', dial: '+919434438460', wa: '919434438460' },
 ];
 
-export default function DoctorPosterSection({ scrollTo }) {
-  const handleOpenWhatsApp = (encodedMsg) => {
+function DoctorPosterSectionComponent({ scrollTo }) {
+  const handleOpenWhatsApp = useCallback((encodedMsg) => {
     window.open(`https://wa.me/917551808245?text=${encodedMsg}`, '_blank');
-  };
+  }, []);
 
   return (
     <div className="py-16 bg-gradient-to-b from-surface-container-low to-surface relative overflow-hidden">
@@ -109,6 +109,9 @@ export default function DoctorPosterSection({ scrollTo }) {
                   alt={doc.name}
                   className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                   loading="lazy"
+                  decoding="async"
+                  width="500"
+                  height="400"
                 />
 
                 {/* Subtle cinematic gradient overlays */}
@@ -228,6 +231,10 @@ export default function DoctorPosterSection({ scrollTo }) {
                   src="images/logo.png"
                   alt="Dey Optical Beliatore"
                   className="h-10 sm:h-12 w-auto object-contain"
+                  loading="lazy"
+                  decoding="async"
+                  width="140"
+                  height="48"
                 />
               </div>
               <div>
@@ -277,4 +284,6 @@ export default function DoctorPosterSection({ scrollTo }) {
     </div>
   );
 }
+
+export default memo(DoctorPosterSectionComponent);
 

@@ -1,15 +1,27 @@
 import { animate, stagger } from 'animejs';
 
 /**
- * Check if the user has requested reduced motion
+ * Cached motion preference detection with reactive listener
  */
-export const prefersReducedMotion = () => {
-  return (
-    typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-};
+let isReducedMotionCached = typeof window !== 'undefined' && window.matchMedia
+  ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  : false;
+
+if (typeof window !== 'undefined' && window.matchMedia) {
+  try {
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updateMotion = (e) => {
+      isReducedMotionCached = e.matches;
+    };
+    if (motionQuery.addEventListener) {
+      motionQuery.addEventListener('change', updateMotion);
+    } else if (motionQuery.addListener) {
+      motionQuery.addListener(updateMotion);
+    }
+  } catch (_) {}
+}
+
+export const prefersReducedMotion = () => isReducedMotionCached;
 
 /**
  * Smooth entrance animation for routed views / pages
@@ -200,21 +212,23 @@ export function animateHeroHeadline(target) {
 let globalScrollObserver = null;
 let mutationObserver = null;
 let rafId = null;
+let mutationDebounceTimer = null;
 
 /**
  * Initialize the IntersectionObserver scroll engine.
  * Automatically discovers all [data-animate="fade-up"] and [data-animate-stagger] elements.
  * Unobserves elements once triggered to avoid unnecessary replays.
+ * Returns a cleanup function for React useEffect unmounts.
  */
 export function initScrollAnimations() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') return () => {};
 
   const isReduced = prefersReducedMotion();
 
   // If already initialized, just refresh scans
   if (globalScrollObserver) {
     refreshScrollAnimations();
-    return;
+    return cleanupScrollAnimations;
   }
 
   // Create single shared IntersectionObserver
@@ -255,13 +269,23 @@ export function initScrollAnimations() {
     }
   );
 
-  // Watch for dynamic DOM changes (route transitions, filter changes)
+  // Watch for dynamic DOM changes with debouncing to prevent thrashing on input/typing
   if (typeof MutationObserver !== 'undefined' && !mutationObserver) {
-    mutationObserver = new MutationObserver(() => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        refreshScrollAnimations();
+    mutationObserver = new MutationObserver((mutations) => {
+      // Ignore text input / form typing mutations
+      const isFormInput = mutations.some((m) => {
+        const tag = m.target?.tagName?.toLowerCase();
+        return tag === 'input' || tag === 'textarea' || tag === 'select';
       });
+      if (isFormInput) return;
+
+      if (mutationDebounceTimer) clearTimeout(mutationDebounceTimer);
+      mutationDebounceTimer = setTimeout(() => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          refreshScrollAnimations();
+        });
+      }, 120);
     });
 
     mutationObserver.observe(document.body, {
@@ -272,6 +296,30 @@ export function initScrollAnimations() {
 
   // Initial scan
   refreshScrollAnimations();
+
+  return cleanupScrollAnimations;
+}
+
+/**
+ * Clean up observers and pending timers on unmount
+ */
+export function cleanupScrollAnimations() {
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+  if (mutationDebounceTimer) {
+    clearTimeout(mutationDebounceTimer);
+    mutationDebounceTimer = null;
+  }
+  if (mutationObserver) {
+    mutationObserver.disconnect();
+    mutationObserver = null;
+  }
+  if (globalScrollObserver) {
+    globalScrollObserver.disconnect();
+    globalScrollObserver = null;
+  }
 }
 
 /**

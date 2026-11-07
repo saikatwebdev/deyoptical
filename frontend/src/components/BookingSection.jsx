@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, memo } from 'react';
 import { animateFadeUp } from '../utils/animations.js';
 
 const SERVICES = [
@@ -19,7 +19,7 @@ const TIME_SLOTS = [
   'Late Evening (6:30 PM – 8:00 PM)',
 ];
 
-export default function BookingSection() {
+function BookingSectionComponent() {
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -32,7 +32,7 @@ export default function BookingSection() {
   const [errors, setErrors] = useState({});
   const successRef = useRef(null);
 
-  const validate = () => {
+  const validate = useCallback(() => {
     const e = {};
     if (!form.name.trim()) e.name = 'Please enter your full name';
     if (!form.phone.trim() || !/^\+?[\d\s\-]{7,15}$/.test(form.phone)) e.phone = 'Valid phone number required';
@@ -40,9 +40,9 @@ export default function BookingSection() {
     if (!form.date) e.date = 'Please pick a preferred date';
     if (!form.timeSlot) e.timeSlot = 'Please select a time slot';
     return e;
-  };
+  }, [form]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -66,13 +66,13 @@ export default function BookingSection() {
     window.open(`https://wa.me/917551808245?text=${msg}`, '_blank');
     setSubmitted(true);
     if (successRef.current) animateFadeUp(successRef.current, { duration: 500 });
-  };
+  }, [form, validate]);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setForm({ name: '', phone: '', service: '', date: '', timeSlot: '', notes: '' });
     setSubmitted(false);
     setErrors({});
-  };
+  }, []);
 
   const getTodayDate = () => {
     const d = new Date();
@@ -126,6 +126,10 @@ export default function BookingSection() {
                     src="images/logo.png"
                     alt="Dey Optical Beliatore"
                     className="h-10 sm:h-11 w-auto object-contain"
+                    loading="lazy"
+                    decoding="async"
+                    width="140"
+                    height="44"
                   />
                 </div>
                 <div>
@@ -322,6 +326,7 @@ export default function BookingSection() {
                   <div className="relative">
                     <input
                       type="text"
+                      autoComplete="name"
                       value={form.name}
                       onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                       placeholder="e.g. Subir Mukherjee"
@@ -338,6 +343,7 @@ export default function BookingSection() {
                   </label>
                   <input
                     type="tel"
+                    autoComplete="tel"
                     value={form.phone}
                     onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                     placeholder="e.g. 98300 XXXXX"
@@ -439,3 +445,5 @@ export default function BookingSection() {
     </div>
   );
 }
+
+export default memo(BookingSectionComponent);
