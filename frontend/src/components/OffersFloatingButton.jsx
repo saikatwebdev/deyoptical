@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
-import { SPECIAL_OFFERS } from '../data/specialOffers.js';
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
+import { useAdminData } from '../context/AdminDataContext.jsx';
 
 const WHATSAPP_NUMBER = '917551808245';
 const DRAG_THRESHOLD = 5; // px before we decide it's a drag, not a tap
@@ -49,7 +49,8 @@ function OffersFloatingButton() {
     startBtnY: 0,
   });
 
-  const activeOffers = SPECIAL_OFFERS.filter((o) => o.active);
+  const { offers } = useAdminData();
+  const activeOffers = useMemo(() => offers.filter((o) => o.active), [offers]);
 
   // ── Set initial position: just on top of the WhatsApp floating button ──
   useEffect(() => {

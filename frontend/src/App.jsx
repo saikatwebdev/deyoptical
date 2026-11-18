@@ -8,9 +8,11 @@ import BookingSection from './components/BookingSection.jsx';
 import EyewearSection from './components/EyewearSection.jsx';
 import Footer from './components/Footer.jsx';
 import OffersFloatingButton from './components/OffersFloatingButton.jsx';
+import AdminPanelModal from './components/AdminPanelModal.jsx';
+import { AdminDataProvider } from './context/AdminDataContext.jsx';
 import { initScrollAnimations } from './utils/animations.js';
 
-export default function App() {
+function MainApp() {
   const homeRef = useRef(null);
   const doctorsRef = useRef(null);
   const testimonialsRef = useRef(null);
@@ -88,6 +90,17 @@ export default function App() {
 
       {/* Offers Floating Button */}
       <OffersFloatingButton />
+
+      {/* Admin Panel Modal */}
+      <AdminPanelModal />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AdminDataProvider>
+      <MainApp />
+    </AdminDataProvider>
   );
 }

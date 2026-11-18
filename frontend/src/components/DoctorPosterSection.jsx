@@ -1,65 +1,6 @@
 import React, { useCallback, memo } from 'react';
-
-const DOCTORS = [
-  {
-    id: 'dr-soumen',
-    name: 'Dr. Soumen Dandapath',
-    title: 'Phaco Surgeon & Senior Consultant',
-    degree: 'MBBS, DOMS',
-    hospital: 'S.N. Bajoria Memorial Eye Hospital, Bankura',
-    scheduleDay: 'Every Sunday',
-    scheduleTime: '11:30 AM – 1:00 PM',
-    photo: 'images/doctors/doctor-soumen.jpg',
-    badgeColor: 'bg-primary/95',
-    scheduleBadge: 'Every Sunday',
-    highlights: [
-      'MBBS, DOMS Qualified Eye Surgeon',
-      'Advanced Phacoemulsification Cataract Surgery',
-      'Senior Consultant at S.N. Bajoria Eye Hospital',
-      'Comprehensive Anterior Segment & Glaucoma Care',
-    ],
-    whatsappMsg: encodeURIComponent(
-      `Hello Dey Optical (Beliatore),\n\nI would like to book an appointment with:\n👨‍⚕️ *Dr. Soumen Dandapath* (MBBS, DOMS | Phaco Surgeon)\n\n` +
-      `📅 *Schedule:* Every Sunday (11:30 AM – 1:00 PM)\n` +
-      `📍 *Location:* Dey Optical, Beliatore\n\n` +
-      `*Patient Details:*\n` +
-      `• Name: \n` +
-      `• Age: \n` +
-      `• Contact Number: \n` +
-      `• Primary Eye Concern: \n\n` +
-      `Please confirm the next available consultation slot. Thank you!`
-    )
-  },
-  {
-    id: 'optom-apurbo',
-    name: 'Optom. Apurbo Kumar Patra',
-    title: 'Consultant Clinical Optometrist',
-    degree: 'D.OPT, R.I.O., S.M.F.W.B.',
-    hospital: 'Kolkata Medical College & Hospital',
-    scheduleDay: 'Every Thursday',
-    scheduleTime: '9:30 AM – 11:00 AM',
-    photo: 'images/doctors/optometrist-apurbo.jpg',
-    badgeColor: 'bg-tertiary/95',
-    scheduleBadge: 'Every Thursday',
-    highlights: [
-      'D.OPT, R.I.O., S.M.F.W.B. Certified',
-      'Kolkata Medical College & Hospital',
-      'Computerized Refraction & Binocular Vision Check',
-      'Precision Contact Lens & Pediatric Refraction',
-    ],
-    whatsappMsg: encodeURIComponent(
-      `Hello Dey Optical (Beliatore),\n\nI would like to book an appointment with:\n👨‍⚕️ *Optom. Apurbo Kumar Patra* (D.OPT, R.I.O. | Kolkata Medical College)\n\n` +
-      `📅 *Schedule:* Every Thursday (9:30 AM – 11:00 AM)\n` +
-      `📍 *Location:* Dey Optical, Beliatore\n\n` +
-      `*Patient Details:*\n` +
-      `• Name: \n` +
-      `• Age: \n` +
-      `• Contact Number: \n` +
-      `• Purpose of Visit (e.g. Eye Exam / Power Check / Contact Lens): \n\n` +
-      `Please confirm the next available consultation slot. Thank you!`
-    ),
-  },
-];
+import { useAdminData } from '../context/AdminDataContext.jsx';
+import { generateDoctorWhatsAppMsg } from '../data/doctorsData.js';
 
 const CONTACT_PHONES = [
   { display: '7551808245', dial: '+917551808245', wa: '917551808245' },
@@ -67,8 +8,11 @@ const CONTACT_PHONES = [
 ];
 
 function DoctorPosterSectionComponent({ scrollTo }) {
-  const handleOpenWhatsApp = useCallback((encodedMsg) => {
-    window.open(`https://wa.me/917551808245?text=${encodedMsg}`, '_blank');
+  const { doctors } = useAdminData();
+
+  const handleOpenWhatsApp = useCallback((doctor) => {
+    const encoded = doctor.whatsappMsg || generateDoctorWhatsAppMsg(doctor);
+    window.open(`https://wa.me/917551808245?text=${encoded}`, '_blank');
   }, []);
 
   return (
@@ -97,7 +41,7 @@ function DoctorPosterSectionComponent({ scrollTo }) {
 
         {/* ── Two Doctor Cards (Styled like Gallery Section Cards) ── */}
         <div data-animate-stagger className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch max-w-5xl mx-auto">
-          {DOCTORS.map((doc) => (
+          {doctors.map((doc) => (
             <div
               key={doc.id}
               className="gallery-card group relative rounded-3xl overflow-hidden shadow-lg border border-outline-variant/30 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 bg-surface-container-lowest flex flex-col"
@@ -165,17 +109,49 @@ function DoctorPosterSectionComponent({ scrollTo }) {
                         Visiting Schedule
                       </span>
                     </div>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-primary/15 text-primary">
-                      Confirmed Chamber
+                    {/* Availability status badge */}
+                    <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
+                      doc.availabilityStatus === 'full'
+                        ? 'bg-red-100 text-red-700'
+                        : doc.availabilityStatus === 'limited'
+                        ? 'bg-amber-100 text-amber-800'
+                        : doc.availabilityStatus === 'leave'
+                        ? 'bg-gray-200 text-gray-700'
+                        : 'bg-emerald-100 text-emerald-800'
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        doc.availabilityStatus === 'full' ? 'bg-red-500' :
+                        doc.availabilityStatus === 'limited' ? 'bg-amber-500' :
+                        doc.availabilityStatus === 'leave' ? 'bg-gray-400' : 'bg-emerald-500'
+                      }`} />
+                      {doc.availabilityLabel || (doc.availabilityStatus === 'full' ? 'Chamber Full' : 'Confirmed Chamber')}
                     </span>
                   </div>
+
                   <div className="mt-2 text-on-surface font-bold text-[16px] sm:text-[17px]">
                     {doc.scheduleDay}
                   </div>
+
+                  {/* Next Date if specified */}
+                  {doc.nextDate && doc.nextDate !== doc.scheduleDay && (
+                    <div className="text-[13px] font-semibold text-primary flex items-center gap-1 mt-0.5">
+                      <span className="material-symbols-outlined text-[15px]">calendar_today</span>
+                      <span>Next Chamber: {doc.nextDate}</span>
+                    </div>
+                  )}
+
                   <div className="text-secondary text-[13px] sm:text-[14px] font-medium flex items-center gap-1 mt-0.5">
                     <span className="material-symbols-outlined text-[15px] text-secondary">schedule</span>
                     {doc.scheduleTime}
                   </div>
+
+                  {/* Optional Chamber Notice */}
+                  {doc.notice && (
+                    <div className="mt-2.5 pt-2 border-t border-primary/15 text-[12px] text-amber-900 bg-amber-50/80 px-2.5 py-1.5 rounded-lg flex items-start gap-1.5 font-medium">
+                      <span className="material-symbols-outlined text-[16px] text-amber-600 flex-shrink-0">campaign</span>
+                      <span>{doc.notice}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Credentials / Key Highlights */}
@@ -200,7 +176,7 @@ function DoctorPosterSectionComponent({ scrollTo }) {
                 {/* WhatsApp & Call Action Buttons */}
                 <div className="pt-2 border-t border-outline-variant/30 space-y-2.5">
                   <button
-                    onClick={() => handleOpenWhatsApp(doc.whatsappMsg)}
+                    onClick={() => handleOpenWhatsApp(doc)}
                     className="w-full py-3.5 px-5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-[14px] shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer"
                   >
                     <svg viewBox="0 0 32 32" width="20" height="20" fill="white" xmlns="http://www.w3.org/2000/svg">

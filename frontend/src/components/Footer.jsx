@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { useAdminData } from '../context/AdminDataContext.jsx';
 
 const QUICK_LINKS = [
   { label: 'Home', section: 'home' },
@@ -10,6 +11,7 @@ const QUICK_LINKS = [
 ];
 
 function FooterComponent({ scrollTo }) {
+  const { openAdmin } = useAdminData();
   const year = new Date().getFullYear();
 
   return (
@@ -112,9 +114,20 @@ function FooterComponent({ scrollTo }) {
           <p className="text-[13px] text-white/40 text-center sm:text-left">
             © {year} Dey Optical. All rights reserved.
           </p>
-          <div className="flex items-center gap-2 text-[13px] text-white/40">
-            <span className="material-symbols-outlined text-primary text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-            Crafted with care in Bankura
+          <div className="flex items-center gap-4 text-[13px] text-white/40">
+            <button
+              onClick={openAdmin}
+              className="flex items-center gap-1.5 text-white/40 hover:text-white transition-colors duration-200 cursor-pointer text-xs"
+              title="Website Owner &amp; Admin Portal"
+            >
+              <span className="material-symbols-outlined text-[15px]">lock</span>
+              <span>Owner Portal</span>
+            </button>
+            <span className="text-white/20">•</span>
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-primary text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+              Crafted with care in Bankura
+            </div>
           </div>
         </div>
       </div>

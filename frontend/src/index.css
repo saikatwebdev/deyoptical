@@ -48,6 +48,10 @@
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.animate-fade-in {
+  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* ─────────────────────────────────────────────
    Aceternity Moving Border — vanilla port
    Works by placing a rotating conic-gradient

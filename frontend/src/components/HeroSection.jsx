@@ -113,7 +113,7 @@ function HeroSectionComponent({ scrollTo }) {
               alt={img.label}
               className="w-full h-full object-cover"
               loading={idx === 0 ? 'eager' : 'lazy'}
-              fetchPriority={idx === 0 ? 'high' : 'low'}
+              fetchpriority={idx === 0 ? 'high' : 'low'}
               decoding="async"
               width="1920"
               height="1080"
