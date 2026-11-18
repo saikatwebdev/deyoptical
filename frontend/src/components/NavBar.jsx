@@ -62,7 +62,7 @@ function NavBarComponent({ scrollTo }) {
           >
             <div className="bg-white rounded-xl p-1 sm:p-1.5 shadow-sm border border-outline-variant/30 flex items-center group-hover:shadow-md transition-all duration-200 group-hover:scale-105">
               <img
-                src="images/logo.png"
+                src="images/other/logo.png"
                 alt="Dey Optical"
                 width="140"
                 height="40"

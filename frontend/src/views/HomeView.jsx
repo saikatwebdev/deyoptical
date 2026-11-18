@@ -25,23 +25,23 @@ export default function HomeView({
 
   const heroSlides = [
     {
-      img: "images/dey-carousel-1.jpg",
+      img: "images/carousel/hero-carousel-1.png",
       alt: "Dey Optical store dispensing and eyewear consultation with patient"
     },
     {
-      img: "images/dey-carousel-2.jpg",
+      img: "images/carousel/hero-carousel-2.png",
       alt: "Dey Optical personalized sports and active eyewear consultation"
     },
     {
-      img: "images/dey-carousel-3.jpg",
+      img: "images/carousel/hero-carousel-3.png",
       alt: "Dey Optical authentic store experience and custom optical packaging"
     },
     {
-      img: "images/dey-carousel-4.jpg",
+      img: "images/carousel/hero-carousel-4.png",
       alt: "Dey Optical certified opticians and showroom counter dispensing"
     },
     {
-      img: "images/dey-carousel-5.jpg",
+      img: "images/carousel/hero-carousel-5.png",
       alt: "Dey Optical patient vision excellence and eyewear delivery"
     }
   ];
@@ -302,7 +302,7 @@ export default function HomeView({
             <div
               className="ace-card relative flex flex-col items-center justify-center gap-2 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 cursor-default text-center overflow-hidden group"
               style={{
-                backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('images/down_hero/image.png')",
+                backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('images/services/service-eyeglasses.png')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
@@ -327,7 +327,7 @@ export default function HomeView({
             <div
               className="ace-card relative flex flex-col items-center justify-center gap-2 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 cursor-default text-center overflow-hidden group"
               style={{
-                backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('images/down_hero/image copy.png')",
+                backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('images/services/service-bluecut-lenses.png')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
@@ -352,7 +352,7 @@ export default function HomeView({
             <div
               className="ace-card relative flex flex-col items-center justify-center gap-2 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 cursor-default text-center overflow-hidden group"
               style={{
-                backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('images/down_hero/image copy 2.png')",
+                backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('images/services/service-designer-frames.png')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
@@ -377,7 +377,7 @@ export default function HomeView({
             <div
               className="ace-card relative flex flex-col items-center justify-center gap-2 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 cursor-default text-center overflow-hidden group"
               style={{
-                backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('images/down_hero/Screenshot 2026-10-06 224245.png')",
+                backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('images/services/service-progressive-lenses.png')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
@@ -512,12 +512,12 @@ export default function HomeView({
 
           <div ref={catGridRef} data-animate-stagger className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { title: 'Eyeglasses', sub: 'Single & Bifo', icon: 'eyeglasses', bg: 'images/down_hero/image.png' },
-              { title: 'Sunglasses', sub: 'UV400 Polarized', icon: 'sunny', bg: 'images/down_hero/image copy.png' },
-              { title: 'Designer Frames', sub: 'Acetate & Titanium', icon: 'diamond', bg: 'images/down_hero/image copy 2.png' },
-              { title: 'Contact Lenses', sub: 'Daily & Monthly', icon: 'lens', bg: 'images/down_hero/Screenshot 2026-10-06 224245.png' },
-              { title: 'Blue-Cut Lenses', sub: 'Screen Defense', icon: 'laptop', bg: 'images/down_hero/image copy.png' },
-              { title: 'Kids Eyewear', sub: 'Flexible & Safe', icon: 'child_care', bg: 'images/down_hero/image copy 2.png' }
+              { title: 'Eyeglasses', sub: 'Single & Bifo', icon: 'eyeglasses', bg: 'images/services/service-eyeglasses.png' },
+              { title: 'Sunglasses', sub: 'UV400 Polarized', icon: 'sunny', bg: 'images/services/service-sunglasses.png' },
+              { title: 'Designer Frames', sub: 'Acetate & Titanium', icon: 'diamond', bg: 'images/services/service-designer-frames.png' },
+              { title: 'Contact Lenses', sub: 'Daily & Monthly', icon: 'lens', bg: 'images/services/service-progressive-lenses.png' },
+              { title: 'Blue-Cut Lenses', sub: 'Screen Defense', icon: 'laptop', bg: 'images/services/service-bluecut-lenses.png' },
+              { title: 'Kids Eyewear', sub: 'Flexible & Safe', icon: 'child_care', bg: 'images/services/service-kids-eyewear.png' }
             ].map((cat, idx) => (
               <div key={idx} className="ace-card-wrap">
                 <div
@@ -746,7 +746,7 @@ export default function HomeView({
               className="group cursor-pointer rounded-xl overflow-hidden border border-outline-variant/30 relative h-60 bg-surface-container-low shadow-xs hover-lift"
             >
               <img
-                src={g.img || 'images/dey-carousel-1.jpg'}
+                src={g.img || 'images/facilities/facility-diagnostic-suite.jpg'}
                 alt={`${g.title} at Dey Optical`}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />

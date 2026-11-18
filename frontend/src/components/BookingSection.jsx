@@ -123,7 +123,7 @@ function BookingSectionComponent() {
               <div className="flex items-center gap-3.5 pb-6 border-b border-outline-variant/30">
                 <div className="bg-white rounded-2xl p-2 shadow-xs border border-outline-variant/30 flex items-center justify-center flex-shrink-0">
                   <img
-                    src="images/logo.png"
+                    src="images/other/logo.png"
                     alt="Dey Optical Beliatore"
                     className="h-10 sm:h-11 w-auto object-contain"
                     loading="lazy"

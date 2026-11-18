@@ -45,7 +45,7 @@ export default function LightboxModal({
           className="max-h-[768px] max-w-full rounded-xl object-contain shadow-2xl"
           data-alt="Fullscreen visual photograph of Dey Optical boutique interior and lens shaping laboratory in high resolution with neutral tones and clinical lighting."
           id="lightbox-img"
-          src={item.img || 'images/dey-carousel-1.jpg'}
+          src={item.img || 'images/facilities/facility-diagnostic-suite.jpg'}
           alt={item.title}
         />
         <button

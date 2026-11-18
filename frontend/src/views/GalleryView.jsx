@@ -74,7 +74,7 @@ export default function GalleryView({
                 className="group cursor-pointer rounded-xl overflow-hidden border border-outline-variant/30 bg-surface-container-low shadow-xs relative h-72"
               >
                 <img
-                  src={g.img || 'images/dey-carousel-1.jpg'}
+                  src={g.img || 'images/facilities/facility-diagnostic-suite.jpg'}
                   alt={`${g.title} at Dey Optical`}
                   data-alt={`Photograph showcasing ${g.title} at Dey Optical practice with high-precision optical equipment.`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

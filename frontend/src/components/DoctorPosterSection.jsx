@@ -9,7 +9,7 @@ const DOCTORS = [
     hospital: 'S.N. Bajoria Memorial Eye Hospital, Bankura',
     scheduleDay: 'Every Sunday',
     scheduleTime: '11:30 AM – 1:00 PM',
-    photo: 'images/dr_soumen.jpg',
+    photo: 'images/doctors/doctor-soumen.jpg',
     badgeColor: 'bg-primary/95',
     scheduleBadge: 'Every Sunday',
     highlights: [
@@ -38,7 +38,7 @@ const DOCTORS = [
     hospital: 'Kolkata Medical College & Hospital',
     scheduleDay: 'Every Thursday',
     scheduleTime: '9:30 AM – 11:00 AM',
-    photo: 'images/optom_apurbo.jpg',
+    photo: 'images/doctors/optometrist-apurbo.jpg',
     badgeColor: 'bg-tertiary/95',
     scheduleBadge: 'Every Thursday',
     highlights: [
@@ -228,7 +228,7 @@ function DoctorPosterSectionComponent({ scrollTo }) {
             <div className="flex items-start gap-4">
               <div className="bg-white rounded-2xl p-1.5 sm:p-2 shadow-xs border border-outline-variant/30 flex items-center justify-center flex-shrink-0">
                 <img
-                  src="images/logo.png"
+                  src="images/other/logo.png"
                   alt="Dey Optical Beliatore"
                   className="h-10 sm:h-12 w-auto object-contain"
                   loading="lazy"

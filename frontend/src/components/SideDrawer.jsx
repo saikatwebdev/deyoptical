@@ -85,7 +85,7 @@ export default function SideDrawer({
         <div className="flex items-center justify-between p-5 border-b border-outline-variant/30 bg-surface-container-lowest">
           <div className="flex items-center gap-3">
             <div className="bg-white rounded-xl p-1 shadow-xs border border-outline-variant/30 flex items-center justify-center">
-              <img src="images/logo.png" alt="Dey Optical" className="h-9 w-auto object-contain" />
+              <img src="images/other/logo.png" alt="Dey Optical" className="h-9 w-auto object-contain" />
             </div>
             <div>
               <h2 className="text-title-md font-title-md font-semibold text-on-surface tracking-tight">

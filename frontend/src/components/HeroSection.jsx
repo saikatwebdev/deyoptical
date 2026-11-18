@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef, memo } from 'react';
 import { animateHeroHeadline, animateFadeUp, animateStagger } from '../utils/animations.js';
 
 const CAROUSEL_IMAGES = [
-  { src: 'images/dey-carousel-1.jpg', label: 'Precision Diagnostic Suite' },
-  { src: 'images/dey-carousel-2.jpg', label: 'High-Index Lens Edging Lab' },
-  { src: 'images/dey-carousel-3.jpg', label: 'Curated Acetate Showcase' },
-  { src: 'images/dey-carousel-4.jpg', label: 'Pediatric Vision Care' },
-  { src: 'images/dey-carousel-5.jpg', label: 'Modern Spectacle Fitting' },
+  { src: 'images/carousel/hero-carousel-1.png', label: 'Precision Diagnostic Suite' },
+  { src: 'images/carousel/hero-carousel-2.png', label: 'High-Index Lens Edging Lab' },
+  { src: 'images/carousel/hero-carousel-3.png', label: 'Curated Acetate Showcase' },
+  { src: 'images/carousel/hero-carousel-4.png', label: 'Pediatric Vision Care' },
+  { src: 'images/carousel/hero-carousel-5.png', label: 'Modern Spectacle Fitting' },
 ];
 
 const STATS = [
@@ -261,7 +261,7 @@ function HeroSectionComponent({ scrollTo }) {
             <div data-animate="fade-up" className="relative mt-4 lg:mt-0">
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border border-outline-variant/30">
                 <img
-                  src="images/dey-carousel-1.jpg"
+                  src="images/about/about-clinic.png"
                   alt="Dey Optical Beliatore Clinic"
                   className="w-full h-80 sm:h-96 md:h-[420px] object-cover object-[center_35%]"
                   loading="lazy"

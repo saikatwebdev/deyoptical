@@ -296,8 +296,8 @@ function TestimonialsSectionComponent() {
       role: form.role.trim() || 'Valued Patient',
       rating: form.rating,
       quote: form.comment.trim(),
-      src: 'images/dey-carousel-1.jpg',
-      img: 'images/dey-carousel-1.jpg',
+      src: 'images/testimonials/testimonial-debashis.jpg',
+      img: 'images/testimonials/testimonial-debashis.jpg',
     };
 
     setTestimonials((prev) => [newTestimonial, ...prev]);
