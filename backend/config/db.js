@@ -2,22 +2,34 @@
 
 const mongoose = require('mongoose');
 
+let cachedPromise = null;
+
 /**
- * Connect to MongoDB using the URI in .env
- * Retries on failure (handled by Mongoose's built-in reconnect)
+ * Connect to MongoDB using the URI in .env.
+ * Caches the connection across serverless invocations (e.g. Vercel).
  */
 const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      // These options are defaults in Mongoose 8+ but kept explicit for clarity
-      serverSelectionTimeoutMS: 10000, // 10 s timeout
-    });
-
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-  } catch (err) {
-    console.error(`❌ MongoDB connection error: ${err.message}`);
-    process.exit(1); // Crash fast — let the process manager restart
+  if (mongoose.connection.readyState >= 1) {
+    return mongoose.connection;
   }
+
+  if (!cachedPromise) {
+    cachedPromise = mongoose
+      .connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 10000,
+      })
+      .then((conn) => {
+        console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+        return conn;
+      })
+      .catch((err) => {
+        cachedPromise = null;
+        console.error(`❌ MongoDB connection error: ${err.message}`);
+        throw err;
+      });
+  }
+
+  return cachedPromise;
 };
 
 module.exports = connectDB;

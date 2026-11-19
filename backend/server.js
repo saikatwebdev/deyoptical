@@ -23,22 +23,35 @@ const httpServer = http.createServer(app);
 // ── CORS Configuration ────────────────────────────────────────────────────────
 const configuredOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
-  .map((url) => url.trim())
+  .map((url) => url.trim().replace(/\/$/, '')) // strip trailing slashes
   .filter(Boolean);
 
 const defaultOrigins = ['http://localhost:3000', 'http://localhost:5173'];
 const allowedOrigins = Array.from(new Set([...defaultOrigins, ...configuredOrigins]));
 
-const corsOriginChecker = (origin, callback) => {
-  // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
-  if (!origin) return callback(null, true);
-  if (
-    allowedOrigins.includes(origin) ||
-    (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:'))
-  ) {
-    return callback(null, true);
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // allow mobile / server-to-server / curl
+  const cleanOrigin = origin.replace(/\/$/, '');
+  if (allowedOrigins.includes(cleanOrigin)) return true;
+  // Automatically allow all Vercel deployments (production + preview domains)
+  if (/\.vercel\.app$/.test(new URL(origin).hostname)) return true;
+  // Allow localhost in non-production
+  if (process.env.NODE_ENV !== 'production' && cleanOrigin.startsWith('http://localhost:')) {
+    return true;
   }
-  callback(new Error(`CORS blocked for origin: ${origin}`));
+  return false;
+};
+
+const corsOriginChecker = (origin, callback) => {
+  try {
+    if (isAllowedOrigin(origin)) {
+      return callback(null, true);
+    }
+    console.warn(`[CORS] Origin rejected: ${origin}`);
+    callback(null, false);
+  } catch (err) {
+    callback(null, false);
+  }
 };
 
 // ── Socket.IO ─────────────────────────────────────────────────────────────────
@@ -72,6 +85,16 @@ app.use(
 app.use(express.json({ limit: '10kb' })); // parse JSON body, limit size
 app.use(express.urlencoded({ extended: false }));
 
+// ── Ensure DB connection before handling requests (critical for serverless like Vercel) ──
+app.use(async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -94,15 +117,25 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const start = async () => {
-  await connectDB();      // 1. Connect to MongoDB
-  await seedDatabase();   // 2. Seed initial data if collections are empty
+  try {
+    await connectDB();      // 1. Connect to MongoDB
+    await seedDatabase();   // 2. Seed initial data if collections are empty
 
-  httpServer.listen(PORT, () => {
-    console.log(`🚀 Dey Optical backend running on http://localhost:${PORT}`);
-    console.log(`🌐 Allowed CORS origins: ${allowedOrigins.join(', ')}`);
-    console.log(`📡 Socket.IO ready for real-time events`);
-  });
+    httpServer.listen(PORT, () => {
+      console.log(`🚀 Dey Optical backend running on http://localhost:${PORT}`);
+      console.log(`🌐 Allowed CORS origins: ${allowedOrigins.join(', ')}`);
+      console.log(`📡 Socket.IO ready for real-time events`);
+    });
+  } catch (err) {
+    console.error('❌ Failed to start server:', err.message);
+  }
 };
 
-start();
+// Export app for serverless hosts (Vercel)
+module.exports = app;
+
+// Listen only when not running inside Vercel serverless
+if (!process.env.VERCEL) {
+  start();
+}
 

@@ -64,13 +64,41 @@ export function AdminDataProvider({ children }) {
     loadData();
   }, []);
 
-  // ── Socket.IO — real-time updates ─────────────────────────────────────────
+  // ── Socket.IO / Real-time updates ─────────────────────────────────────────
   useEffect(() => {
+    // Vercel Serverless does not support persistent WebSockets/Socket.IO.
+    // If backend is on Vercel, we gracefully switch to periodic polling (every 30s).
+    const isVercelServerless = API_URL.includes('vercel.app');
+
+    if (isVercelServerless) {
+      console.info('ℹ️ Vercel Serverless backend detected — real-time updates active via background sync.');
+      const interval = setInterval(async () => {
+        try {
+          const [offersRes, doctorsRes] = await Promise.all([
+            apiFetch('/api/offers'),
+            apiFetch('/api/doctors'),
+          ]);
+          if (offersRes.success) setOffers(offersRes.data);
+          if (doctorsRes.success) setDoctors(doctorsRes.data);
+        } catch {
+          // ignore background sync errors
+        }
+      }, 30000);
+
+      return () => clearInterval(interval);
+    }
+
+    // Standard persistent server (Render, Railway, VPS, Localhost)
     const socket = io(API_URL, {
       transports: ['polling', 'websocket'],
       reconnectionAttempts: 5,
+      timeout: 10000,
     });
     socketRef.current = socket;
+
+    socket.on('connect_error', (err) => {
+      console.warn('⚠️ Real-time socket connection warning:', err.message);
+    });
 
     socket.on('connect', () => {
       console.log('📡 Socket.IO connected:', socket.id);
