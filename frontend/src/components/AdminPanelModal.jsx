@@ -389,9 +389,9 @@ export default function AdminPanelModal() {
 
                 {/* Offer Cards List */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {offers.map((offer) => (
+                  {offers.map((offer, idx) => (
                     <div
-                      key={offer.id}
+                      key={offer.id || offer.offerId || offer._id || idx}
                       className={`relative rounded-2xl border p-4 sm:p-5 transition-all bg-white shadow-xs ${
                         offer.active ? 'border-gray-200' : 'border-dashed border-gray-300 opacity-60 bg-gray-50'
                       }`}

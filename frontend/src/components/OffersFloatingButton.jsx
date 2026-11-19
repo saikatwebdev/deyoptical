@@ -249,8 +249,8 @@ function OffersFloatingButton() {
 
           {/* Offers List */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3 overscroll-contain">
-            {activeOffers.map((offer) => (
-              <OfferCard key={offer.id} offer={offer} onClaim={handleClaim} />
+            {activeOffers.map((offer, idx) => (
+              <OfferCard key={offer.id || offer.offerId || offer._id || idx} offer={offer} onClaim={handleClaim} />
             ))}
           </div>
 

@@ -1,135 +1,252 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react';
+import { io } from 'socket.io-client';
 import { SPECIAL_OFFERS } from '../data/specialOffers.js';
 import { DEFAULT_DOCTORS } from '../data/doctorsData.js';
 
-const OFFERS_STORAGE_KEY = 'dey_special_offers_v1';
-const DOCTORS_STORAGE_KEY = 'dey_doctors_data_v1';
-const ADMIN_PIN_STORAGE_KEY = 'dey_admin_pin_v1';
+// ── Config ──────────────────────────────────────────────────────────────────
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const AUTH_TOKEN_KEY = 'dey_admin_token';
 const AUTH_SESSION_KEY = 'dey_admin_authenticated';
-const DEFAULT_PIN = 'deyadmin2026';
 
 const AdminDataContext = createContext(null);
 
+// ── Helper: authenticated fetch wrapper ─────────────────────────────────────
+const apiFetch = async (path, options = {}) => {
+  const token = sessionStorage.getItem(AUTH_TOKEN_KEY);
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'API request failed');
+  return data;
+};
+
+// ── Provider ─────────────────────────────────────────────────────────────────
 export function AdminDataProvider({ children }) {
-  // ── State for Special Offers ──
-  const [offers, setOffersState] = useState(() => {
-    try {
-      const saved = localStorage.getItem(OFFERS_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error('Failed to parse saved offers from localStorage', e);
-    }
-    return SPECIAL_OFFERS;
-  });
+  // ── Data state ─────────────────────────────────────────────────────────────
+  const [offers, setOffers] = useState(SPECIAL_OFFERS);   // fallback to static until API loads
+  const [doctors, setDoctors] = useState(DEFAULT_DOCTORS); // fallback to static until API loads
+  const [apiReady, setApiReady] = useState(false);         // true once at least one fetch succeeds
 
-  // ── State for Doctors & Specialists ──
-  const [doctors, setDoctorsState] = useState(() => {
-    try {
-      const saved = localStorage.getItem(DOCTORS_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error('Failed to parse saved doctors from localStorage', e);
-    }
-    return DEFAULT_DOCTORS;
-  });
-
-  // ── Admin Modal & Auth State ──
+  // ── Admin modal & auth state ───────────────────────────────────────────────
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => sessionStorage.getItem(AUTH_SESSION_KEY) === 'true'
+  );
 
-  // ── Sync Offers to localStorage ──
-  const saveOffers = useCallback((newOffers) => {
-    setOffersState(newOffers);
-    try {
-      localStorage.setItem(OFFERS_STORAGE_KEY, JSON.stringify(newOffers));
-    } catch (e) {
-      console.error('Error saving offers to localStorage', e);
-    }
-  }, []);
+  // ── Socket.IO ref ─────────────────────────────────────────────────────────
+  const socketRef = useRef(null);
 
-  // ── Sync Doctors to localStorage ──
-  const saveDoctors = useCallback((newDoctors) => {
-    setDoctorsState(newDoctors);
-    try {
-      localStorage.setItem(DOCTORS_STORAGE_KEY, JSON.stringify(newDoctors));
-    } catch (e) {
-      console.error('Error saving doctors to localStorage', e);
-    }
-  }, []);
-
-  // ── Offer Mutators ──
-  const addOffer = useCallback((offer) => {
-    const newOffer = {
-      id: `offer-${Date.now()}`,
-      active: true,
-      ...offer,
+  // ── Load initial data from API 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [offersRes, doctorsRes] = await Promise.all([
+          apiFetch('/api/offers'),
+          apiFetch('/api/doctors'),
+        ]);
+        if (offersRes.success) setOffers(offersRes.data);
+        if (doctorsRes.success) setDoctors(doctorsRes.data);
+        setApiReady(true);
+      } catch (err) {
+        console.warn('⚠️ Backend not reachable — using static data as fallback.', err.message);
+        // Keep the static fallback data already in state
+      }
     };
-    saveOffers([newOffer, ...offers]);
-  }, [offers, saveOffers]);
+    loadData();
+  }, []);
 
-  const updateOffer = useCallback((id, updatedFields) => {
-    const next = offers.map((o) => (o.id === id ? { ...o, ...updatedFields } : o));
-    saveOffers(next);
-  }, [offers, saveOffers]);
+  // ── Socket.IO — real-time updates ─────────────────────────────────────────
+  useEffect(() => {
+    const socket = io(API_URL, {
+      transports: ['polling', 'websocket'],
+      reconnectionAttempts: 5,
+    });
+    socketRef.current = socket;
 
-  const deleteOffer = useCallback((id) => {
-    const next = offers.filter((o) => o.id !== id);
-    saveOffers(next);
-  }, [offers, saveOffers]);
+    socket.on('connect', () => {
+      console.log('📡 Socket.IO connected:', socket.id);
+    });
 
-  const toggleOffer = useCallback((id) => {
-    const next = offers.map((o) => (o.id === id ? { ...o, active: !o.active } : o));
-    saveOffers(next);
-  }, [offers, saveOffers]);
+    socket.on('offers:updated', (updatedOffers) => {
+      console.log('📡 Real-time: offers updated');
+      const seen = new Set();
+      const unique = (updatedOffers || []).filter((o) => {
+        const k = o.id || o.offerId || o._id;
+        if (!k || seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+      setOffers(unique);
+    });
 
-  const resetOffers = useCallback(() => {
-    saveOffers(SPECIAL_OFFERS);
-  }, [saveOffers]);
+    socket.on('doctors:updated', (updatedDoctors) => {
+      console.log('📡 Real-time: doctors updated');
+      const seen = new Set();
+      const unique = (updatedDoctors || []).filter((d) => {
+        const k = d.id || d.doctorId || d._id;
+        if (!k || seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+      setDoctors(unique);
+    });
 
-  // ── Doctor Mutators ──
-  const updateDoctor = useCallback((id, updatedFields) => {
-    const next = doctors.map((d) => (d.id === id ? { ...d, ...updatedFields } : d));
-    saveDoctors(next);
-  }, [doctors, saveDoctors]);
+    socket.on('disconnect', () => {
+      console.log('📡 Socket.IO disconnected');
+    });
 
-  const resetDoctors = useCallback(() => {
-    saveDoctors(DEFAULT_DOCTORS);
-  }, [saveDoctors]);
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
-  // ── Reset All Data ──
-  const resetAllData = useCallback(() => {
-    saveOffers(SPECIAL_OFFERS);
-    saveDoctors(DEFAULT_DOCTORS);
-  }, [saveOffers, saveDoctors]);
-
-  // ── Authentication Actions ──
-  const login = useCallback((passcode) => {
-    const currentPin = localStorage.getItem(ADMIN_PIN_STORAGE_KEY) || DEFAULT_PIN;
-    if (passcode.trim() === currentPin) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
-      return true;
+  // ── Authentication ────────────────────────────────────────────────────────
+  const login = useCallback(async (password) => {
+    try {
+      const data = await apiFetch('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ username: 'admin', password }),
+      });
+      if (data.success && data.token) {
+        sessionStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
+        setIsAuthenticated(true);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('Login failed:', err.message);
+      return false;
     }
-    return false;
   }, []);
 
   const logout = useCallback(() => {
-    setIsAuthenticated(false);
+    sessionStorage.removeItem(AUTH_TOKEN_KEY);
     sessionStorage.removeItem(AUTH_SESSION_KEY);
+    setIsAuthenticated(false);
   }, []);
 
-  const changePasscode = useCallback((newPasscode) => {
-    if (!newPasscode || newPasscode.trim().length < 4) return false;
-    localStorage.setItem(ADMIN_PIN_STORAGE_KEY, newPasscode.trim());
-    return true;
+  // changePasscode is no longer applicable (password is in .env on backend)
+  // Kept as a no-op so AdminPanelModal doesn't need to change
+  const changePasscode = useCallback(() => {
+    console.info('Passcode change is managed in backend .env — not available via UI.');
+    return false;
   }, []);
 
-  const openAdmin = useCallback(() => {
-    setIsAdminOpen(true);
+  // ── Offers CRUD ───────────────────────────────────────────────────────────
+  const addOffer = useCallback(async (offer) => {
+    try {
+      const res = await apiFetch('/api/offers', {
+        method: 'POST',
+        body: JSON.stringify({ active: true, ...offer }),
+      });
+      if (res.success && res.data) {
+        setOffers((prev) => {
+          const newId = res.data.id || res.data.offerId || res.data._id;
+          if (prev.some((o) => (o.id || o.offerId || o._id) === newId)) {
+            return prev;
+          }
+          return [res.data, ...prev];
+        });
+      }
+    } catch (err) {
+      console.error('addOffer failed:', err.message);
+    }
   }, []);
 
+  const updateOffer = useCallback(async (id, updatedFields) => {
+    try {
+      // Find the existing offer to merge fields
+      const existing = offers.find((o) => o.id === id || o.offerId === id || o._id === id);
+      const payload = { ...existing, ...updatedFields };
+      const res = await apiFetch(`/api/offers/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      });
+      if (res.success && res.data) {
+        setOffers((prev) =>
+          prev.map((o) => (o.id === id || o.offerId === id || o._id === id ? res.data : o))
+        );
+      }
+    } catch (err) {
+      console.error('updateOffer failed:', err.message);
+    }
+  }, [offers]);
+
+  const deleteOffer = useCallback(async (id) => {
+    try {
+      await apiFetch(`/api/offers/${id}`, { method: 'DELETE' });
+      setOffers((prev) => prev.filter((o) => o.id !== id && o.offerId !== id && o._id !== id));
+    } catch (err) {
+      console.error('deleteOffer failed:', err.message);
+    }
+  }, []);
+
+  const toggleOffer = useCallback(async (id) => {
+    try {
+      const res = await apiFetch(`/api/offers/${id}/toggle`, { method: 'PATCH' });
+      if (res.success && res.data) {
+        setOffers((prev) =>
+          prev.map((o) => (o.id === id || o.offerId === id || o._id === id ? res.data : o))
+        );
+      }
+    } catch (err) {
+      console.error('toggleOffer failed:', err.message);
+    }
+  }, []);
+
+  const resetOffers = useCallback(async () => {
+    // Re-fetch from API (seeds are already in the DB)
+    try {
+      const res = await apiFetch('/api/offers');
+      if (res.success) setOffers(res.data);
+    } catch (err) {
+      setOffers(SPECIAL_OFFERS);
+    }
+  }, []);
+
+  // ── Doctors CRUD ──────────────────────────────────────────────────────────
+  const updateDoctor = useCallback(async (id, updatedFields) => {
+    try {
+      const res = await apiFetch(`/api/doctors/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updatedFields),
+      });
+      if (res.success && res.data) {
+        setDoctors((prev) =>
+          prev.map((d) => (d.id === id || d.doctorId === id || d._id === id ? res.data : d))
+        );
+      }
+    } catch (err) {
+      console.error('updateDoctor failed:', err.message);
+    }
+  }, []);
+
+  const resetDoctors = useCallback(async () => {
+    try {
+      const res = await apiFetch('/api/doctors');
+      if (res.success) setDoctors(res.data);
+    } catch (err) {
+      setDoctors(DEFAULT_DOCTORS);
+    }
+  }, []);
+
+  const resetAllData = useCallback(async () => {
+    await resetOffers();
+    await resetDoctors();
+  }, [resetOffers, resetDoctors]);
+
+  // ── Admin modal helpers ───────────────────────────────────────────────────
+  const openAdmin = useCallback(() => setIsAdminOpen(true), []);
   const closeAdmin = useCallback(() => {
     setIsAdminOpen(false);
     if (window.location.hash === '#admin') {
@@ -137,18 +254,17 @@ export function AdminDataProvider({ children }) {
     }
   }, []);
 
-  // ── Hash listener (#admin) ──
+  // ── Hash listener (#admin) ────────────────────────────────────────────────
   useEffect(() => {
     const checkHash = () => {
-      if (window.location.hash.toLowerCase() === '#admin') {
-        setIsAdminOpen(true);
-      }
+      if (window.location.hash.toLowerCase() === '#admin') setIsAdminOpen(true);
     };
     checkHash();
     window.addEventListener('hashchange', checkHash);
     return () => window.removeEventListener('hashchange', checkHash);
   }, []);
 
+  // ── Context value ─────────────────────────────────────────────────────────
   const value = {
     offers,
     addOffer,
@@ -167,6 +283,7 @@ export function AdminDataProvider({ children }) {
     login,
     logout,
     changePasscode,
+    apiReady,
   };
 
   return <AdminDataContext.Provider value={value}>{children}</AdminDataContext.Provider>;
@@ -179,4 +296,3 @@ export function useAdminData() {
   }
   return context;
 }
-
