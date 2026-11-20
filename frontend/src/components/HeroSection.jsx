@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
-import { animateHeroHeadline, animateFadeUp, animateStagger } from '../utils/animations.js';
+import { animateHeroHeadline, animateFadeUp, animateStagger, prefersReducedMotion } from '../utils/animations.js';
 
 const CAROUSEL_IMAGES = [
   { src: 'images/carousel/hero-carousel-1.png', label: 'Precision Diagnostic Suite' },
@@ -7,13 +7,6 @@ const CAROUSEL_IMAGES = [
   { src: 'images/carousel/hero-carousel-3.png', label: 'Curated Acetate Showcase' },
   { src: 'images/carousel/hero-carousel-4.png', label: 'Pediatric Vision Care' },
   { src: 'images/carousel/hero-carousel-5.png', label: 'Modern Spectacle Fitting' },
-];
-
-const STATS = [
-  { icon: 'workspace_premium', value: '10+', label: 'Years of Expertise' },
-  { icon: 'favorite', value: '10,000+', label: 'Happy Eyes' },
-  { icon: 'science', value: 'Certified', label: 'In-House Lab' },
-  { icon: 'verified', value: '100%', label: 'Accurate Testing' },
 ];
 
 const CHECKLIST = [
@@ -76,12 +69,142 @@ const TypewriterHeadline = memo(function TypewriterHeadline() {
   );
 });
 
+/**
+ * Isolated StatsStrip leaf component.
+ * Performs synchronized count-up animation when scrolling into viewport.
+ * Triggers exactly once per page visit.
+ */
+const StatsStrip = memo(function StatsStrip() {
+  const containerRef = useRef(null);
+  const [counts, setCounts] = useState({
+    exp: 0,
+    eyes: 0,
+    accuracy: 0,
+  });
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    if (prefersReducedMotion()) {
+      setCounts({ exp: 32, eyes: 10000, accuracy: 100 });
+      const items = el.querySelectorAll('.stat-item');
+      items.forEach((item) => {
+        item.style.opacity = '1';
+        item.style.transform = 'none';
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          // Trigger once and disconnect immediately so it never replays
+          observer.disconnect();
+
+          // Animate the items entrance (fade up with subtle stagger)
+          const items = el.querySelectorAll('.stat-item');
+          animateStagger(items, { delay: 60, duration: 550 });
+
+          // Start synchronized count-up animation
+          const DURATION = 2000;
+          let startTimestamp = null;
+          let rafId = null;
+
+          const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const elapsed = timestamp - startTimestamp;
+            const progress = Math.min(elapsed / DURATION, 1);
+            // Ease-out cubic: smooth acceleration followed by graceful deceleration
+            const ease = 1 - Math.pow(1 - progress, 3);
+
+            setCounts({
+              exp: Math.round(ease * 32),
+              eyes: Math.round(ease * 10000),
+              accuracy: Math.round(ease * 100),
+            });
+
+            if (progress < 1) {
+              rafId = requestAnimationFrame(step);
+            } else {
+              setCounts({ exp: 32, eyes: 10000, accuracy: 100 });
+            }
+          };
+
+          rafId = requestAnimationFrame(step);
+        }
+      },
+      {
+        threshold: 0.15,
+      }
+    );
+
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const stats = [
+    {
+      icon: 'workspace_premium',
+      displayValue: `${counts.exp}+`,
+      label: 'Years Experience',
+    },
+    {
+      icon: 'favorite',
+      displayValue: `${counts.eyes.toLocaleString()}+`,
+      label: 'Happy Eyes',
+    },
+    {
+      icon: 'science',
+      displayValue: 'Certified',
+      label: 'In-House Lab',
+    },
+    {
+      icon: 'verified',
+      displayValue: `${counts.accuracy}%`,
+      label: 'Accurate Testing',
+    },
+  ];
+
+  return (
+    <div className="bg-[#CC0000] py-10 overflow-hidden border-y border-[#DC143C]/40">
+      <div
+        ref={containerRef}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
+      >
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="stat-item opacity-0 flex flex-col items-center text-center group"
+          >
+            <span
+              className="material-symbols-outlined text-[#FFFF00] text-[28px] mb-2 group-hover:scale-110 transition-transform duration-200"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              {stat.icon}
+            </span>
+            <span className="text-[32px] font-bold text-white tracking-tight leading-none tabular-nums min-h-[32px] flex items-center justify-center">
+              {stat.displayValue}
+            </span>
+            <span className="text-[13px] font-medium text-white/85 mt-1">
+              {stat.label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+});
+
 function HeroSectionComponent({ scrollTo, navigate }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const headlineRef = useRef(null);
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
-  const statsRef = useRef(null);
 
   const handleBookingClick = () => {
     if (typeof navigate === 'function') navigate('booking');
@@ -97,7 +220,6 @@ function HeroSectionComponent({ scrollTo, navigate }) {
     animateHeroHeadline(headlineRef.current);
     animateFadeUp(subtitleRef.current, { delay: 200, duration: 700 });
     animateFadeUp(ctaRef.current, { delay: 380, duration: 700 });
-    animateStagger(statsRef.current?.querySelectorAll('.stat-item'), { delay: 80, duration: 550 });
   }, []);
 
   useEffect(() => {
@@ -203,22 +325,7 @@ function HeroSectionComponent({ scrollTo, navigate }) {
       </div>
 
       {/* ── STATS STRIP ── */}
-      <div className="bg-[#CC0000] py-10 overflow-hidden border-y border-[#DC143C]/40">
-        <div ref={statsRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-          {STATS.map((stat) => (
-            <div
-              key={stat.label}
-              className="stat-item opacity-0 flex flex-col items-center text-center group"
-            >
-              <span className="material-symbols-outlined text-[#FFFF00] text-[28px] mb-2 group-hover:scale-110 transition-transform duration-200" style={{ fontVariationSettings: "'FILL' 1" }}>
-                {stat.icon}
-              </span>
-              <span className="text-[32px] font-bold text-white tracking-tight leading-none">{stat.value}</span>
-              <span className="text-[13px] font-medium text-white/85 mt-1">{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <StatsStrip />
 
       {/* ── ABOUT SECTION ── */}
       <div className="py-11 sm:py-14 lg:py-16 bg-surface">
