@@ -214,11 +214,10 @@ function OffersFloatingButton() {
       {/* ── Offers Panel (centered in viewport) ── */}
       <div
         ref={panelRef}
-        className={`fixed z-[70] transition-all duration-300 ease-out ${
-          isOpen
+        className={`fixed z-[70] transition-all duration-300 ease-out ${isOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
-        }`}
+          }`}
         style={{
           top: '50%',
           left: '50%',

@@ -85,6 +85,14 @@ app.use(
 app.use(express.json({ limit: '10kb' })); // parse JSON body, limit size
 app.use(express.urlencoded({ extended: false }));
 
+// ── Normalize duplicate slashes in URL paths (e.g. //api/offers -> /api/offers) ──
+app.use((req, _res, next) => {
+  if (req.url && req.url.includes('//')) {
+    req.url = req.url.replace(/\/+/g, '/');
+  }
+  next();
+});
+
 // ── Ensure DB connection before handling requests (critical for serverless like Vercel) ──
 app.use(async (_req, _res, next) => {
   try {

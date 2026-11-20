@@ -11,7 +11,8 @@ import { SPECIAL_OFFERS } from '../data/specialOffers.js';
 import { DEFAULT_DOCTORS } from '../data/doctorsData.js';
 
 // ── Config ──────────────────────────────────────────────────────────────────
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const RAW_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = RAW_API_URL.replace(/\/+$/, '');
 const AUTH_TOKEN_KEY = 'dey_admin_token';
 const AUTH_SESSION_KEY = 'dey_admin_authenticated';
 
@@ -23,7 +24,8 @@ const apiFetch = async (path, options = {}) => {
   const headers = { 'Content-Type': 'application/json', ...options.headers };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const res = await fetch(`${API_URL}${cleanPath}`, { ...options, headers });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'API request failed');
   return data;

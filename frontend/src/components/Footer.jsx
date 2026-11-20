@@ -110,11 +110,18 @@ function FooterComponent({ scrollTo }) {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[13px] text-white/40 text-center sm:text-left">
-            © {year} Dey Optical. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4 text-[13px] text-white/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-[13px]">
+          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-white/50 text-center sm:text-left">
+            <span>© {year} Dey Optical. All rights reserved.</span>
+            <span className="hidden sm:inline text-white/20">•</span>
+            <span>
+              Designed &amp; Developed by{' '}
+              <span className="text-white/90 font-semibold hover:text-primary transition-colors">
+                Saikat Tunga
+              </span>
+            </span>
+          </div>
+          <div className="flex items-center gap-4 text-white/40 flex-wrap justify-center">
             <button
               onClick={openAdmin}
               className="flex items-center gap-1.5 text-white/40 hover:text-white transition-colors duration-200 cursor-pointer text-xs"
@@ -124,7 +131,7 @@ function FooterComponent({ scrollTo }) {
               <span>Owner Portal</span>
             </button>
             <span className="text-white/20">•</span>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 text-xs">
               <span className="material-symbols-outlined text-primary text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
               Crafted with care in Bankura
             </div>
