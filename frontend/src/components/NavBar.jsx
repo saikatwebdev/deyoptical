@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 
-const NAV_LINKS = [
-  { label: 'Home', section: 'home' },
-  { label: 'Doctors', section: 'doctors' },
-  { label: 'Testimonials', section: 'testimonials' },
-  { label: 'Gallery', section: 'gallery' },
-  { label: 'Eyewear', section: 'eyewear' },
+const DESKTOP_NAV_LINKS = [
+  { label: 'Home', target: 'home' },
+  { label: 'Doctors', target: 'doctors' },
+  { label: 'Testimonials', target: 'testimonials' },
+  { label: 'Gallery', target: 'gallery' },
+  { label: 'Eyewear', target: 'lenses' },
 ];
 
-function NavBarComponent({ scrollTo }) {
+function NavBarComponent({ scrollTo, navigate, currentPage }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -40,15 +40,28 @@ function NavBarComponent({ scrollTo }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
 
-  const handleNav = useCallback((section) => {
-    scrollTo(section);
+  const handleNav = useCallback((target) => {
     setMenuOpen(false);
-  }, [scrollTo]);
+    if (target === 'home') {
+      navigate('home');
+      if (typeof scrollTo === 'function') scrollTo('home');
+    } else if (target === 'doctors') {
+      navigate('home', 'doctors');
+    } else if (target === 'testimonials') {
+      navigate('home', 'testimonials');
+    } else if (target === 'gallery') {
+      navigate('gallery');
+    } else if (target === 'lenses' || target === 'eyewear') {
+      navigate('lenses');
+    } else if (target === 'booking') {
+      navigate('booking');
+    }
+  }, [navigate, scrollTo]);
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled
+        scrolled || currentPage !== 'home'
           ? 'bg-surface/95 backdrop-blur-md shadow-md border-b border-outline-variant/30'
           : 'bg-transparent'
       }`}
@@ -71,31 +84,42 @@ function NavBarComponent({ scrollTo }) {
               />
             </div>
             <div className="hidden sm:flex flex-col text-left leading-tight">
-              <span className={`text-[12px] font-bold tracking-wider uppercase transition-colors duration-300 ${scrolled ? 'text-primary' : 'text-primary-fixed drop-shadow-sm'}`}>
+              <span className={`text-[12px] font-bold tracking-wider uppercase transition-colors duration-300 ${scrolled || currentPage !== 'home' ? 'text-primary' : 'text-primary-fixed drop-shadow-sm'}`}>
                 Dey Optical
               </span>
-              <span className={`text-[10px] font-medium transition-colors duration-300 ${scrolled ? 'text-secondary' : 'text-white/85'}`}>
+              <span className={`text-[10px] font-medium transition-colors duration-300 ${scrolled || currentPage !== 'home' ? 'text-secondary' : 'text-white/85'}`}>
                 Beliatore, Bankura
               </span>
             </div>
           </button>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav - Unchanged layout and appearance */}
           <nav className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((link) => (
-              <button
-                key={link.section}
-                onClick={() => handleNav(link.section)}
-                className={`px-4 py-2 rounded-lg text-[14px] font-semibold tracking-wide transition-all duration-200 hover:bg-primary/10 hover:text-primary ${
-                  scrolled ? 'text-on-surface' : 'text-on-surface'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
+            {DESKTOP_NAV_LINKS.map((link) => {
+              const isActive =
+                (link.target === 'home' && currentPage === 'home') ||
+                (link.target === 'gallery' && currentPage === 'gallery') ||
+                (link.target === 'lenses' && currentPage === 'lenses');
+
+              return (
+                <button
+                  key={link.target}
+                  onClick={() => handleNav(link.target)}
+                  className={`px-4 py-2 rounded-lg text-[14px] font-semibold tracking-wide transition-all duration-200 hover:bg-primary/10 hover:text-primary ${
+                    isActive ? 'text-primary bg-primary/10' : 'text-on-surface'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              );
+            })}
             <button
               onClick={() => handleNav('booking')}
-              className="ml-3 px-5 py-2.5 rounded-xl bg-primary text-on-primary text-[14px] font-bold tracking-wide shadow-md hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200"
+              className={`ml-3 px-5 py-2.5 rounded-xl text-[14px] font-bold tracking-wide shadow-md transition-all duration-200 ${
+                currentPage === 'booking'
+                  ? 'bg-primary-container text-white ring-2 ring-primary ring-offset-2'
+                  : 'bg-primary text-on-primary hover:bg-primary/90 hover:shadow-lg active:scale-95'
+              }`}
             >
               Book Now
             </button>
@@ -114,26 +138,34 @@ function NavBarComponent({ scrollTo }) {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown Menu (avoiding duplication of the 3 bottom bar items) */}
       <div
         ref={menuRef}
         className={`md:hidden transition-all duration-300 overflow-hidden ${menuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
       >
         <div className="bg-surface/98 backdrop-blur-md border-t border-outline-variant/30 px-4 py-3 space-y-1">
-          {NAV_LINKS.map((link) => (
-            <button
-              key={link.section}
-              onClick={() => handleNav(link.section)}
-              className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-on-surface hover:bg-primary/10 hover:text-primary transition-all duration-200"
-            >
-              {link.label}
-            </button>
-          ))}
           <button
-            onClick={() => handleNav('booking')}
-            className="w-full mt-2 px-5 py-3 rounded-xl bg-primary text-on-primary text-[15px] font-bold tracking-wide shadow-md hover:bg-primary/90 active:scale-95 transition-all duration-200"
+            onClick={() => handleNav('home')}
+            className={`w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold transition-all duration-200 flex items-center gap-2.5 ${
+              currentPage === 'home' ? 'bg-primary/10 text-primary font-bold' : 'text-on-surface hover:bg-surface-container'
+            }`}
           >
-            Book Appointment
+            <span className="material-symbols-outlined text-[20px]">home</span>
+            Home
+          </button>
+          <button
+            onClick={() => handleNav('doctors')}
+            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-on-surface hover:bg-surface-container transition-all duration-200 flex items-center gap-2.5"
+          >
+            <span className="material-symbols-outlined text-[20px]">stethoscope</span>
+            Visiting Specialist Doctors
+          </button>
+          <button
+            onClick={() => handleNav('testimonials')}
+            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-on-surface hover:bg-surface-container transition-all duration-200 flex items-center gap-2.5"
+          >
+            <span className="material-symbols-outlined text-[20px]">reviews</span>
+            Patient Testimonials
           </button>
         </div>
       </div>

@@ -76,12 +76,22 @@ const TypewriterHeadline = memo(function TypewriterHeadline() {
   );
 });
 
-function HeroSectionComponent({ scrollTo }) {
+function HeroSectionComponent({ scrollTo, navigate }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const headlineRef = useRef(null);
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
   const statsRef = useRef(null);
+
+  const handleBookingClick = () => {
+    if (typeof navigate === 'function') navigate('booking');
+    else if (typeof scrollTo === 'function') scrollTo('booking');
+  };
+
+  const handleGalleryClick = () => {
+    if (typeof navigate === 'function') navigate('gallery');
+    else if (typeof scrollTo === 'function') scrollTo('gallery');
+  };
 
   useEffect(() => {
     animateHeroHeadline(headlineRef.current);
@@ -152,15 +162,15 @@ function HeroSectionComponent({ scrollTo }) {
 
             <div ref={ctaRef} className="opacity-0 flex flex-wrap gap-4">
               <button
-                onClick={() => scrollTo('booking')}
-                className="px-8 py-4 bg-primary text-on-primary rounded-2xl text-[16px] font-bold shadow-xl hover:bg-primary/90 hover:shadow-2xl active:scale-95 transition-all duration-200 flex items-center gap-2"
+                onClick={handleBookingClick}
+                className="px-8 py-4 bg-primary text-on-primary rounded-2xl text-[16px] font-bold shadow-xl hover:bg-primary/90 hover:shadow-2xl active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>calendar_month</span>
                 Book Appointment
               </button>
               <button
-                onClick={() => scrollTo('gallery')}
-                className="px-8 py-4 bg-white/15 backdrop-blur-sm text-white border border-white/30 rounded-2xl text-[16px] font-bold hover:bg-white/25 active:scale-95 transition-all duration-200 flex items-center gap-2"
+                onClick={handleGalleryClick}
+                className="px-8 py-4 bg-white/15 backdrop-blur-sm text-white border border-white/30 rounded-2xl text-[16px] font-bold hover:bg-white/25 active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[20px]">photo_library</span>
                 View Gallery
@@ -248,7 +258,7 @@ function HeroSectionComponent({ scrollTo }) {
                   <span>Visiting Doctors</span>
                 </button>
                 <button
-                  onClick={() => scrollTo('booking')}
+                  onClick={handleBookingClick}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-surface-container-high text-on-surface rounded-xl font-bold text-[15px] hover:bg-surface-container-highest active:scale-95 transition-all duration-200 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px]">calendar_month</span>

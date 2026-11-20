@@ -11,6 +11,7 @@ function DoctorPosterSectionComponent({ scrollTo }) {
   const { doctors } = useAdminData();
 
   const handleOpenWhatsApp = useCallback((doctor) => {
+    if (doctor.availabilityStatus === 'full') return;
     const encoded = doctor.whatsappMsg || generateDoctorWhatsAppMsg(doctor);
     window.open(`https://wa.me/917551808245?text=${encoded}`, '_blank');
   }, []);
@@ -175,23 +176,55 @@ function DoctorPosterSectionComponent({ scrollTo }) {
 
                 {/* WhatsApp & Call Action Buttons */}
                 <div className="pt-2 border-t border-outline-variant/30 space-y-2.5">
-                  <button
-                    onClick={() => handleOpenWhatsApp(doc)}
-                    className="w-full py-3.5 px-5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-[14px] shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer"
-                  >
-                    <svg viewBox="0 0 32 32" width="20" height="20" fill="white" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M16.004 2.667C8.637 2.667 2.667 8.636 2.667 16c0 2.344.636 4.627 1.844 6.627L2.667 29.333l6.906-1.812A13.26 13.26 0 0016.004 29.333C23.37 29.333 29.333 23.364 29.333 16S23.37 2.667 16.004 2.667zm0 2.4c5.955 0 10.796 4.84 10.796 10.933 0 6.093-4.841 10.933-10.796 10.933a10.76 10.76 0 01-5.481-1.5l-.389-.232-4.096 1.075 1.095-3.985-.256-.406a10.78 10.78 0 01-1.669-5.885C5.208 9.907 10.05 5.067 16.004 5.067zm-3.063 5.2c-.197 0-.518.074-.79.37-.272.296-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.07c.148.197 2.07 3.248 5.07 4.428 2.49.983 3.002.787 3.542.737.54-.049 1.74-.712 1.986-1.4.247-.687.247-1.276.173-1.4-.074-.123-.272-.197-.567-.345-.296-.148-1.74-.857-2.012-.955-.271-.099-.468-.148-.665.148-.196.296-.762.955-.934 1.153-.173.197-.345.222-.64.074-.296-.148-1.248-.46-2.378-1.467-.879-.783-1.472-1.75-1.645-2.047-.172-.296-.018-.456.13-.603.133-.133.296-.345.444-.518.148-.173.197-.296.296-.493.099-.197.049-.37-.025-.518-.074-.148-.657-1.618-.912-2.21-.24-.577-.487-.498-.665-.507-.173-.007-.37-.01-.567-.01z" />
-                    </svg>
-                    <span>Book Appointment with {doc.name.split(' ')[1]}</span>
-                  </button>
+                  {(() => {
+                    const isFull = doc.availabilityStatus === 'full';
+                    return (
+                      <>
+                        <button
+                          onClick={() => handleOpenWhatsApp(doc)}
+                          disabled={isFull}
+                          aria-disabled={isFull}
+                          title={isFull ? 'Chamber is currently full. Booking is closed for this slot.' : `Book Appointment with ${doc.name}`}
+                          className={`w-full py-3.5 px-5 rounded-2xl font-bold text-[14px] flex items-center justify-center gap-2.5 transition-all duration-200 ${
+                            isFull
+                              ? 'bg-gray-100 text-gray-400 border border-gray-300 shadow-none cursor-not-allowed opacity-80'
+                              : 'bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer'
+                          }`}
+                        >
+                          <svg
+                            viewBox="0 0 32 32"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            className={isFull ? 'text-gray-400' : 'text-white'}
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M16.004 2.667C8.637 2.667 2.667 8.636 2.667 16c0 2.344.636 4.627 1.844 6.627L2.667 29.333l6.906-1.812A13.26 13.26 0 0016.004 29.333C23.37 29.333 29.333 23.364 29.333 16S23.37 2.667 16.004 2.667zm0 2.4c5.955 0 10.796 4.84 10.796 10.933 0 6.093-4.841 10.933-10.796 10.933a10.76 10.76 0 01-5.481-1.5l-.389-.232-4.096 1.075 1.095-3.985-.256-.406a10.78 10.78 0 01-1.669-5.885C5.208 9.907 10.05 5.067 16.004 5.067zm-3.063 5.2c-.197 0-.518.074-.79.37-.272.296-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.07c.148.197 2.07 3.248 5.07 4.428 2.49.983 3.002.787 3.542.737.54-.049 1.74-.712 1.986-1.4.247-.687.247-1.276.173-1.4-.074-.123-.272-.197-.567-.345-.296-.148-1.74-.857-2.012-.955-.271-.099-.468-.148-.665.148-.196.296-.762.955-.934 1.153-.173.197-.345.222-.64.074-.296-.148-1.248-.46-2.378-1.467-.879-.783-1.472-1.75-1.645-2.047-.172-.296-.018-.456.13-.603.133-.133.296-.345.444-.518.148-.173.197-.296.296-.493.099-.197.049-.37-.025-.518-.074-.148-.657-1.618-.912-2.21-.24-.577-.487-.498-.665-.507-.173-.007-.37-.01-.567-.01z" />
+                          </svg>
+                          <span className={isFull ? 'line-through text-gray-500' : ''}>
+                            Book Appointment with {doc.name.split(' ')[1]}
+                          </span>
+                          {isFull && (
+                            <span className="text-[11px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full uppercase tracking-wider no-underline">
+                              Full
+                            </span>
+                          )}
+                        </button>
 
-                  <div className="flex items-center justify-between text-[12px] text-secondary px-1">
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-primary text-[14px]">verified</span>
-                      Direct Clinic Confirmation
-                    </span>
-                    <span className="font-semibold text-primary">No Waiting</span>
-                  </div>
+                        <div className="flex items-center justify-between text-[12px] text-secondary px-1">
+                          <span className="flex items-center gap-1">
+                            <span className={`material-symbols-outlined text-[14px] ${isFull ? 'text-red-500' : 'text-primary'}`}>
+                              {isFull ? 'block' : 'verified'}
+                            </span>
+                            {isFull ? 'Chamber Slots Full' : 'Direct Clinic Confirmation'}
+                          </span>
+                          <span className={`font-semibold ${isFull ? 'text-red-600' : 'text-primary'}`}>
+                            {isFull ? 'Booking Closed' : 'No Waiting'}
+                          </span>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </div>

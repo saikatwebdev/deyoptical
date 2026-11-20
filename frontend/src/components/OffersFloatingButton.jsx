@@ -58,12 +58,16 @@ function OffersFloatingButton() {
       const btn = buttonRef.current;
       const btnW = btn ? btn.offsetWidth : 120;
       const btnH = btn ? btn.offsetHeight : 44;
+      const isMobile = window.innerWidth < 768;
+      const waBottom = isMobile ? 80 : 24; // account for mobile bottom nav bar
       setPos({
-        x: Math.max(8, window.innerWidth - btnW - 24),
-        y: Math.max(8, window.innerHeight - btnH - 92), // 24px (wa bottom) + 56px (wa height) + 12px (gap)
+        x: Math.max(8, window.innerWidth - btnW - (isMobile ? 20 : 24)),
+        y: Math.max(8, window.innerHeight - btnH - (waBottom + 56 + 12)),
       });
     };
-    requestAnimationFrame(place);
+    place();
+    window.addEventListener('resize', place);
+    return () => window.removeEventListener('resize', place);
   }, []);
 
   // ── Drag event listeners (attached once, stable ref handles everything) ─
@@ -90,8 +94,9 @@ function OffersFloatingButton() {
       const btn = buttonRef.current;
       const btnW = btn ? btn.offsetWidth : 120;
       const btnH = btn ? btn.offsetHeight : 44;
+      const isMobile = window.innerWidth < 768;
       const maxX = window.innerWidth - btnW - 8;
-      const maxY = window.innerHeight - btnH - 8;
+      const maxY = window.innerHeight - btnH - (isMobile ? 74 : 8);
 
       setPos({
         x: Math.min(Math.max(drag.current.startBtnX + dx, 8), maxX),

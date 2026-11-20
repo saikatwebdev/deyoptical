@@ -1,33 +1,50 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import NavBar from './components/NavBar.jsx';
 import HeroSection from './components/HeroSection.jsx';
 import DoctorPosterSection from './components/DoctorPosterSection.jsx';
 import TestimonialsSection from './components/TestimonialsSection.jsx';
-import GallerySection from './components/GallerySection.jsx';
-import BookingSection from './components/BookingSection.jsx';
-import EyewearSection from './components/EyewearSection.jsx';
 import Footer from './components/Footer.jsx';
 import OffersFloatingButton from './components/OffersFloatingButton.jsx';
 import AdminPanelModal from './components/AdminPanelModal.jsx';
+import MobileBottomNav from './components/MobileBottomNav.jsx';
+
+import BookingPage from './pages/BookingPage.jsx';
+import GalleryPage from './pages/GalleryPage.jsx';
+import LensPage from './pages/LensPage.jsx';
+
 import { AdminDataProvider } from './context/AdminDataContext.jsx';
 import { initScrollAnimations } from './utils/animations.js';
 
+/**
+ * Resolves current route from pathname or hash:
+ * - /booking or #booking -> 'booking'
+ * - /gallery or #gallery -> 'gallery'
+ * - /lenses or /eyewear or #lenses -> 'lenses'
+ * - / or #home -> 'home'
+ */
+const resolveInitialPage = () => {
+  const path = (window.location.pathname || '').toLowerCase().replace(/\/+$/, '');
+  const hash = (window.location.hash || '').toLowerCase().replace(/^#\/?/, '');
+
+  if (path === '/booking' || hash === 'booking') return 'booking';
+  if (path === '/gallery' || hash === 'gallery') return 'gallery';
+  if (path === '/lenses' || path === '/eyewear' || hash === 'lenses' || hash === 'eyewear') return 'lenses';
+  return 'home';
+};
+
 function MainApp() {
+  const [currentPage, setCurrentPage] = useState(resolveInitialPage);
+
   const homeRef = useRef(null);
   const doctorsRef = useRef(null);
   const testimonialsRef = useRef(null);
-  const galleryRef = useRef(null);
-  const bookingRef = useRef(null);
-  const eyewearRef = useRef(null);
 
+  // Smooth scroll handler for homepage sections
   const scrollTo = useCallback((section) => {
     const refMap = {
       home: homeRef.current,
       doctors: doctorsRef.current,
       testimonials: testimonialsRef.current,
-      gallery: galleryRef.current,
-      booking: bookingRef.current,
-      eyewear: eyewearRef.current,
     };
     const target = refMap[section];
     if (target) {
@@ -35,52 +52,106 @@ function MainApp() {
     }
   }, []);
 
+  // Central page navigation function (supports browser history & URL syncing)
+  const navigate = useCallback((page, section) => {
+    setCurrentPage(page);
+
+    const pathMap = {
+      home: '/',
+      booking: '/booking',
+      gallery: '/gallery',
+      lenses: '/lenses',
+    };
+    const targetPath = pathMap[page] || '/';
+
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState(null, '', targetPath);
+    }
+
+    if (page === 'home') {
+      if (section) {
+        setTimeout(() => {
+          scrollTo(section);
+        }, 80);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [scrollTo]);
+
+  // Listen for browser Back/Forward navigation
+  useEffect(() => {
+    const handleUrlChange = () => {
+      if (window.location.hash.toLowerCase() === '#admin') return;
+      setCurrentPage(resolveInitialPage());
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
+  // Re-run scroll animations when page view changes
   useEffect(() => {
     const cleanup = initScrollAnimations();
     return () => {
       if (typeof cleanup === 'function') cleanup();
     };
-  }, []);
+  }, [currentPage]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-on-surface">
-      <NavBar scrollTo={scrollTo} />
+      {/* Top Navigation Bar (Desktop remains identical; Mobile avoids duplicate links) */}
+      <NavBar scrollTo={scrollTo} navigate={navigate} currentPage={currentPage} />
 
-      <main className="flex-1">
-        <section ref={homeRef} id="home">
-          <HeroSection scrollTo={scrollTo} />
-        </section>
+      {/* Main Content View with mobile safe bottom spacing for the fixed navigation */}
+      <main className="flex-1 pb-20 md:pb-0">
+        {currentPage === 'home' && (
+          <>
+            <section ref={homeRef} id="home">
+              <HeroSection scrollTo={scrollTo} navigate={navigate} />
+            </section>
 
-        <section ref={doctorsRef} id="doctors">
-          <DoctorPosterSection scrollTo={scrollTo} />
-        </section>
+            <section ref={doctorsRef} id="doctors">
+              <DoctorPosterSection scrollTo={scrollTo} />
+            </section>
 
-        <section ref={testimonialsRef} id="testimonials">
-          <TestimonialsSection />
-        </section>
+            <section ref={testimonialsRef} id="testimonials">
+              <TestimonialsSection />
+            </section>
+          </>
+        )}
 
-        <section ref={galleryRef} id="gallery">
-          <GallerySection />
-        </section>
+        {currentPage === 'booking' && (
+          <BookingPage navigate={navigate} />
+        )}
 
-        <section ref={bookingRef} id="booking">
-          <BookingSection />
-        </section>
+        {currentPage === 'gallery' && (
+          <GalleryPage navigate={navigate} />
+        )}
 
-        <section ref={eyewearRef} id="eyewear">
-          <EyewearSection />
-        </section>
+        {currentPage === 'lenses' && (
+          <LensPage navigate={navigate} />
+        )}
       </main>
 
-      <Footer scrollTo={scrollTo} />
+      {/* Footer */}
+      <Footer scrollTo={scrollTo} navigate={navigate} />
 
-      {/* WhatsApp Floating Button */}
+      {/* Mobile Fixed Bottom Navigation Bar (md:hidden) */}
+      <MobileBottomNav currentPage={currentPage} navigate={navigate} />
+
+      {/* WhatsApp Floating Button — elevated above bottom navigation bar on mobile */}
       <a
         href="https://wa.me/917551808245?text=Hello%20Dey%20Optical%20(Beliatore)%2C%20I%20would%20like%20to%20enquire%20about%20your%20services%20and%20doctor%20appointments."
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+        className="fixed bottom-20 md:bottom-6 right-5 md:right-6 z-40 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95 cursor-pointer"
         style={{ background: '#25D366' }}
       >
         <svg viewBox="0 0 32 32" width="28" height="28" fill="white" xmlns="http://www.w3.org/2000/svg">

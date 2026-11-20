@@ -2,17 +2,38 @@ import React, { memo } from 'react';
 import { useAdminData } from '../context/AdminDataContext.jsx';
 
 const QUICK_LINKS = [
-  { label: 'Home', section: 'home' },
-  { label: 'Visiting Doctors', section: 'doctors' },
-  { label: 'Testimonials', section: 'testimonials' },
-  { label: 'Gallery', section: 'gallery' },
-  { label: 'Book Appointment', section: 'booking' },
-  { label: 'Eyewear', section: 'eyewear' },
+  { label: 'Home', target: 'home' },
+  { label: 'Visiting Doctors', target: 'doctors' },
+  { label: 'Testimonials', target: 'testimonials' },
+  { label: 'Gallery', target: 'gallery' },
+  { label: 'Book Appointment', target: 'booking' },
+  { label: 'Lens & Eyewear', target: 'lenses' },
 ];
 
-function FooterComponent({ scrollTo }) {
+function FooterComponent({ scrollTo, navigate }) {
   const { openAdmin } = useAdminData();
   const year = new Date().getFullYear();
+
+  const handleLinkClick = (target) => {
+    if (typeof navigate !== 'function') {
+      if (typeof scrollTo === 'function') scrollTo(target);
+      return;
+    }
+    if (target === 'home') {
+      navigate('home');
+      if (typeof scrollTo === 'function') scrollTo('home');
+    } else if (target === 'doctors') {
+      navigate('home', 'doctors');
+    } else if (target === 'testimonials') {
+      navigate('home', 'testimonials');
+    } else if (target === 'gallery') {
+      navigate('gallery');
+    } else if (target === 'booking') {
+      navigate('booking');
+    } else if (target === 'eyewear' || target === 'lenses') {
+      navigate('lenses');
+    }
+  };
 
   return (
     <footer className="bg-on-background text-inverse-on-surface">
@@ -21,7 +42,7 @@ function FooterComponent({ scrollTo }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Brand */}
           <div>
-            <button onClick={() => scrollTo('home')} className="flex items-center gap-3 mb-5 group focus:outline-none cursor-pointer text-left">
+            <button onClick={() => handleLinkClick('home')} className="flex items-center gap-3 mb-5 group focus:outline-none cursor-pointer text-left">
               <div className="bg-white rounded-2xl p-2 sm:p-2.5 shadow-md border border-white/20 inline-flex items-center group-hover:shadow-lg transition-all duration-200 group-hover:scale-105">
                 <img
                   src="images/other/logo.png"
@@ -60,9 +81,9 @@ function FooterComponent({ scrollTo }) {
             <h4 className="text-[14px] font-bold text-white tracking-widest uppercase mb-5">Quick Links</h4>
             <ul className="space-y-3">
               {QUICK_LINKS.map((link) => (
-                <li key={link.section}>
+                <li key={link.target}>
                   <button
-                    onClick={() => scrollTo(link.section)}
+                    onClick={() => handleLinkClick(link.target)}
                     className="text-[14px] text-white/60 hover:text-primary transition-colors duration-200 flex items-center gap-2 group cursor-pointer"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors duration-200" />
