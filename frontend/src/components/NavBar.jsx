@@ -58,16 +58,18 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
     }
   }, [navigate, scrollTo]);
 
+  const isSolid = scrolled || currentPage !== 'home' || menuOpen;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled || currentPage !== 'home'
-          ? 'bg-surface/95 backdrop-blur-md shadow-md border-b border-outline-variant/30'
-          : 'bg-transparent'
+        isSolid
+          ? 'bg-[#DC143C] border-b border-[#b81032]/40 shadow-[0_4px_24px_rgba(220,20,60,0.25)]'
+          : 'bg-transparent border-b border-transparent shadow-none'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-16 md:h-18' : 'h-16 md:h-20'}`}>
           {/* Logo */}
           <button
             onClick={() => handleNav('home')}
@@ -84,17 +86,17 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
               />
             </div>
             <div className="hidden sm:flex flex-col text-left leading-tight">
-              <span className={`text-[12px] font-bold tracking-wider uppercase transition-colors duration-300 ${scrolled || currentPage !== 'home' ? 'text-primary' : 'text-primary-fixed drop-shadow-sm'}`}>
+              <span className="text-[12px] font-bold tracking-wider uppercase text-white drop-shadow-xs">
                 Dey Optical
               </span>
-              <span className={`text-[10px] font-medium transition-colors duration-300 ${scrolled || currentPage !== 'home' ? 'text-secondary' : 'text-white/85'}`}>
+              <span className="text-[10px] font-medium text-white/85">
                 Beliatore, Bankura
               </span>
             </div>
           </button>
 
-          {/* Desktop Nav - Unchanged layout and appearance */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-1.5">
             {DESKTOP_NAV_LINKS.map((link) => {
               const isActive =
                 (link.target === 'home' && currentPage === 'home') ||
@@ -105,8 +107,10 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
                 <button
                   key={link.target}
                   onClick={() => handleNav(link.target)}
-                  className={`px-4 py-2 rounded-lg text-[14px] font-semibold tracking-wide transition-all duration-200 hover:bg-primary/10 hover:text-primary ${
-                    isActive ? 'text-primary bg-primary/10' : 'text-on-surface'
+                  className={`px-4 py-2 rounded-lg text-[14px] tracking-wide transition-all duration-200 cursor-pointer ${
+                    isActive
+                      ? 'bg-white/20 border border-white/30 text-white font-bold shadow-xs'
+                      : 'text-white/90 font-semibold hover:bg-white/10 hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -115,10 +119,12 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
             })}
             <button
               onClick={() => handleNav('booking')}
-              className={`ml-3 px-5 py-2.5 rounded-xl text-[14px] font-bold tracking-wide shadow-md transition-all duration-200 ${
+              className={`ml-3 px-5 py-2.5 rounded-xl text-[14px] font-bold tracking-wide shadow-md transition-all duration-300 cursor-pointer active:scale-95 ${
                 currentPage === 'booking'
-                  ? 'bg-primary-container text-white ring-2 ring-primary ring-offset-2'
-                  : 'bg-primary text-on-primary hover:bg-primary/90 hover:shadow-lg active:scale-95'
+                  ? 'bg-white text-[#DC143C] ring-2 ring-white ring-offset-2 ring-offset-[#DC143C] shadow-lg'
+                  : isSolid
+                  ? 'bg-white text-[#DC143C] hover:bg-white/95 hover:shadow-lg'
+                  : 'bg-[#DC143C] text-white hover:bg-[#b81032] hover:shadow-lg'
               }`}
             >
               Book Now
@@ -128,43 +134,45 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container transition-colors duration-200 focus:outline-none"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/15 text-white transition-colors duration-200 focus:outline-none cursor-pointer"
             aria-label="Toggle menu"
           >
-            <span className="material-symbols-outlined text-on-surface text-[24px]">
+            <span className="material-symbols-outlined text-white text-[24px]">
               {menuOpen ? 'close' : 'menu'}
             </span>
           </button>
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu (avoiding duplication of the 3 bottom bar items) */}
+      {/* Mobile Dropdown Menu (avoiding duplication of the bottom bar items) */}
       <div
         ref={menuRef}
         className={`md:hidden transition-all duration-300 overflow-hidden ${menuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
       >
-        <div className="bg-surface/98 backdrop-blur-md border-t border-outline-variant/30 px-4 py-3 space-y-1">
+        <div className="bg-[#b81032]/98 backdrop-blur-md border-t border-[#a00e2b]/60 px-4 py-3 space-y-1.5 shadow-xl">
           <button
             onClick={() => handleNav('home')}
-            className={`w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold transition-all duration-200 flex items-center gap-2.5 ${
-              currentPage === 'home' ? 'bg-primary/10 text-primary font-bold' : 'text-on-surface hover:bg-surface-container'
+            className={`w-full text-left px-4 py-3 rounded-xl text-[15px] transition-all duration-200 flex items-center gap-2.5 cursor-pointer ${
+              currentPage === 'home'
+                ? 'bg-white/20 border border-white/30 text-white font-bold shadow-xs'
+                : 'text-white/90 font-semibold hover:bg-white/10 hover:text-white'
             }`}
           >
-            <span className="material-symbols-outlined text-[20px]">home</span>
+            <span className="material-symbols-outlined text-white text-[20px]">home</span>
             Home
           </button>
           <button
             onClick={() => handleNav('doctors')}
-            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-on-surface hover:bg-surface-container transition-all duration-200 flex items-center gap-2.5"
+            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 flex items-center gap-2.5 cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[20px]">stethoscope</span>
+            <span className="material-symbols-outlined text-white text-[20px]">stethoscope</span>
             Visiting Specialist Doctors
           </button>
           <button
             onClick={() => handleNav('testimonials')}
-            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-on-surface hover:bg-surface-container transition-all duration-200 flex items-center gap-2.5"
+            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 flex items-center gap-2.5 cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[20px]">reviews</span>
+            <span className="material-symbols-outlined text-white text-[20px]">reviews</span>
             Patient Testimonials
           </button>
         </div>
