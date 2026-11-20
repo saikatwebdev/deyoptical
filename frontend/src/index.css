@@ -1,5 +1,46 @@
 /* Dey Optical Stylesheet */
 
+/* Disable browser default tap-highlight and black outline border on mobile click/tap */
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+button,
+a,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none;
+}
+
+button:focus,
+button:focus-visible,
+button:active,
+a:focus,
+a:focus-visible,
+a:active {
+  outline: none !important;
+}
+
+nav button,
+header button,
+nav a,
+header a {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+}
+
+nav button:focus,
+nav button:focus-visible,
+nav button:active,
+header button:focus,
+header button:focus-visible,
+header button:active {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   display: inline-block;

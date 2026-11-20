@@ -63,16 +63,18 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isSolid
-          ? 'bg-[#DC143C] border-b border-[#b81032]/40 shadow-[0_4px_24px_rgba(220,20,60,0.25)]'
+          ? 'bg-[#DC143C] border-b border-white/15 shadow-[0_4px_24px_rgba(220,20,60,0.25)]'
           : 'bg-transparent border-b border-transparent shadow-none'
         }`}
+      style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-16 md:h-18' : 'h-16 md:h-20'}`}>
           {/* Logo */}
           <button
             onClick={() => handleNav('home')}
-            className="flex items-center gap-2.5 group focus:outline-none cursor-pointer"
+            className="flex items-center gap-2.5 group focus:outline-none focus-visible:outline-none focus:ring-0 outline-none cursor-pointer"
+            style={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <div className="bg-white rounded-xl p-1 sm:p-1.5 shadow-sm border border-outline-variant/30 flex items-center group-hover:shadow-md transition-all duration-200 group-hover:scale-105">
               <img
@@ -131,7 +133,8 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/15 text-white transition-colors duration-200 focus:outline-none cursor-pointer"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/15 text-white transition-colors duration-200 focus:outline-none focus-visible:outline-none focus:ring-0 outline-none border-none cursor-pointer"
+            style={{ WebkitTapHighlightColor: 'transparent', outline: 'none', border: 'none' }}
             aria-label="Toggle menu"
           >
             <span className="material-symbols-outlined text-white text-[24px]">
@@ -149,24 +152,27 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
         <div className="bg-[#b81032]/98 backdrop-blur-md border-t border-[#a00e2b]/60 px-4 py-3 space-y-1.5 shadow-xl">
           <button
             onClick={() => handleNav('home')}
-            className={`w-full text-left px-4 py-3 rounded-xl text-[15px] transition-all duration-200 flex items-center gap-2.5 cursor-pointer ${currentPage === 'home'
+            className={`w-full text-left px-4 py-3 rounded-xl text-[15px] transition-all duration-200 flex items-center gap-2.5 cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 ${currentPage === 'home'
                 ? 'bg-white/20 border border-white/30 text-white font-bold shadow-xs'
-                : 'text-white/90 font-semibold hover:bg-white/10 hover:text-white'
+                : 'text-white/90 font-semibold hover:bg-white/10 hover:text-white border border-transparent'
               }`}
+            style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
           >
             <span className="material-symbols-outlined text-white text-[20px]">home</span>
             Home
           </button>
           <button
             onClick={() => handleNav('doctors')}
-            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 flex items-center gap-2.5 cursor-pointer"
+            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 flex items-center gap-2.5 cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 border border-transparent"
+            style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
           >
             <span className="material-symbols-outlined text-white text-[20px]">stethoscope</span>
             Visiting Specialist Doctors
           </button>
           <button
             onClick={() => handleNav('testimonials')}
-            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 flex items-center gap-2.5 cursor-pointer"
+            className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 flex items-center gap-2.5 cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 border border-transparent"
+            style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
           >
             <span className="material-symbols-outlined text-white text-[20px]">reviews</span>
             Patient Testimonials
