@@ -60,8 +60,8 @@ export default function SideDrawer({
   const getTabClass = (target) => {
     const isActive = activeRoute === target;
     return `w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-label-md font-label-md transition-all duration-150 ${isActive
-        ? 'bg-primary/10 text-primary font-semibold'
-        : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low'
+      ? 'bg-primary/10 text-primary font-semibold'
+      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low'
       }`;
   };
 
@@ -85,7 +85,7 @@ export default function SideDrawer({
         <div className="flex items-center justify-between p-5 border-b border-outline-variant/30 bg-surface-container-lowest">
           <div className="flex items-center gap-3">
             <div className="bg-white rounded-xl p-1 shadow-xs border border-outline-variant/30 flex items-center justify-center">
-              <img src="images/other/logo.png" alt="Dey Optical" className="h-9 w-auto object-contain" />
+              <img src="images/other/newlogo.png" alt="Dey Optical" className="h-9 w-auto object-contain" />
             </div>
             <div>
               <h2 className="text-title-md font-title-md font-semibold text-on-surface tracking-tight">

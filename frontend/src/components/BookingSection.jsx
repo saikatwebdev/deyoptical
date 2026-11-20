@@ -80,8 +80,7 @@ function BookingSectionComponent() {
   };
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 rounded-xl border ${
-      errors[field] ? 'border-error bg-error-container/20' : 'border-outline-variant bg-surface'
+    `w-full px-4 py-3 rounded-xl border ${errors[field] ? 'border-error bg-error-container/20' : 'border-outline-variant bg-surface'
     } text-on-surface text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 placeholder:text-outline`;
 
   return (
@@ -114,16 +113,16 @@ function BookingSectionComponent() {
 
         {/* 2-Column Responsive Layout: Contact & Address Card + Form */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-          
+
           {/* ── Left Column: Contact, Chamber & Address Card (lg: 5 cols) ── */}
           <div data-animate="fade-up" className="lg:col-span-5 order-2 lg:order-1">
             <div className="bg-surface-container-low rounded-3xl p-6 sm:p-8 border border-outline-variant/30 shadow-md">
-              
+
               {/* Clinic Brand Header */}
               <div className="flex items-center gap-3.5 pb-6 border-b border-outline-variant/30">
                 <div className="bg-white rounded-2xl p-2 shadow-xs border border-outline-variant/30 flex items-center justify-center flex-shrink-0">
                   <img
-                    src="images/other/logo.png"
+                    src="images/other/newlogo.png"
                     alt="Dey Optical Beliatore"
                     className="h-10 sm:h-11 w-auto object-contain"
                     loading="lazy"
@@ -262,7 +261,7 @@ function BookingSectionComponent() {
                 <p className="text-on-surface-variant text-[14px] sm:text-[15px] mb-6 max-w-md mx-auto">
                   Your appointment details have been prepared for WhatsApp. We will confirm your preferred slot promptly!
                 </p>
-                
+
                 <div className="bg-white rounded-2xl p-5 text-left space-y-2.5 mb-7 shadow-xs border border-outline-variant/30 max-w-md mx-auto">
                   <div className="text-[12px] text-secondary font-bold uppercase tracking-wider mb-2">
                     Booking Summary

@@ -111,20 +111,18 @@ function DoctorPosterSectionComponent({ scrollTo }) {
                       </span>
                     </div>
                     {/* Availability status badge */}
-                    <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
-                      doc.availabilityStatus === 'full'
+                    <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${doc.availabilityStatus === 'full'
                         ? 'bg-red-100 text-red-700'
                         : doc.availabilityStatus === 'limited'
-                        ? 'bg-amber-100 text-amber-800'
-                        : doc.availabilityStatus === 'leave'
-                        ? 'bg-gray-200 text-gray-700'
-                        : 'bg-emerald-100 text-emerald-800'
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${
-                        doc.availabilityStatus === 'full' ? 'bg-red-500' :
-                        doc.availabilityStatus === 'limited' ? 'bg-amber-500' :
-                        doc.availabilityStatus === 'leave' ? 'bg-gray-400' : 'bg-emerald-500'
-                      }`} />
+                          ? 'bg-amber-100 text-amber-800'
+                          : doc.availabilityStatus === 'leave'
+                            ? 'bg-gray-200 text-gray-700'
+                            : 'bg-emerald-100 text-emerald-800'
+                      }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${doc.availabilityStatus === 'full' ? 'bg-red-500' :
+                          doc.availabilityStatus === 'limited' ? 'bg-amber-500' :
+                            doc.availabilityStatus === 'leave' ? 'bg-gray-400' : 'bg-emerald-500'
+                        }`} />
                       {doc.availabilityLabel || (doc.availabilityStatus === 'full' ? 'Chamber Full' : 'Confirmed Chamber')}
                     </span>
                   </div>
@@ -185,11 +183,10 @@ function DoctorPosterSectionComponent({ scrollTo }) {
                           disabled={isFull}
                           aria-disabled={isFull}
                           title={isFull ? 'Chamber is currently full. Booking is closed for this slot.' : `Book Appointment with ${doc.name}`}
-                          className={`w-full py-3.5 px-5 rounded-2xl font-bold text-[14px] flex items-center justify-center gap-2.5 transition-all duration-200 ${
-                            isFull
+                          className={`w-full py-3.5 px-5 rounded-2xl font-bold text-[14px] flex items-center justify-center gap-2.5 transition-all duration-200 ${isFull
                               ? 'bg-gray-100 text-gray-400 border border-gray-300 shadow-none cursor-not-allowed opacity-80'
                               : 'bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer'
-                          }`}
+                            }`}
                         >
                           <svg
                             viewBox="0 0 32 32"
@@ -237,7 +234,7 @@ function DoctorPosterSectionComponent({ scrollTo }) {
             <div className="flex items-start gap-4">
               <div className="bg-white rounded-2xl p-1.5 sm:p-2 shadow-xs border border-outline-variant/30 flex items-center justify-center flex-shrink-0">
                 <img
-                  src="images/other/logo.png"
+                  src="images/other/newlogo.png"
                   alt="Dey Optical Beliatore"
                   className="h-10 sm:h-12 w-auto object-contain"
                   loading="lazy"

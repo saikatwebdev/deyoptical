@@ -45,7 +45,7 @@ function FooterComponent({ scrollTo, navigate }) {
             <button onClick={() => handleLinkClick('home')} className="flex items-center gap-3 mb-5 group focus:outline-none cursor-pointer text-left">
               <div className="bg-white rounded-2xl p-2 sm:p-2.5 shadow-md border border-white/20 inline-flex items-center group-hover:shadow-lg transition-all duration-200 group-hover:scale-105">
                 <img
-                  src="images/other/logo.png"
+                  src="images/other/newlogo.png"
                   alt="Dey Optical"
                   className="h-9 sm:h-11 w-auto object-contain"
                   loading="lazy"

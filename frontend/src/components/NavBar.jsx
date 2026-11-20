@@ -62,11 +62,10 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        isSolid
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isSolid
           ? 'bg-[#DC143C] border-b border-[#b81032]/40 shadow-[0_4px_24px_rgba(220,20,60,0.25)]'
           : 'bg-transparent border-b border-transparent shadow-none'
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-16 md:h-18' : 'h-16 md:h-20'}`}>
@@ -77,7 +76,7 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
           >
             <div className="bg-white rounded-xl p-1 sm:p-1.5 shadow-sm border border-outline-variant/30 flex items-center group-hover:shadow-md transition-all duration-200 group-hover:scale-105">
               <img
-                src="images/other/logo.png"
+                src="images/other/newlogo.png"
                 alt="Dey Optical"
                 width="140"
                 height="40"
@@ -107,11 +106,10 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
                 <button
                   key={link.target}
                   onClick={() => handleNav(link.target)}
-                  className={`px-4 py-2 rounded-lg text-[14px] tracking-wide transition-all duration-200 cursor-pointer ${
-                    isActive
+                  className={`px-4 py-2 rounded-lg text-[14px] tracking-wide transition-all duration-200 cursor-pointer ${isActive
                       ? 'bg-white/20 border border-white/30 text-white font-bold shadow-xs'
                       : 'text-white/90 font-semibold hover:bg-white/10 hover:text-white'
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </button>
@@ -119,13 +117,12 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
             })}
             <button
               onClick={() => handleNav('booking')}
-              className={`ml-3 px-5 py-2.5 rounded-xl text-[14px] font-bold tracking-wide shadow-md transition-all duration-300 cursor-pointer active:scale-95 ${
-                currentPage === 'booking'
+              className={`ml-3 px-5 py-2.5 rounded-xl text-[14px] font-bold tracking-wide shadow-md transition-all duration-300 cursor-pointer active:scale-95 ${currentPage === 'booking'
                   ? 'bg-white text-[#DC143C] ring-2 ring-white ring-offset-2 ring-offset-[#DC143C] shadow-lg'
                   : isSolid
-                  ? 'bg-white text-[#DC143C] hover:bg-white/95 hover:shadow-lg'
-                  : 'bg-[#DC143C] text-white hover:bg-[#b81032] hover:shadow-lg'
-              }`}
+                    ? 'bg-white text-[#DC143C] hover:bg-white/95 hover:shadow-lg'
+                    : 'bg-[#DC143C] text-white hover:bg-[#b81032] hover:shadow-lg'
+                }`}
             >
               Book Now
             </button>
@@ -152,11 +149,10 @@ function NavBarComponent({ scrollTo, navigate, currentPage }) {
         <div className="bg-[#b81032]/98 backdrop-blur-md border-t border-[#a00e2b]/60 px-4 py-3 space-y-1.5 shadow-xl">
           <button
             onClick={() => handleNav('home')}
-            className={`w-full text-left px-4 py-3 rounded-xl text-[15px] transition-all duration-200 flex items-center gap-2.5 cursor-pointer ${
-              currentPage === 'home'
+            className={`w-full text-left px-4 py-3 rounded-xl text-[15px] transition-all duration-200 flex items-center gap-2.5 cursor-pointer ${currentPage === 'home'
                 ? 'bg-white/20 border border-white/30 text-white font-bold shadow-xs'
                 : 'text-white/90 font-semibold hover:bg-white/10 hover:text-white'
-            }`}
+              }`}
           >
             <span className="material-symbols-outlined text-white text-[20px]">home</span>
             Home

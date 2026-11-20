@@ -42,7 +42,7 @@ export default function TopNavBar({
           }}
         >
           <div className="bg-white rounded-xl p-1 shadow-xs border border-outline-variant/30 flex items-center justify-center group-hover:scale-105 transition-transform">
-            <img src="images/other/logo.png" alt="Dey Optical" className="h-9 w-auto object-contain" />
+            <img src="images/other/newlogo.png" alt="Dey Optical" className="h-9 w-auto object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="text-headline-md font-headline-md font-semibold tracking-tight text-on-surface">
