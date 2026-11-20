@@ -92,9 +92,9 @@
     from 0deg at 50% 50%,
     transparent 0deg,
     transparent 150deg,
-    rgba(107, 216, 203, 0.90) 175deg,
-    rgba(0, 104, 95, 1.00) 200deg,
-    rgba(107, 216, 203, 0.90) 225deg,
+    rgba(255, 255, 0, 0.95) 175deg,
+    rgba(204, 0, 0, 1.00) 200deg,
+    rgba(220, 20, 60, 0.95) 225deg,
     transparent 250deg,
     transparent 360deg
   );
@@ -159,9 +159,9 @@
 
 .ace-card:hover {
   box-shadow:
-    0 20px 60px -10px rgba(0, 104, 95, 0.18),
-    0 8px 24px -4px rgba(0, 104, 95, 0.12),
-    0 0 0 1px rgba(0, 104, 95, 0.10);
+    0 20px 60px -10px rgba(204, 0, 0, 0.18),
+    0 8px 24px -4px rgba(220, 20, 60, 0.14),
+    0 0 0 1px rgba(204, 0, 0, 0.12);
 }
 
 .ace-card-icon {
@@ -192,7 +192,7 @@
   opacity: 0;
   background: radial-gradient(
     600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(107, 216, 203, 0.12) 0%,
+    rgba(255, 255, 0, 0.15) 0%,
     transparent 65%
   );
   transition: opacity 0.3s ease;
@@ -220,7 +220,7 @@
 }
 
 .bg-lines-svg path {
-  stroke: rgba(0, 104, 95, 0.13);
+  stroke: rgba(204, 0, 0, 0.10);
   stroke-width: 1;
   fill: none;
   stroke-dasharray: 1200;
@@ -337,21 +337,22 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border: 1.5px solid var(--md-sys-color-outline-variant, rgba(0,104,95,0.25));
-  background: var(--md-sys-color-surface-container-lowest, #fff);
-  color: var(--md-sys-color-primary, #00685f);
+  border: 1.5px solid rgba(204, 0, 0, 0.25);
+  background: #ffffff;
+  color: #CC0000;
   transition: background 0.2s, border-color 0.2s, transform 0.15s;
 }
 
 .at-nav-btn:hover {
-  background: var(--md-sys-color-primary, #00685f);
-  color: #fff;
-  border-color: var(--md-sys-color-primary, #00685f);
+  background: #CC0000;
+  color: #FFFF00;
+  border-color: #CC0000;
   transform: scale(1.08);
 }
 
 .at-star {
-  color: var(--md-sys-color-primary, #00685f);
+  color: #FFFF00;
+  text-shadow: 0 0 1px rgba(180, 83, 9, 0.5);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -437,7 +438,7 @@
 
 .hover-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 32px -8px rgba(0, 104, 95, 0.14),
+  box-shadow: 0 14px 32px -8px rgba(204, 0, 0, 0.14),
               0 4px 12px -2px rgba(0, 0, 0, 0.04);
 }
 
@@ -445,10 +446,10 @@
 /* ── Offers Floating Button Blink ── */
 @keyframes offersBlink {
   0%, 100% {
-    box-shadow: 0 0 6px 2px rgba(220, 38, 38, 0.5), 0 0 0 0 rgba(250, 204, 21, 0);
+    box-shadow: 0 0 6px 2px rgba(204, 0, 0, 0.6), 0 0 0 0 rgba(255, 255, 0, 0);
   }
   50% {
-    box-shadow: 0 0 16px 6px rgba(220, 38, 38, 0.7), 0 0 24px 8px rgba(250, 204, 21, 0.35);
+    box-shadow: 0 0 16px 6px rgba(220, 20, 60, 0.8), 0 0 24px 8px rgba(255, 255, 0, 0.6);
   }
 }
 

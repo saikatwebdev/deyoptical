@@ -55,7 +55,7 @@ function FooterComponent({ scrollTo, navigate }) {
                 />
               </div>
               <div>
-                <div className="text-[12px] font-bold uppercase tracking-wider text-primary">Beliatore Chamber</div>
+                <div className="text-[12px] font-bold uppercase tracking-wider text-[#FFFF00]">Beliatore Chamber</div>
                 <div className="text-[11px] text-white/60">Bankura, West Bengal</div>
               </div>
             </button>
@@ -84,9 +84,9 @@ function FooterComponent({ scrollTo, navigate }) {
                 <li key={link.target}>
                   <button
                     onClick={() => handleLinkClick(link.target)}
-                    className="text-[14px] text-white/60 hover:text-primary transition-colors duration-200 flex items-center gap-2 group cursor-pointer"
+                    className="text-[14px] text-white/60 hover:text-[#FFFF00] transition-colors duration-200 flex items-center gap-2 group cursor-pointer"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors duration-200" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFFF00]/40 group-hover:bg-[#FFFF00] transition-colors duration-200" />
                     {link.label}
                   </button>
                 </li>
@@ -99,27 +99,27 @@ function FooterComponent({ scrollTo, navigate }) {
             <h4 className="text-[14px] font-bold text-white tracking-widest uppercase mb-5">Contact &amp; Hours</h4>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-primary text-[20px] mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
+                <span className="material-symbols-outlined text-[#FFFF00] text-[20px] mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
                 <div>
                   <div className="text-[14px] text-white/90 font-semibold">Dey Optical, Beliatore</div>
                   <div className="text-[13px] text-white/60 mt-0.5">Super Market Stall No-15 (Near Panchayat), Beliatore, Bankura</div>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-primary text-[20px] mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>schedule</span>
+                <span className="material-symbols-outlined text-[#FFFF00] text-[20px] mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>schedule</span>
                 <div className="text-[13px] text-white/60 space-y-0.5">
                   <div><span className="text-white/80">Store:</span> Mon – Sat: 10:00 AM – 8:00 PM | Sun: 10:30 AM – 3:00 PM</div>
-                  <div><span className="text-primary font-medium">Chambers:</span> Sunday (11:30 AM - 1 PM) &bull; Thursday (9:30 AM - 11 AM)</div>
+                  <div><span className="text-[#FFFF00] font-medium">Chambers:</span> Sunday (11:30 AM - 1 PM) &bull; Thursday (9:30 AM - 11 AM)</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-primary text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
+                <span className="material-symbols-outlined text-[#FFFF00] text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
                 <div className="flex flex-wrap gap-x-3 text-[14px]">
-                  <a href="tel:+917551808245" className="text-white/80 hover:text-primary transition-colors duration-200 font-medium">
+                  <a href="tel:+917551808245" className="text-white/80 hover:text-[#FFFF00] transition-colors duration-200 font-medium">
                     7551808245
                   </a>
                   <span className="text-white/40">/</span>
-                  <a href="tel:+919434438460" className="text-white/80 hover:text-primary transition-colors duration-200 font-medium">
+                  <a href="tel:+919434438460" className="text-white/80 hover:text-[#FFFF00] transition-colors duration-200 font-medium">
                     9434438460
                   </a>
                 </div>
@@ -137,7 +137,7 @@ function FooterComponent({ scrollTo, navigate }) {
             <span className="hidden sm:inline text-white/20">•</span>
             <span>
               Designed &amp; Developed by{' '}
-              <span className="text-white/90 font-semibold hover:text-primary transition-colors">
+              <span className="text-white/90 font-semibold hover:text-[#FFFF00] transition-colors">
                 Saikat Tunga
               </span>
             </span>
@@ -153,7 +153,7 @@ function FooterComponent({ scrollTo, navigate }) {
             </button>
             <span className="text-white/20">•</span>
             <div className="flex items-center gap-1.5 text-xs">
-              <span className="material-symbols-outlined text-primary text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+              <span className="material-symbols-outlined text-[#CC0000] text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
               Crafted with care in Bankura
             </div>
           </div>

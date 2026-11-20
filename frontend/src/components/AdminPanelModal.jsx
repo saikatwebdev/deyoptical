@@ -398,7 +398,7 @@ export default function AdminPanelModal() {
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="bg-red-600 text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full">
+                          <span className="bg-[#CC0000] text-[#FFFF00] border border-[#FFFF00]/30 text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full">
                             {offer.badge}
                           </span>
                           <span className="text-[11px] text-gray-500 font-medium">{offer.validTill}</span>

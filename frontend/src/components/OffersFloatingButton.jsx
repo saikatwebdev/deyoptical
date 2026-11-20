@@ -8,7 +8,7 @@ const OfferCard = memo(function OfferCard({ offer, onClaim }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="flex items-center justify-between mb-2.5">
-        <span className="inline-block bg-red-600 text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">
+        <span className="inline-block bg-[#CC0000] text-[#FFFF00] border border-[#FFFF00]/40 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full shadow-xs">
           {offer.badge}
         </span>
         <span className="text-[11px] text-gray-400 font-medium">{offer.validTill}</span>
@@ -196,14 +196,14 @@ function OffersFloatingButton() {
           bottom: pos ? 'auto' : '5.75rem',
           transform: 'none',
           opacity: pos ? 1 : 0,
-          background: '#DC2626',
-          border: '2.5px solid #FACC15',
+          background: '#CC0000',
+          border: '2.5px solid #FFFF00',
           cursor: 'grab',
         }}
       >
         <span className="text-[18px] leading-none pointer-events-none">🎉</span>
         <span className="text-white text-[13px] font-bold tracking-wide uppercase pointer-events-none">Offers</span>
-        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-red-700 bg-yellow-300 border border-yellow-400 shadow pointer-events-none">
+        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-[#CC0000] bg-[#FFFF00] border border-[#FFFF00] shadow pointer-events-none">
           {activeOffers.length}
         </span>
       </button>
@@ -236,7 +236,7 @@ function OffersFloatingButton() {
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 bg-white border-b border-gray-100">
             <div className="flex items-center gap-2.5">
-              <span className="w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center text-[18px]">🎁</span>
+              <span className="w-9 h-9 rounded-xl bg-[#CC0000] text-[#FFFF00] flex items-center justify-center text-[18px]">🎁</span>
               <div>
                 <h3 className="text-[16px] font-bold text-gray-900 leading-tight">Special Offers</h3>
                 <p className="text-[11px] text-gray-400 font-medium">Dey Optical, Beliatore</p>

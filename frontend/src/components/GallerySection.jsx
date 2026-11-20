@@ -58,7 +58,7 @@ function GallerySectionComponent() {
         className="absolute inset-0 opacity-30 pointer-events-none"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 20% 50%, rgba(0,104,95,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0,104,95,0.06) 0%, transparent 50%)',
+            'radial-gradient(circle at 20% 50%, rgba(204,0,0,0.06) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(220,20,60,0.05) 0%, transparent 50%)',
         }}
       />
 
@@ -105,7 +105,7 @@ function GallerySectionComponent() {
 
                 {/* Category badge */}
                 <div className="absolute top-3 left-3">
-                  <span className="bg-primary/90 backdrop-blur-sm text-on-primary text-[11px] font-bold tracking-wide px-3 py-1 rounded-full">
+                  <span className="bg-[#CC0000]/95 backdrop-blur-sm text-white border border-[#FFFF00]/30 text-[11px] font-bold tracking-wide px-3 py-1 rounded-full shadow-sm">
                     {item.cat}
                   </span>
                 </div>
@@ -113,7 +113,7 @@ function GallerySectionComponent() {
                 {/* Expand icon */}
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <span className="material-symbols-outlined text-white text-[20px]">fullscreen</span>
+                    <span className="material-symbols-outlined text-[#FFFF00] text-[20px]">fullscreen</span>
                   </div>
                 </div>
 

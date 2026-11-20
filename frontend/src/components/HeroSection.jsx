@@ -63,14 +63,14 @@ const TypewriterHeadline = memo(function TypewriterHeadline() {
     <span className="inline-flex items-center min-h-[1.15em] align-baseline whitespace-nowrap">
       <span
         className="text-transparent bg-clip-text"
-        style={{ backgroundImage: 'linear-gradient(135deg, #6bd8cb, #89f5e7)' }}
+        style={{ backgroundImage: 'linear-gradient(135deg, #FFFF00, #FFF500)' }}
       >
         {typewriterText || '\u200B'}
       </span>
       {/* Moving strand (blinking typewriter cursor) */}
       <span
         aria-hidden="true"
-        className="inline-block w-[3px] sm:w-[4px] md:w-[5px] h-[0.82em] bg-gradient-to-b from-[#6bd8cb] to-[#89f5e7] ml-1 sm:ml-1.5 rounded-full shadow-[0_0_10px_rgba(107,216,203,0.85)] align-middle typewriter-cursor flex-shrink-0"
+        className="inline-block w-[3px] sm:w-[4px] md:w-[5px] h-[0.82em] bg-gradient-to-b from-[#FFFF00] to-[#FACC15] ml-1 sm:ml-1.5 rounded-full shadow-[0_0_12px_rgba(255,255,0,0.9)] align-middle typewriter-cursor flex-shrink-0"
       />
     </span>
   );
@@ -142,8 +142,8 @@ function HeroSectionComponent({ scrollTo, navigate }) {
               ref={headlineRef}
               className="opacity-0"
             >
-              <span className="inline-flex items-center gap-2 bg-primary/90 backdrop-blur-sm text-on-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6">
-                <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+              <span className="inline-flex items-center gap-2 bg-[#CC0000] backdrop-blur-sm text-white text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6 border border-[#FFFF00]/40 shadow-md">
+                <span className="material-symbols-outlined text-[#FFFF00] text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                 Bankura's Trusted Optometric Clinic
               </span>
               <h1 className="text-[40px] sm:text-[54px] md:text-[64px] lg:text-[72px] font-bold leading-[1.08] tracking-tight text-white mb-4">
@@ -163,14 +163,14 @@ function HeroSectionComponent({ scrollTo, navigate }) {
             <div ref={ctaRef} className="opacity-0 flex flex-wrap gap-4">
               <button
                 onClick={handleBookingClick}
-                className="px-8 py-4 bg-primary text-on-primary rounded-2xl text-[16px] font-bold shadow-xl hover:bg-primary/90 hover:shadow-2xl active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                className="px-8 py-4 bg-[#CC0000] text-white rounded-2xl text-[16px] font-bold shadow-xl hover:bg-[#DC143C] hover:shadow-2xl active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>calendar_month</span>
                 Book Appointment
               </button>
               <button
                 onClick={handleGalleryClick}
-                className="px-8 py-4 bg-white/15 backdrop-blur-sm text-white border border-white/30 rounded-2xl text-[16px] font-bold hover:bg-white/25 active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                className="px-8 py-4 bg-white/15 backdrop-blur-sm text-white border border-white/30 hover:border-[#FFFF00]/60 hover:bg-[#FFFF00]/15 rounded-2xl text-[16px] font-bold active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[20px]">photo_library</span>
                 View Gallery
@@ -186,7 +186,7 @@ function HeroSectionComponent({ scrollTo, navigate }) {
               key={idx}
               onClick={() => setCurrentSlide(idx)}
               className={`transition-all duration-300 rounded-full ${idx === currentSlide
-                ? 'w-8 h-2.5 bg-primary'
+                ? 'w-8 h-2.5 bg-[#FFFF00] shadow-sm'
                 : 'w-2.5 h-2.5 bg-white/50 hover:bg-white/80'
                 }`}
               aria-label={`Go to slide ${idx + 1}`}
@@ -203,18 +203,18 @@ function HeroSectionComponent({ scrollTo, navigate }) {
       </div>
 
       {/* ── STATS STRIP ── */}
-      <div className="bg-primary py-10 overflow-hidden">
+      <div className="bg-[#CC0000] py-10 overflow-hidden border-y border-[#DC143C]/40">
         <div ref={statsRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {STATS.map((stat) => (
             <div
               key={stat.label}
               className="stat-item opacity-0 flex flex-col items-center text-center group"
             >
-              <span className="material-symbols-outlined text-on-primary/70 text-[28px] mb-2 group-hover:scale-110 transition-transform duration-200" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <span className="material-symbols-outlined text-[#FFFF00] text-[28px] mb-2 group-hover:scale-110 transition-transform duration-200" style={{ fontVariationSettings: "'FILL' 1" }}>
                 {stat.icon}
               </span>
-              <span className="text-[32px] font-bold text-on-primary tracking-tight leading-none">{stat.value}</span>
-              <span className="text-[13px] font-medium text-on-primary/75 mt-1">{stat.label}</span>
+              <span className="text-[32px] font-bold text-white tracking-tight leading-none">{stat.value}</span>
+              <span className="text-[13px] font-medium text-white/85 mt-1">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -285,7 +285,7 @@ function HeroSectionComponent({ scrollTo, navigate }) {
                 {/* Visiting Specialists Floating Card (Responsive Stack on Mobile) */}
                 <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl p-3.5 sm:p-4.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl border border-white/60">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#CC0000]/15 text-[#CC0000] flex items-center justify-center flex-shrink-0">
                       <span className="material-symbols-outlined text-[22px] sm:text-[26px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                         stethoscope
                       </span>
@@ -295,14 +295,14 @@ function HeroSectionComponent({ scrollTo, navigate }) {
                       <div className="text-[11px] sm:text-[13px] text-secondary font-medium truncate">
                         Dr. S. Dandapath &bull; Optom. A. Patra
                       </div>
-                      <div className="text-[10px] sm:text-[11px] font-semibold text-primary mt-0.5">
+                      <div className="text-[10px] sm:text-[11px] font-semibold text-[#CC0000] mt-0.5">
                         Sunday &amp; Thursday Chambers
                       </div>
                     </div>
                   </div>
                   <button
                     onClick={() => scrollTo('doctors')}
-                    className="w-full sm:w-auto px-4 py-2 sm:py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-[12px] sm:text-[13px] font-bold active:scale-[0.98] transition-all cursor-pointer whitespace-nowrap shadow-xs flex items-center justify-center gap-1.5"
+                    className="w-full sm:w-auto px-4 py-2 sm:py-2.5 rounded-xl bg-[#CC0000] hover:bg-[#DC143C] text-white text-[12px] sm:text-[13px] font-bold active:scale-[0.98] transition-all cursor-pointer whitespace-nowrap shadow-xs flex items-center justify-center gap-1.5"
                   >
                     <span>View Schedule</span>
                     <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
@@ -311,9 +311,9 @@ function HeroSectionComponent({ scrollTo, navigate }) {
               </div>
 
               {/* Floating accent badge - safely positioned on mobile to prevent horizontal viewport overflow */}
-              <div className="absolute top-3 right-3 sm:-top-3 sm:-right-3 bg-primary text-on-primary rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg border border-white/20">
-                <div className="text-[15px] sm:text-[18px] font-bold leading-none">Beliatore</div>
-                <div className="text-[10px] sm:text-[11px] font-medium text-on-primary/80">Bankura, WB</div>
+              <div className="absolute top-3 right-3 sm:-top-3 sm:-right-3 bg-[#CC0000] text-white rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg border border-[#FFFF00]/40">
+                <div className="text-[15px] sm:text-[18px] font-bold leading-none text-[#FFFF00]">Beliatore</div>
+                <div className="text-[10px] sm:text-[11px] font-medium text-white/90">Bankura, WB</div>
               </div>
             </div>
           </div>

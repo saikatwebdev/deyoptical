@@ -25,7 +25,7 @@ const StarRating = memo(function StarRating({ rating = 5, interactive = false, o
               }`}
           >
             <span
-              className={`material-symbols-outlined text-[20px] transition-colors duration-150 ${filled ? 'text-amber-400' : 'text-outline-variant/60'
+              className={`material-symbols-outlined text-[20px] transition-colors duration-150 ${filled ? 'text-[#F59E0B]' : 'text-outline-variant/60'
                 }`}
               style={{ fontVariationSettings: `'FILL' ${filled ? 1 : 0}` }}
             >
@@ -124,8 +124,8 @@ export const AnimatedTestimonials = memo(function AnimatedTestimonials({
                   <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none" />
 
                   {/* Rating pill on image */}
-                  <div className="absolute top-4 left-4 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/20">
-                    <span className="material-symbols-outlined text-amber-400 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/20">
+                    <span className="material-symbols-outlined text-[#FFFF00] text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                       star
                     </span>
                     <span className="text-white text-[12px] font-bold">
@@ -135,8 +135,8 @@ export const AnimatedTestimonials = memo(function AnimatedTestimonials({
 
                   {/* Verified patient badge */}
                   <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white/90">
-                    <span className="text-[12px] font-semibold tracking-wide flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-lg">
-                      <span className="material-symbols-outlined text-primary text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    <span className="text-[12px] font-semibold tracking-wide flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-lg">
+                      <span className="material-symbols-outlined text-[#FFFF00] text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                         verified
                       </span>
                       Verified Consultation

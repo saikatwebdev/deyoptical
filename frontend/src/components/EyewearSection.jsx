@@ -44,13 +44,13 @@ const CategoryCard = memo(function CategoryCard({ cat }) {
 
         {/* Badge */}
         <div className="absolute top-3 right-3">
-          <span className="bg-primary/90 backdrop-blur-sm text-on-primary text-[11px] font-bold tracking-wide px-3 py-1 rounded-full">
+          <span className="bg-[#CC0000] text-white border border-[#FFFF00]/30 text-[11px] font-bold tracking-wide px-3 py-1 rounded-full shadow-sm">
             {cat.badge}
           </span>
         </div>
 
         {/* Icon */}
-        <div className="absolute bottom-3 left-3 w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+        <div className="absolute bottom-3 left-3 w-11 h-11 rounded-2xl bg-[#CC0000] text-white border border-[#FFFF00]/30 shadow-sm flex items-center justify-center">
           <span
             className="material-symbols-outlined text-white text-[22px]"
             style={{ fontVariationSettings: "'FILL' 1" }}
@@ -97,7 +97,7 @@ const CategoryCard = memo(function CategoryCard({ cat }) {
         {/* CTA */}
         <button
           onClick={handleWhatsApp}
-          className="w-full py-3 rounded-xl font-bold text-[14px] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 bg-primary text-on-primary hover:bg-primary/90 shadow-md hover:shadow-lg"
+          className="w-full py-3 rounded-xl font-bold text-[14px] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 bg-[#CC0000] text-white hover:bg-[#DC143C] shadow-md hover:shadow-lg"
         >
           <svg viewBox="0 0 32 32" width="18" height="18" fill="white" xmlns="http://www.w3.org/2000/svg">
             <path d="M16.004 2.667C8.637 2.667 2.667 8.636 2.667 16c0 2.344.636 4.627 1.844 6.627L2.667 29.333l6.906-1.812A13.26 13.26 0 0016.004 29.333C23.37 29.333 29.333 23.364 29.333 16S23.37 2.667 16.004 2.667zm-3.063 7.6c-.197 0-.518.074-.79.37-.272.296-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.07c.148.197 2.07 3.248 5.07 4.428 2.49.983 3.002.787 3.542.737.54-.049 1.74-.712 1.986-1.4.247-.687.247-1.276.173-1.4-.074-.123-.272-.197-.567-.345-.296-.148-1.74-.857-2.012-.955-.271-.099-.468-.148-.665.148-.196.296-.762.955-.934 1.153-.173.197-.345.222-.64.074-.296-.148-1.248-.46-2.378-1.467-.879-.783-1.472-1.75-1.645-2.047-.172-.296-.018-.456.13-.603.133-.133.296-.345.444-.518.148-.173.197-.296.296-.493.099-.197.049-.37-.025-.518-.074-.148-.657-1.618-.912-2.21-.24-.577-.487-.498-.665-.507-.173-.007-.37-.01-.567-.01z" />

@@ -74,22 +74,22 @@ function DoctorPosterSectionComponent({ scrollTo }) {
 
                 {/* Top-Right Badge: Visiting Day */}
                 <div className="absolute top-4 right-4 z-10">
-                  <span className="bg-black/60 backdrop-blur-md text-amber-300 border border-amber-400/40 text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="bg-black/70 backdrop-blur-md text-[#FFFF00] border border-[#FFFF00]/50 text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+                    <span className="w-2 h-2 rounded-full bg-[#FFFF00] animate-pulse" />
                     {doc.scheduleBadge}
                   </span>
                 </div>
 
                 {/* Doctor Identity Block Overlay (on Image) */}
                 <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 z-10 text-white">
-                  <span className="text-[12px] font-semibold text-primary-fixed uppercase tracking-wider block mb-1">
+                  <span className="text-[12px] font-bold text-[#FFFF00] uppercase tracking-wider block mb-1">
                     {doc.title}
                   </span>
                   <h3 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight text-white drop-shadow-sm">
                     {doc.name}
                   </h3>
                   <p className="text-[13px] sm:text-[14px] text-white/85 font-medium mt-1 flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-primary-fixed text-[16px]">
+                    <span className="material-symbols-outlined text-[#FFFF00] text-[16px]">
                       local_hospital
                     </span>
                     {doc.hospital}
