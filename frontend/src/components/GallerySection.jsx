@@ -7,13 +7,15 @@ function GallerySectionComponent() {
   const modalRef = useRef(null);
   const gridRef = useRef(null);
 
+  // Entrance stagger animation on initial mount
   useEffect(() => {
     if (gridRef.current) {
       const cards = gridRef.current.querySelectorAll('.gallery-card');
-      animateStagger(cards, { duration: 400, delay: 60 });
+      animateStagger(cards, { duration: 400, delay: 50 });
     }
   }, []);
 
+  // Lightbox open/close modal zoom animation & body scroll lock
   useEffect(() => {
     if (lightbox !== null && modalRef.current) {
       animateModalIn(modalRef.current);
@@ -21,6 +23,9 @@ function GallerySectionComponent() {
     } else {
       document.body.style.overflow = '';
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [lightbox]);
 
   const openLightbox = useCallback((index) => {
@@ -53,161 +58,148 @@ function GallerySectionComponent() {
   const currentItem = lightbox ? lightbox.items[lightbox.index] : null;
 
   return (
-    <div className="py-16 bg-surface-container-low relative overflow-hidden">
+    <div className="w-full relative">
+      {/* ── RESPONSIVE PHOTO GALLERY GRID ── */}
+      {/* 2 columns on mobile, 4 columns on desktop */}
       <div
-        className="absolute inset-0 opacity-30 pointer-events-none"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 20% 50%, rgba(204,0,0,0.06) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(220,20,60,0.05) 0%, transparent 50%)',
-        }}
-      />
+        ref={gridRef}
+        className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5"
+      >
+        {GALLERY_ITEMS.map((item, idx) => (
+          <div
+            key={item.id}
+            className="gallery-card opacity-0 group relative aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden bg-surface-container-high cursor-pointer shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            onClick={() => openLightbox(idx)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(idx);
+              }
+            }}
+            aria-label={`View photo: ${item.title}`}
+          >
+            {/* Image with uniform dimensions and gentle hover scale */}
+            <img
+              src={item.img}
+              alt={item.title}
+              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+              width="600"
+              height="450"
+            />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div data-animate="fade-up" className="text-center mb-10">
-          <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-3">
-            <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              photo_library
-            </span>
-            Gallery
-          </span>
-          <h2 className="text-[34px] sm:text-[38px] md:text-[42px] font-bold text-on-surface tracking-tight leading-tight mb-3">
-            Inside Dey Optical
-          </h2>
-          <p className="text-[15px] sm:text-[16px] text-on-surface-variant max-w-xl mx-auto leading-relaxed">
-            Take a visual tour of our clinic, state-of-the-art lab, diagnostic instruments, and eyewear showroom.
-          </p>
-        </div>
-
-        {/* Gallery Grid */}
-        <div
-          ref={gridRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-        >
-          {GALLERY_ITEMS.map((item, idx) => (
-            <div
-              key={item.id}
-              className="gallery-card opacity-0 group relative rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-              onClick={() => openLightbox(idx)}
-            >
-              <div className={`relative overflow-hidden ${idx % 5 === 0 ? 'h-72' : 'h-56'}`}>
-                <img
-                  src={item.img}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  loading="lazy"
-                  decoding="async"
-                  width="600"
-                  height="450"
-                />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                {/* Category badge */}
-                <div className="absolute top-3 left-3">
-                  <span className="bg-[#CC0000]/95 backdrop-blur-sm text-white border border-[#FFFF00]/30 text-[11px] font-bold tracking-wide px-3 py-1 rounded-full shadow-sm">
-                    {item.cat}
-                  </span>
-                </div>
-
-                {/* Expand icon */}
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[#FFFF00] text-[20px]">fullscreen</span>
-                  </div>
-                </div>
-
-                {/* Title on hover */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                  <h3 className="text-white font-bold text-[16px] leading-tight">{item.title}</h3>
-                  <p className="text-white/75 text-[13px] mt-0.5">{item.sub}</p>
-                </div>
+            {/* Clean, image-focused hover overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-2.5 sm:p-3.5">
+              <div className="flex justify-end">
+                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-[#FFFF00] shadow-sm">
+                  <span className="material-symbols-outlined text-[16px] sm:text-[18px]">fullscreen</span>
+                </span>
               </div>
-
-              {/* Info footer */}
-              <div className="absolute bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <h3 className="font-bold text-[14px] text-on-surface">{item.title}</h3>
-                <p className="text-[12px] text-secondary">{item.sub}</p>
+              <div>
+                <span className="inline-block text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#FFFF00] mb-0.5">
+                  {item.cat}
+                </span>
+                <h3 className="text-white text-xs sm:text-sm font-semibold leading-tight line-clamp-1 drop-shadow-xs">
+                  {item.title}
+                </h3>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
-      {/* Lightbox Modal */}
+      {/* ── LIGHTBOX MODAL (Full Preview & Gallery Navigation) ── */}
       {lightbox && currentItem && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6"
           onClick={(e) => e.target === e.currentTarget && closeLightbox()}
         >
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/90 backdrop-blur-md"
+            className="absolute inset-0 bg-black/92 backdrop-blur-md"
             onClick={closeLightbox}
           />
 
-          {/* Modal */}
+          {/* Modal Container */}
           <div
             ref={modalRef}
-            className="relative z-10 max-w-4xl w-full opacity-0"
+            className="relative z-10 max-w-4xl w-full opacity-0 flex flex-col items-center"
           >
             {/* Close button */}
             <button
               onClick={closeLightbox}
-              className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-20 cursor-pointer"
-              aria-label="Close"
+              className="absolute -top-11 right-0 sm:-right-2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 flex items-center justify-center transition-all z-20 cursor-pointer text-white"
+              aria-label="Close photo viewer"
             >
-              <span className="material-symbols-outlined text-white text-[22px]">close</span>
+              <span className="material-symbols-outlined text-[20px] sm:text-[22px]">close</span>
             </button>
 
-            {/* Image */}
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+            {/* Main Full Photo View */}
+            <div className="relative w-full rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl bg-black border border-white/10 flex items-center justify-center">
               <img
                 src={currentItem.img}
                 alt={currentItem.title}
-                className="w-full max-h-[70vh] object-contain bg-black"
+                className="w-full max-h-[68vh] sm:max-h-[72vh] object-contain"
               />
 
-              {/* Nav arrows */}
+              {/* Prev / Next navigation buttons */}
               <button
-                onClick={(e) => { e.stopPropagation(); lightboxPrev(); }}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors cursor-pointer"
-                aria-label="Previous image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  lightboxPrev();
+                }}
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center transition-all cursor-pointer border border-white/20 active:scale-90"
+                aria-label="Previous photo"
               >
-                <span className="material-symbols-outlined text-white text-[24px]">arrow_back_ios</span>
+                <span className="material-symbols-outlined text-[20px] sm:text-[24px]">chevron_left</span>
               </button>
               <button
-                onClick={(e) => { e.stopPropagation(); lightboxNext(); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors cursor-pointer"
-                aria-label="Next image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  lightboxNext();
+                }}
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center transition-all cursor-pointer border border-white/20 active:scale-90"
+                aria-label="Next photo"
               >
-                <span className="material-symbols-outlined text-white text-[24px]">arrow_forward_ios</span>
+                <span className="material-symbols-outlined text-[20px] sm:text-[24px]">chevron_right</span>
               </button>
             </div>
 
-            {/* Caption */}
-            <div className="mt-4 text-center">
-              <h3 className="text-white font-bold text-[18px]">{currentItem.title}</h3>
-              <p className="text-white/60 text-[14px] mt-1">{currentItem.sub}</p>
-              <div className="flex items-center justify-center gap-3 mt-3">
-                <span className="bg-primary/80 text-on-primary text-[12px] font-bold px-3 py-1 rounded-full">
+            {/* Photo Caption & Info */}
+            <div className="mt-3 sm:mt-4 text-center max-w-xl px-4">
+              <h3 className="text-white font-bold text-sm sm:text-base md:text-lg">
+                {currentItem.title}
+              </h3>
+              {currentItem.sub && (
+                <p className="text-white/70 text-xs sm:text-sm mt-0.5">
+                  {currentItem.sub}
+                </p>
+              )}
+              <div className="flex items-center justify-center gap-2.5 mt-2">
+                <span className="bg-[#CC0000] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-[#FFFF00]/30 shadow-xs">
                   {currentItem.cat}
                 </span>
-                <span className="text-white/50 text-[13px]">
-                  {lightbox.index + 1} / {lightbox.items.length}
+                <span className="text-white/60 text-xs font-medium">
+                  {lightbox.index + 1} of {lightbox.items.length}
                 </span>
               </div>
             </div>
 
-            {/* Thumbnails strip */}
-            <div className="flex justify-center gap-2 mt-5 overflow-x-auto pb-1">
+            {/* Quick-Jump Thumbnail Strip */}
+            <div className="flex justify-center gap-1.5 sm:gap-2 mt-4 max-w-full overflow-x-auto pb-1 px-2 scrollbar-none">
               {lightbox.items.map((item, idx) => (
                 <button
                   key={item.id}
                   onClick={() => setLightbox((lb) => ({ ...lb, index: idx }))}
-                  className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
-                    idx === lightbox.index ? 'border-primary scale-110' : 'border-white/20 opacity-50 hover:opacity-75'
+                  className={`flex-shrink-0 w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
+                    idx === lightbox.index
+                      ? 'border-[#FFFF00] scale-105 shadow-md opacity-100 ring-2 ring-[#CC0000]'
+                      : 'border-white/20 opacity-50 hover:opacity-85'
                   }`}
+                  aria-label={`Jump to photo ${idx + 1}`}
                 >
                   <img
                     src={item.img}

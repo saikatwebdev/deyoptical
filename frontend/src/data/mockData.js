@@ -118,7 +118,9 @@ export const GALLERY_ITEMS = [
   { id: 3, title: "Curated Acetate Showcase", cat: "Eyewear", sub: "Handcrafted Boutique Wall", img: "images/facilities/facility-acetate-showcase.jpg" },
   { id: 4, title: "Pediatric Vision Check", cat: "Eye Testing", sub: "Gentle Refractive Screening", img: "images/facilities/facility-pediatric-screening.jpg" },
   { id: 5, title: "Modern Spectacle Fitting", cat: "Eyewear", sub: "Ultrasonic Frame Customization", img: "images/facilities/facility-spectacle-fitting.png" },
-  { id: 6, title: "Corneal Slit-Lamp Bio-Check", cat: "Eye Testing", sub: "Microscopic Tear Film Exam", img: "images/facilities/facility-slit-lamp-biocheck.png" }
+  { id: 6, title: "Corneal Slit-Lamp Bio-Check", cat: "Eye Testing", sub: "Microscopic Tear Film Exam", img: "images/facilities/facility-slit-lamp-biocheck.png" },
+  { id: 7, title: "Designer Eyewear Curation", cat: "Eyewear", sub: "Boutique Frame Collection", img: "images/services/service-designer-frames.png" },
+  { id: 8, title: "Dey Optical Clinic Lounge", cat: "Store", sub: "Beliatore Vision Centre", img: "images/about/about-clinic.png" }
 ];
 
 export const AT_DATA = [
