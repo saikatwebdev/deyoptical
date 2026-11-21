@@ -19,10 +19,16 @@ export default function AdminPanelModal() {
     doctors,
     updateDoctor,
     resetDoctors,
+    gallery,
+    uploadGalleryPhotos,
+    addGalleryPhoto,
+    updateGalleryPhoto,
+    deleteGalleryPhoto,
+    resetGallery,
     resetAllData,
   } = useAdminData();
 
-  const [activeTab, setActiveTab] = useState('offers'); // 'offers' | 'doctors' | 'settings'
+  const [activeTab, setActiveTab] = useState('offers'); // 'offers' | 'doctors' | 'gallery' | 'settings'
 
   // Auth form state
   const [pinInput, setPinInput] = useState('');
@@ -179,12 +185,187 @@ export default function AdminPanelModal() {
     }
   };
 
+  // ── Gallery Management State ──
+  const [galleryFilter, setGalleryFilter] = useState('All'); // 'All' | 'Store' | 'Eyewear'
+  const [gallerySearch, setGallerySearch] = useState('');
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedUploadFiles, setSelectedUploadFiles] = useState([]);
+  const [defaultUploadTag, setDefaultUploadTag] = useState('Store');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadMsg, setUploadMsg] = useState({ type: '', text: '' });
+  const [galleryToast, setGalleryToast] = useState('');
+
+  // Compress image helper using HTML5 canvas for fast, high-res web uploads
+  const compressImage = (file, maxWidth = 1600, maxHeight = 1200, quality = 0.85) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxWidth || height > maxHeight) {
+            if (width / height > maxWidth / maxHeight) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            } else {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle file selection for upload with live preview
+  const handleFilesSelected = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    const newItems = [];
+
+    files.forEach((file) => {
+      const isFormatOk =
+        validTypes.includes(file.type.toLowerCase()) ||
+        /\.(jpe?g|png|webp)$/i.test(file.name);
+
+      if (!isFormatOk) {
+        setUploadMsg({
+          type: 'error',
+          text: `"${file.name}" is not a supported format. Please select JPG, PNG, or WEBP images.`,
+        });
+        return;
+      }
+
+      const previewUrl = URL.createObjectURL(file);
+      const cleanTitle = file.name
+        .replace(/\.[^/.]+$/, '')
+        .replace(/[-_]+/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+
+      newItems.push({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        file,
+        previewUrl,
+        title: cleanTitle || 'Dey Optical Photo',
+        cat: defaultUploadTag,
+        size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+      });
+    });
+
+    if (newItems.length > 0) {
+      setSelectedUploadFiles((prev) => [...prev, ...newItems]);
+      setUploadMsg({ type: '', text: '' });
+    }
+    e.target.value = '';
+  };
+
+  // Remove single file from upload preview
+  const handleRemoveUploadPreview = (id) => {
+    setSelectedUploadFiles((prev) => {
+      const target = prev.find((item) => item.id === id);
+      if (target?.previewUrl) URL.revokeObjectURL(target.previewUrl);
+      return prev.filter((item) => item.id !== id);
+    });
+  };
+
+  // Batch update tag for all preview files
+  const handleSetAllUploadTag = (tag) => {
+    setDefaultUploadTag(tag);
+    setSelectedUploadFiles((prev) =>
+      prev.map((item) => ({ ...item, cat: tag }))
+    );
+  };
+
+  // Execute upload of all selected photos
+  const handleConfirmUpload = async () => {
+    if (selectedUploadFiles.length === 0) return;
+    setIsUploading(true);
+    setUploadProgress(10);
+    setUploadMsg({ type: '', text: '' });
+
+    try {
+      const preparedPhotos = [];
+      const total = selectedUploadFiles.length;
+
+      for (let i = 0; i < total; i++) {
+        const item = selectedUploadFiles[i];
+        const dataUrl = await compressImage(item.file);
+        preparedPhotos.push({
+          title: item.title,
+          cat: item.cat === 'Eyewear' ? 'Eyewear' : 'Store',
+          sub: '',
+          img: dataUrl || item.previewUrl,
+          order: (gallery || []).length + i + 1,
+        });
+        setUploadProgress(Math.round(((i + 1) / total) * 80) + 10);
+      }
+
+      const res = await uploadGalleryPhotos(preparedPhotos);
+      setUploadProgress(100);
+
+      if (res.success) {
+        setUploadMsg({
+          type: 'success',
+          text: `Successfully uploaded ${res.count || preparedPhotos.length} photo(s) to Gallery!`,
+        });
+        selectedUploadFiles.forEach((f) => URL.revokeObjectURL(f.previewUrl));
+        setSelectedUploadFiles([]);
+        setTimeout(() => {
+          setIsUploadModalOpen(false);
+          setUploadMsg({ type: '', text: '' });
+          setUploadProgress(0);
+        }, 1200);
+      } else {
+        setUploadMsg({ type: 'error', text: res.message || 'Upload failed. Please try again.' });
+      }
+    } catch (err) {
+      setUploadMsg({ type: 'error', text: err.message || 'Error uploading photos.' });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Change a photo's assigned tag (Store <-> Eyewear)
+  const handleChangePhotoTag = async (photoId, newTag) => {
+    const res = await updateGalleryPhoto(photoId, { cat: newTag });
+    if (res?.success) {
+      setGalleryToast(`Tag updated to "${newTag}"`);
+      setTimeout(() => setGalleryToast(''), 3000);
+    }
+  };
+
+  // Delete a photo from the gallery
+  const handleDeletePhoto = async (photo) => {
+    const targetId = photo.id || photo.galleryId || photo._id;
+    if (confirm(`Delete "${photo.title || 'this photo'}" from the gallery?`)) {
+      const res = await deleteGalleryPhoto(targetId);
+      if (res?.success) {
+        setGalleryToast('Photo deleted from gallery.');
+        setTimeout(() => setGalleryToast(''), 3000);
+      }
+    }
+  };
+
   // Export JSON backup
   const handleExportBackup = () => {
     const backupData = {
       exportedAt: new Date().toISOString(),
       offers,
       doctors,
+      gallery: gallery || [],
     };
     const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -343,6 +524,17 @@ export default function AdminPanelModal() {
               <span>2. Eye Specialist Timing &amp; Availability</span>
             </button>
             <button
+              onClick={() => setActiveTab('gallery')}
+              className={`py-3.5 px-4 font-bold text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === 'gallery'
+                  ? 'border-primary text-primary bg-white shadow-xs rounded-t-xl'
+                  : 'border-transparent text-gray-500 hover:text-gray-800'
+              }`}
+            >
+              <span className="text-[16px]">🖼️</span>
+              <span>3. Gallery Photos ({(gallery || []).length})</span>
+            </button>
+            <button
               onClick={() => setActiveTab('settings')}
               className={`py-3.5 px-4 font-bold text-xs uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'settings'
@@ -351,7 +543,7 @@ export default function AdminPanelModal() {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">settings</span>
-              <span>3. Passcode &amp; Backups</span>
+              <span>4. Passcode &amp; Backups</span>
             </button>
           </div>
 
@@ -686,7 +878,229 @@ export default function AdminPanelModal() {
               </div>
             )}
 
-            {/* ════════════ TAB 3: SECURITY & SETTINGS ════════════ */}
+            {/* ════════════ TAB 3: GALLERY MANAGEMENT ════════════ */}
+            {activeTab === 'gallery' && (
+              <div className="space-y-6">
+                {/* Header card with stats & actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-gray-900 text-base">Gallery Photos Management</h3>
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                        {(gallery || []).length} Photos
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Upload, categorize under <strong className="text-gray-700">Store</strong> or <strong className="text-gray-700">Eyewear</strong>, and manage photos displayed on the public Gallery page.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <button
+                      onClick={() => {
+                        setSelectedUploadFiles([]);
+                        setUploadMsg({ type: '', text: '' });
+                        setIsUploadModalOpen(true);
+                      }}
+                      className="px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/95 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">add_photo_alternate</span>
+                      <span>+ Upload Photos</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm('Revert all gallery photos back to initial defaults?')) {
+                          resetGallery();
+                          setGalleryToast('Gallery restored to default photos.');
+                          setTimeout(() => setGalleryToast(''), 3000);
+                        }
+                      }}
+                      className="px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-100 text-gray-600 font-semibold text-xs flex items-center gap-1 transition-colors cursor-pointer"
+                      title="Reset gallery photos to default"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">restart_alt</span>
+                      <span className="hidden md:inline">Reset Defaults</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Toast feedback */}
+                {galleryToast && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold rounded-xl flex items-center gap-2 animate-fade-in shadow-xs">
+                    <span className="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>
+                    <span>{galleryToast}</span>
+                  </div>
+                )}
+
+                {/* Filter and Search Bar */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 sm:p-4 rounded-2xl border border-gray-200 shadow-xs">
+                  {/* Tag Pills Filter */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                    {['All', 'Store', 'Eyewear'].map((tag) => {
+                      const count =
+                        tag === 'All'
+                          ? (gallery || []).length
+                          : (gallery || []).filter((g) => g.cat === tag).length;
+                      const isActive = galleryFilter === tag;
+                      return (
+                        <button
+                          key={tag}
+                          onClick={() => setGalleryFilter(tag)}
+                          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                            isActive
+                              ? 'bg-[#CC0000] text-white shadow-xs'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900'
+                          }`}
+                        >
+                          <span>{tag}</span>
+                          <span
+                            className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                              isActive ? 'bg-white/25 text-[#FFFF00]' : 'bg-gray-200 text-gray-600'
+                            }`}
+                          >
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Search box */}
+                  <div className="relative w-full sm:w-64">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">
+                      search
+                    </span>
+                    <input
+                      type="text"
+                      value={gallerySearch}
+                      onChange={(e) => setGallerySearch(e.target.value)}
+                      placeholder="Search photos by title..."
+                      className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-gray-50/50"
+                    />
+                    {gallerySearch && (
+                      <button
+                        onClick={() => setGallerySearch('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">cancel</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Photos Grid in Admin Panel */}
+                {(() => {
+                  const filteredGallery = (gallery || []).filter((item) => {
+                    const matchesTag = galleryFilter === 'All' || item.cat === galleryFilter;
+                    const matchesSearch =
+                      !gallerySearch ||
+                      (item.title && item.title.toLowerCase().includes(gallerySearch.toLowerCase())) ||
+                      (item.sub && item.sub.toLowerCase().includes(gallerySearch.toLowerCase()));
+                    return matchesTag && matchesSearch;
+                  });
+
+                  if (filteredGallery.length === 0) {
+                    return (
+                      <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center">
+                        <span className="material-symbols-outlined text-[48px] text-gray-300 mb-2">
+                          image_not_supported
+                        </span>
+                        <h4 className="text-sm font-bold text-gray-700">No photos found</h4>
+                        <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
+                          {gallerySearch
+                            ? `No gallery photos match your search "${gallerySearch}".`
+                            : `There are currently no photos categorized as "${galleryFilter}". Click "+ Upload Photos" to add some.`}
+                        </p>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {filteredGallery.map((item, idx) => {
+                        const itemId = item.id || item.galleryId || item._id;
+                        return (
+                          <div
+                            key={itemId || idx}
+                            className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col group"
+                          >
+                            {/* Photo Visual Preview */}
+                            <div className="relative aspect-[4/3] bg-gray-900 overflow-hidden">
+                              <img
+                                src={item.img}
+                                alt={item.title}
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                loading="lazy"
+                              />
+
+                              {/* Current Tag Badge overlay */}
+                              <div className="absolute top-2.5 left-2.5">
+                                <span
+                                  className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-sm border ${
+                                    item.cat === 'Eyewear'
+                                      ? 'bg-amber-600 text-white border-amber-400/40'
+                                      : 'bg-[#CC0000] text-white border-[#FFFF00]/40'
+                                  }`}
+                                >
+                                  {item.cat}
+                                </span>
+                              </div>
+
+                              {/* Delete button on hover overlay */}
+                              <div className="absolute top-2.5 right-2.5">
+                                <button
+                                  onClick={() => handleDeletePhoto(item)}
+                                  className="w-8 h-8 rounded-full bg-black/60 hover:bg-red-600 text-white flex items-center justify-center transition-colors cursor-pointer shadow-md"
+                                  title="Delete photo"
+                                >
+                                  <span className="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Details & Tag Switcher */}
+                            <div className="p-3.5 flex flex-col justify-between flex-1 gap-3">
+                              <div>
+                                <h4 className="text-xs font-bold text-gray-900 leading-snug line-clamp-2" title={item.title}>
+                                  {item.title}
+                                </h4>
+                                {item.sub && (
+                                  <p className="text-[11px] text-gray-500 mt-0.5 line-clamp-1">{item.sub}</p>
+                                )}
+                              </div>
+
+                              {/* Assigned Tag Selector */}
+                              <div className="pt-2 border-t border-gray-100 flex items-center justify-between gap-2">
+                                <span className="text-[11px] font-semibold text-gray-500 flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[14px]">label</span>
+                                  Tag:
+                                </span>
+
+                                <select
+                                  value={item.cat}
+                                  onChange={(e) => handleChangePhotoTag(itemId, e.target.value)}
+                                  className={`text-xs font-bold rounded-lg px-2.5 py-1 border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary ${
+                                    item.cat === 'Eyewear'
+                                      ? 'bg-amber-50 text-amber-900 border-amber-300'
+                                      : 'bg-red-50 text-red-900 border-red-300'
+                                  }`}
+                                  title="Change photo tag"
+                                >
+                                  <option value="Store">Store</option>
+                                  <option value="Eyewear">Eyewear</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* ════════════ TAB 4: SECURITY & SETTINGS ════════════ */}
             {activeTab === 'settings' && (
               <div className="space-y-6 max-w-2xl mx-auto">
                 {/* Change Passcode Card */}
@@ -910,6 +1324,234 @@ export default function AdminPanelModal() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Sub-modal for Uploading Gallery Photos ── */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 z-[115] flex items-center justify-center p-3 sm:p-5 bg-black/70 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-gray-200 p-5 sm:p-6 overflow-hidden max-h-[92vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3.5 border-b border-gray-100 mb-4 flex-shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[20px]">add_photo_alternate</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base">Upload Gallery Photos</h3>
+                  <p className="text-xs text-gray-500">Upload multiple photos and assign them to Store or Eyewear</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (!isUploading) {
+                    selectedUploadFiles.forEach((f) => URL.revokeObjectURL(f.previewUrl));
+                    setSelectedUploadFiles([]);
+                    setIsUploadModalOpen(false);
+                    setUploadMsg({ type: '', text: '' });
+                  }
+                }}
+                disabled={isUploading}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 cursor-pointer disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+
+            {/* Modal Body (Scrollable) */}
+            <div className="overflow-y-auto flex-1 pr-1 space-y-4">
+              {/* Upload Dropzone */}
+              <div className="border-2 border-dashed border-gray-300 hover:border-primary rounded-2xl p-6 text-center bg-gray-50/60 transition-colors">
+                <input
+                  type="file"
+                  id="gallery-file-input"
+                  multiple
+                  accept="image/jpeg,image/png,image/webp,image/jpg"
+                  onChange={handleFilesSelected}
+                  disabled={isUploading}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="gallery-file-input"
+                  className="cursor-pointer flex flex-col items-center justify-center"
+                >
+                  <span className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                    <span className="material-symbols-outlined text-[26px]">cloud_upload</span>
+                  </span>
+                  <span className="text-sm font-bold text-gray-800">
+                    Click to browse or select photos
+                  </span>
+                  <span className="text-xs text-gray-500 mt-1">
+                    Supports <strong className="text-gray-700">JPG, JPEG, PNG, WEBP</strong> (select multiple files)
+                  </span>
+                </label>
+              </div>
+
+              {/* Status/Error/Success Message */}
+              {uploadMsg.text && (
+                <div
+                  className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    uploadMsg.type === 'error'
+                      ? 'bg-red-50 text-red-700 border border-red-200'
+                      : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {uploadMsg.type === 'error' ? 'error' : 'check_circle'}
+                  </span>
+                  <span>{uploadMsg.text}</span>
+                </div>
+              )}
+
+              {/* Selected Files Preview List */}
+              {selectedUploadFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-gray-100">
+                    <span className="text-xs font-bold text-gray-800">
+                      Selected Photos ({selectedUploadFiles.length}):
+                    </span>
+
+                    {/* Batch Tag Selector */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-gray-500 font-medium">Apply tag to all:</span>
+                      <button
+                        type="button"
+                        onClick={() => handleSetAllUploadTag('Store')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                          defaultUploadTag === 'Store'
+                            ? 'bg-[#CC0000] text-white border-[#DC143C]'
+                            : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+                        }`}
+                      >
+                        Store
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSetAllUploadTag('Eyewear')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                          defaultUploadTag === 'Eyewear'
+                            ? 'bg-amber-600 text-white border-amber-700'
+                            : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+                        }`}
+                      >
+                        Eyewear
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Preview Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-1">
+                    {selectedUploadFiles.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-200 bg-white shadow-xs relative group"
+                      >
+                        <img
+                          src={item.previewUrl}
+                          alt="preview"
+                          className="w-16 h-16 rounded-lg object-cover flex-shrink-0 bg-gray-100 border border-gray-100"
+                        />
+                        <div className="flex-1 min-w-0 pr-6">
+                          <input
+                            type="text"
+                            value={item.title}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setSelectedUploadFiles((prev) =>
+                                prev.map((f) => (f.id === item.id ? { ...f, title: val } : f))
+                              );
+                            }}
+                            className="w-full text-xs font-bold text-gray-800 border-b border-transparent hover:border-gray-300 focus:border-primary focus:outline-none py-0.5 truncate"
+                            placeholder="Photo title"
+                          />
+                          <div className="flex items-center gap-2 mt-1.5">
+                            <select
+                              value={item.cat}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setSelectedUploadFiles((prev) =>
+                                  prev.map((f) => (f.id === item.id ? { ...f, cat: val } : f))
+                                );
+                              }}
+                              className={`text-[11px] font-bold rounded-md px-1.5 py-0.5 border cursor-pointer ${
+                                item.cat === 'Eyewear'
+                                  ? 'bg-amber-50 text-amber-900 border-amber-300'
+                                  : 'bg-red-50 text-red-900 border-red-300'
+                              }`}
+                            >
+                              <option value="Store">Store</option>
+                              <option value="Eyewear">Eyewear</option>
+                            </select>
+                            <span className="text-[10px] text-gray-400 font-medium">{item.size}</span>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveUploadPreview(item.id)}
+                          disabled={isUploading}
+                          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gray-100 hover:bg-red-50 hover:text-red-600 flex items-center justify-center text-gray-400 transition-colors cursor-pointer"
+                          title="Remove"
+                        >
+                          <span className="material-symbols-outlined text-[15px]">close</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Upload Progress Bar */}
+              {isUploading && (
+                <div className="space-y-1.5 p-3 rounded-xl bg-primary/5 border border-primary/20">
+                  <div className="flex items-center justify-between text-xs font-bold text-primary">
+                    <span>Uploading photos to database...</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-gray-200 overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all duration-300 rounded-full"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-gray-100 mt-4 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  selectedUploadFiles.forEach((f) => URL.revokeObjectURL(f.previewUrl));
+                  setSelectedUploadFiles([]);
+                  setIsUploadModalOpen(false);
+                  setUploadMsg({ type: '', text: '' });
+                }}
+                disabled={isUploading}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmUpload}
+                disabled={selectedUploadFiles.length === 0 || isUploading}
+                className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/95 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isUploading ? (
+                  <>
+                    <span className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                    <span>Uploading...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-[16px]">cloud_upload</span>
+                    <span>Upload {selectedUploadFiles.length} Photo{selectedUploadFiles.length !== 1 ? 's' : ''}</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

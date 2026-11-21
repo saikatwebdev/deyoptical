@@ -1,19 +1,31 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
+import { useAdminData } from '../context/AdminDataContext.jsx';
 import { GALLERY_ITEMS } from '../data/mockData.js';
 import { animateModalIn, animateStagger } from '../utils/animations.js';
 
+const GALLERY_TAGS = ['All', 'Store', 'Eyewear'];
+
 function GallerySectionComponent() {
+  const adminData = useAdminData();
+  const rawGallery = adminData?.gallery && adminData.gallery.length > 0 ? adminData.gallery : GALLERY_ITEMS;
+
+  const [selectedTag, setSelectedTag] = useState('All');
   const [lightbox, setLightbox] = useState(null); // { index: number, items: array }
   const modalRef = useRef(null);
   const gridRef = useRef(null);
 
-  // Entrance stagger animation on initial mount
+  // Filter items based on selected tag
+  const filteredItems = selectedTag === 'All'
+    ? rawGallery
+    : rawGallery.filter((item) => item.cat === selectedTag);
+
+  // Stagger animation on initial mount and when tag changes
   useEffect(() => {
     if (gridRef.current) {
       const cards = gridRef.current.querySelectorAll('.gallery-card');
-      animateStagger(cards, { duration: 400, delay: 50 });
+      animateStagger(cards, { duration: 380, delay: 45 });
     }
-  }, []);
+  }, [selectedTag, filteredItems.length]);
 
   // Lightbox open/close modal zoom animation & body scroll lock
   useEffect(() => {
@@ -29,8 +41,8 @@ function GallerySectionComponent() {
   }, [lightbox]);
 
   const openLightbox = useCallback((index) => {
-    setLightbox({ index, items: GALLERY_ITEMS });
-  }, []);
+    setLightbox({ index, items: filteredItems });
+  }, [filteredItems]);
 
   const closeLightbox = useCallback(() => setLightbox(null), []);
 
@@ -59,15 +71,43 @@ function GallerySectionComponent() {
 
   return (
     <div className="w-full relative">
+      {/* ── FILTER PILLS (All, Store, Eyewear) ── */}
+      <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 scrollbar-none">
+        {GALLERY_TAGS.map((tag) => {
+          const count = tag === 'All' ? rawGallery.length : rawGallery.filter((g) => g.cat === tag).length;
+          const isActive = selectedTag === tag;
+          return (
+            <button
+              key={tag}
+              onClick={() => setSelectedTag(tag)}
+              className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5 border whitespace-nowrap active:scale-95 ${
+                isActive
+                  ? 'bg-[#CC0000] text-white border-[#DC143C] shadow-md ring-2 ring-[#FFFF00]/40'
+                  : 'bg-surface-container-high/60 text-on-surface-variant hover:text-[#CC0000] border-outline-variant/30 hover:border-[#CC0000]/40 hover:bg-surface-container-high'
+              }`}
+            >
+              <span>{tag}</span>
+              <span
+                className={`text-[11px] font-semibold px-1.5 py-0.2 rounded-full ${
+                  isActive ? 'bg-white/20 text-[#FFFF00]' : 'bg-outline-variant/20 text-secondary'
+                }`}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* ── RESPONSIVE PHOTO GALLERY GRID ── */}
       {/* 2 columns on mobile, 4 columns on desktop */}
       <div
         ref={gridRef}
         className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5"
       >
-        {GALLERY_ITEMS.map((item, idx) => (
+        {filteredItems.map((item, idx) => (
           <div
-            key={item.id}
+            key={item.id || item.galleryId || idx}
             className="gallery-card opacity-0 group relative aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden bg-surface-container-high cursor-pointer shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             onClick={() => openLightbox(idx)}
             role="button"
@@ -110,6 +150,13 @@ function GallerySectionComponent() {
           </div>
         ))}
       </div>
+
+      {filteredItems.length === 0 && (
+        <div className="text-center py-16 text-secondary bg-surface-container-lowest/50 rounded-2xl border border-dashed border-outline-variant/40 mt-4">
+          <span className="material-symbols-outlined text-[44px] text-outline-variant mb-2">photo_library</span>
+          <p className="text-sm font-medium">No photos found in "{selectedTag}".</p>
+        </div>
+      )}
 
       {/* ── LIGHTBOX MODAL (Full Preview & Gallery Navigation) ── */}
       {lightbox && currentItem && (
@@ -192,7 +239,7 @@ function GallerySectionComponent() {
             <div className="flex justify-center gap-1.5 sm:gap-2 mt-4 max-w-full overflow-x-auto pb-1 px-2 scrollbar-none">
               {lightbox.items.map((item, idx) => (
                 <button
-                  key={item.id}
+                  key={item.id || item.galleryId || idx}
                   onClick={() => setLightbox((lb) => ({ ...lb, index: idx }))}
                   className={`flex-shrink-0 w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
                     idx === lightbox.index

@@ -15,6 +15,7 @@ const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
 const offersRoutes = require('./routes/offersRoutes');
 const doctorsRoutes = require('./routes/doctorsRoutes');
+const galleryRoutes = require('./routes/galleryRoutes');
 
 // ── Express + HTTP server setup ───────────────────────────────────────────────
 const app = express();
@@ -82,8 +83,8 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
-app.use(express.json({ limit: '10kb' })); // parse JSON body, limit size
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '50mb' })); // parse JSON body, allow photo uploads
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // ── Normalize duplicate slashes in URL paths (e.g. //api/offers -> /api/offers) ──
 app.use((req, _res, next) => {
@@ -112,6 +113,7 @@ app.get('/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/offers', offersRoutes);
 app.use('/api/doctors', doctorsRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((_req, res) => {

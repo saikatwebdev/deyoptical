@@ -2,8 +2,76 @@
 
 const Offer = require('../models/Offer');
 const Doctor = require('../models/Doctor');
+const GalleryItem = require('../models/GalleryItem');
 
 // ── Seed data (mirrors frontend static files) ─────────────────────────────────
+
+const SEED_GALLERY = [
+  {
+    galleryId: 'gallery-1',
+    title: 'Precision Diagnostic Suite',
+    cat: 'Store',
+    sub: 'Auto-Refractometer Room',
+    img: 'images/facilities/facility-diagnostic-suite.jpg',
+    order: 1,
+  },
+  {
+    galleryId: 'gallery-2',
+    title: 'High-Index Lens Edging Lab',
+    cat: 'Store',
+    sub: 'Robotic Computer Edge Profiling',
+    img: 'images/facilities/facility-edging-lab.jpg',
+    order: 2,
+  },
+  {
+    galleryId: 'gallery-3',
+    title: 'Curated Acetate Showcase',
+    cat: 'Eyewear',
+    sub: 'Handcrafted Boutique Wall',
+    img: 'images/facilities/facility-acetate-showcase.jpg',
+    order: 3,
+  },
+  {
+    galleryId: 'gallery-4',
+    title: 'Pediatric Vision Check',
+    cat: 'Store',
+    sub: 'Gentle Refractive Screening',
+    img: 'images/facilities/facility-pediatric-screening.jpg',
+    order: 4,
+  },
+  {
+    galleryId: 'gallery-5',
+    title: 'Modern Spectacle Fitting',
+    cat: 'Eyewear',
+    sub: 'Ultrasonic Frame Customization',
+    img: 'images/facilities/facility-spectacle-fitting.png',
+    order: 5,
+  },
+  {
+    galleryId: 'gallery-6',
+    title: 'Corneal Slit-Lamp Bio-Check',
+    cat: 'Store',
+    sub: 'Microscopic Tear Film Exam',
+    img: 'images/facilities/facility-slit-lamp-biocheck.png',
+    order: 6,
+  },
+  {
+    galleryId: 'gallery-7',
+    title: 'Designer Eyewear Curation',
+    cat: 'Eyewear',
+    sub: 'Boutique Frame Collection',
+    img: 'images/services/service-designer-frames.png',
+    order: 7,
+  },
+  {
+    galleryId: 'gallery-8',
+    title: 'Dey Optical Clinic Lounge',
+    cat: 'Store',
+    sub: 'Beliatore Vision Centre',
+    img: 'images/about/about-clinic.png',
+    order: 8,
+  },
+];
 
 const SEED_OFFERS = [
   {
@@ -121,11 +189,12 @@ const SEED_DOCTORS = [
  * Seeds the database with initial offers and doctors if collections are empty.
  * Safe to call on every server start — only inserts if the collection is empty.
  */
-const seedDatabase = async () => {
+const seedDatabase = async (force = false) => {
   try {
     // ── Offers ──────────────────────────────────────────────────────────────
     const offerCount = await Offer.countDocuments();
-    if (offerCount === 0) {
+    if (offerCount === 0 || force) {
+      if (force) await Offer.deleteMany({});
       await Offer.insertMany(SEED_OFFERS);
       console.log(`✅ Seeded ${SEED_OFFERS.length} initial offers into MongoDB.`);
     } else {
@@ -134,11 +203,22 @@ const seedDatabase = async () => {
 
     // ── Doctors ──────────────────────────────────────────────────────────────
     const doctorCount = await Doctor.countDocuments();
-    if (doctorCount === 0) {
+    if (doctorCount === 0 || force) {
+      if (force) await Doctor.deleteMany({});
       await Doctor.insertMany(SEED_DOCTORS);
       console.log(`✅ Seeded ${SEED_DOCTORS.length} initial doctors into MongoDB.`);
     } else {
       console.log(`ℹ️  Doctors collection already has ${doctorCount} document(s). Skipping seed.`);
+    }
+
+    // ── Gallery ──────────────────────────────────────────────────────────────
+    const galleryCount = await GalleryItem.countDocuments();
+    if (galleryCount === 0 || force) {
+      if (force) await GalleryItem.deleteMany({});
+      await GalleryItem.insertMany(SEED_GALLERY);
+      console.log(`✅ Seeded ${SEED_GALLERY.length} initial gallery photos into MongoDB.`);
+    } else {
+      console.log(`ℹ️  Gallery collection already has ${galleryCount} document(s). Skipping seed.`);
     }
   } catch (err) {
     console.error('❌ Database seeding error:', err.message);

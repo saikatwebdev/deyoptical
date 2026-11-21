@@ -9,6 +9,7 @@ import React, {
 import { io } from 'socket.io-client';
 import { SPECIAL_OFFERS } from '../data/specialOffers.js';
 import { DEFAULT_DOCTORS } from '../data/doctorsData.js';
+import { GALLERY_ITEMS } from '../data/mockData.js';
 
 // ── Config ──────────────────────────────────────────────────────────────────
 const RAW_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -36,6 +37,7 @@ export function AdminDataProvider({ children }) {
   // ── Data state ─────────────────────────────────────────────────────────────
   const [offers, setOffers] = useState(SPECIAL_OFFERS);   // fallback to static until API loads
   const [doctors, setDoctors] = useState(DEFAULT_DOCTORS); // fallback to static until API loads
+  const [gallery, setGallery] = useState(GALLERY_ITEMS);   // fallback to static until API loads
   const [apiReady, setApiReady] = useState(false);         // true once at least one fetch succeeds
 
   // ── Admin modal & auth state ───────────────────────────────────────────────
@@ -51,12 +53,14 @@ export function AdminDataProvider({ children }) {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [offersRes, doctorsRes] = await Promise.all([
-          apiFetch('/api/offers'),
-          apiFetch('/api/doctors'),
+        const [offersRes, doctorsRes, galleryRes] = await Promise.all([
+          apiFetch('/api/offers').catch(() => ({ success: false })),
+          apiFetch('/api/doctors').catch(() => ({ success: false })),
+          apiFetch('/api/gallery').catch(() => ({ success: false })),
         ]);
-        if (offersRes.success) setOffers(offersRes.data);
-        if (doctorsRes.success) setDoctors(doctorsRes.data);
+        if (offersRes.success && offersRes.data) setOffers(offersRes.data);
+        if (doctorsRes.success && doctorsRes.data) setDoctors(doctorsRes.data);
+        if (galleryRes.success && galleryRes.data) setGallery(galleryRes.data);
         setApiReady(true);
       } catch (err) {
         console.warn('⚠️ Backend not reachable — using static data as fallback.', err.message);
@@ -76,12 +80,14 @@ export function AdminDataProvider({ children }) {
       console.info('ℹ️ Vercel Serverless backend detected — real-time updates active via background sync.');
       const interval = setInterval(async () => {
         try {
-          const [offersRes, doctorsRes] = await Promise.all([
-            apiFetch('/api/offers'),
-            apiFetch('/api/doctors'),
+          const [offersRes, doctorsRes, galleryRes] = await Promise.all([
+            apiFetch('/api/offers').catch(() => ({ success: false })),
+            apiFetch('/api/doctors').catch(() => ({ success: false })),
+            apiFetch('/api/gallery').catch(() => ({ success: false })),
           ]);
-          if (offersRes.success) setOffers(offersRes.data);
-          if (doctorsRes.success) setDoctors(doctorsRes.data);
+          if (offersRes.success && offersRes.data) setOffers(offersRes.data);
+          if (doctorsRes.success && doctorsRes.data) setDoctors(doctorsRes.data);
+          if (galleryRes.success && galleryRes.data) setGallery(galleryRes.data);
         } catch {
           // ignore background sync errors
         }
@@ -128,6 +134,18 @@ export function AdminDataProvider({ children }) {
         return true;
       });
       setDoctors(unique);
+    });
+
+    socket.on('gallery:updated', (updatedGallery) => {
+      console.log('📡 Real-time: gallery updated');
+      const seen = new Set();
+      const unique = (updatedGallery || []).filter((g) => {
+        const k = g.id || g.galleryId || g._id;
+        if (!k || seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+      setGallery(unique);
     });
 
     socket.on('disconnect', () => {
@@ -270,10 +288,107 @@ export function AdminDataProvider({ children }) {
     }
   }, []);
 
+  // ── Gallery CRUD ──────────────────────────────────────────────────────────
+  const uploadGalleryPhotos = useCallback(async (photos) => {
+    try {
+      const res = await apiFetch('/api/gallery', {
+        method: 'POST',
+        body: JSON.stringify({ photos }),
+      });
+      if (res.success && res.data) {
+        setGallery((prev) => {
+          const newItems = Array.isArray(res.data) ? res.data : [res.data];
+          const existingIds = new Set(prev.map((g) => g.id || g.galleryId || g._id));
+          const filteredNew = newItems.filter(
+            (item) => !existingIds.has(item.id || item.galleryId || item._id)
+          );
+          return [...filteredNew, ...prev];
+        });
+        return { success: true, count: Array.isArray(res.data) ? res.data.length : 1 };
+      }
+      return { success: false, message: res.message || 'Upload failed' };
+    } catch (err) {
+      console.error('uploadGalleryPhotos failed:', err.message);
+      return { success: false, message: err.message };
+    }
+  }, []);
+
+  const addGalleryPhoto = useCallback(async (photo) => {
+    try {
+      const res = await apiFetch('/api/gallery', {
+        method: 'POST',
+        body: JSON.stringify(photo),
+      });
+      if (res.success && res.data) {
+        setGallery((prev) => {
+          const newId = res.data.id || res.data.galleryId || res.data._id;
+          if (prev.some((g) => (g.id || g.galleryId || g._id) === newId)) return prev;
+          return [res.data, ...prev];
+        });
+        return { success: true, data: res.data };
+      }
+      return { success: false, message: res.message };
+    } catch (err) {
+      console.error('addGalleryPhoto failed:', err.message);
+      return { success: false, message: err.message };
+    }
+  }, []);
+
+  const updateGalleryPhoto = useCallback(async (id, updatedFields) => {
+    try {
+      const existing = gallery.find(
+        (g) => g.id === id || g.galleryId === id || g._id === id
+      );
+      const payload = { ...existing, ...updatedFields };
+      const res = await apiFetch(`/api/gallery/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      });
+      if (res.success && res.data) {
+        setGallery((prev) =>
+          prev.map((g) => (g.id === id || g.galleryId === id || g._id === id ? res.data : g))
+        );
+        return { success: true, data: res.data };
+      }
+      return { success: false, message: res.message };
+    } catch (err) {
+      console.error('updateGalleryPhoto failed:', err.message);
+      return { success: false, message: err.message };
+    }
+  }, [gallery]);
+
+  const deleteGalleryPhoto = useCallback(async (id) => {
+    try {
+      const res = await apiFetch(`/api/gallery/${id}`, { method: 'DELETE' });
+      if (res.success) {
+        setGallery((prev) =>
+          prev.filter((g) => g.id !== id && g.galleryId !== id && g._id !== id)
+        );
+        return { success: true };
+      }
+      return { success: false, message: res.message };
+    } catch (err) {
+      console.error('deleteGalleryPhoto failed:', err.message);
+      return { success: false, message: err.message };
+    }
+  }, []);
+
+  const resetGallery = useCallback(async () => {
+    try {
+      const res = await apiFetch('/api/gallery/reset', { method: 'POST' });
+      if (res.success && res.data) {
+        setGallery(res.data);
+      }
+    } catch (err) {
+      setGallery(GALLERY_ITEMS);
+    }
+  }, []);
+
   const resetAllData = useCallback(async () => {
     await resetOffers();
     await resetDoctors();
-  }, [resetOffers, resetDoctors]);
+    await resetGallery();
+  }, [resetOffers, resetDoctors, resetGallery]);
 
   // ── Admin modal helpers ───────────────────────────────────────────────────
   const openAdmin = useCallback(() => setIsAdminOpen(true), []);
@@ -305,6 +420,12 @@ export function AdminDataProvider({ children }) {
     doctors,
     updateDoctor,
     resetDoctors,
+    gallery,
+    uploadGalleryPhotos,
+    addGalleryPhoto,
+    updateGalleryPhoto,
+    deleteGalleryPhoto,
+    resetGallery,
     resetAllData,
     isAdminOpen,
     openAdmin,
