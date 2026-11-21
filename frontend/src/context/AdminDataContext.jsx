@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { io } from 'socket.io-client';
 import { SPECIAL_OFFERS } from '../data/specialOffers.js';
-import { DEFAULT_DOCTORS } from '../data/doctorsData.js';
 
 // ── Config ──────────────────────────────────────────────────────────────────
 const RAW_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -35,7 +34,10 @@ const apiFetch = async (path, options = {}) => {
 export function AdminDataProvider({ children }) {
   // ── Data state ─────────────────────────────────────────────────────────────
   const [offers, setOffers] = useState(SPECIAL_OFFERS);   // fallback to static until API loads
-  const [doctors, setDoctors] = useState(DEFAULT_DOCTORS); // fallback to static until API loads
+  const [doctors, setDoctors] = useState([]);              // purely database-driven, no initial static data
+  const [doctorsLoading, setDoctorsLoading] = useState(true);
+  const [doctorsLoaded, setDoctorsLoaded] = useState(false);
+  const [doctorsError, setDoctorsError] = useState(null);
   const [gallery, setGallery] = useState([]);              // purely database-driven, no initial static images
   const [galleryLoading, setGalleryLoading] = useState(true);
   const [galleryLoaded, setGalleryLoaded] = useState(false);
@@ -50,6 +52,29 @@ export function AdminDataProvider({ children }) {
 
   // ── Socket.IO ref ─────────────────────────────────────────────────────────
   const socketRef = useRef(null);
+
+  // ── Fetch Doctors from Database ────────────────────────────────────────────
+  const fetchDoctors = useCallback(async () => {
+    setDoctorsLoading(true);
+    setDoctorsError(null);
+    try {
+      const res = await apiFetch('/api/doctors');
+      if (res.success && Array.isArray(res.data)) {
+        setDoctors(res.data);
+      } else {
+        setDoctors([]);
+      }
+      setDoctorsLoaded(true);
+      return { success: true, data: res.data || [] };
+    } catch (err) {
+      console.warn('⚠️ Failed to load doctors from database:', err.message);
+      setDoctorsError(err.message || 'Unable to load doctor schedules');
+      setDoctorsLoaded(true);
+      return { success: false, error: err.message };
+    } finally {
+      setDoctorsLoading(false);
+    }
+  }, []);
 
   // ── Fetch Gallery from Database ────────────────────────────────────────────
   const fetchGallery = useCallback(async () => {
@@ -78,21 +103,17 @@ export function AdminDataProvider({ children }) {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [offersRes, doctorsRes] = await Promise.all([
-          apiFetch('/api/offers').catch(() => ({ success: false })),
-          apiFetch('/api/doctors').catch(() => ({ success: false })),
-        ]);
+        const offersRes = await apiFetch('/api/offers').catch(() => ({ success: false }));
         if (offersRes.success && offersRes.data) setOffers(offersRes.data);
-        if (doctorsRes.success && doctorsRes.data) setDoctors(doctorsRes.data);
         setApiReady(true);
       } catch (err) {
         console.warn('⚠️ Backend not reachable — using static data as fallback.', err.message);
       }
-      // Pure database fetch for gallery (no local fallback images)
-      await fetchGallery();
+      // Pure database fetch for doctors and gallery (no local fallback data/images)
+      await Promise.all([fetchDoctors(), fetchGallery()]);
     };
     loadData();
-  }, [fetchGallery]);
+  }, [fetchDoctors, fetchGallery]);
 
   // ── Socket.IO / Real-time updates ─────────────────────────────────────────
   useEffect(() => {
@@ -110,7 +131,11 @@ export function AdminDataProvider({ children }) {
             apiFetch('/api/gallery').catch(() => ({ success: false })),
           ]);
           if (offersRes.success && offersRes.data) setOffers(offersRes.data);
-          if (doctorsRes.success && doctorsRes.data) setDoctors(doctorsRes.data);
+          if (doctorsRes.success && Array.isArray(doctorsRes.data)) {
+            setDoctors(doctorsRes.data);
+            setDoctorsLoaded(true);
+            setDoctorsLoading(false);
+          }
           if (galleryRes.success && Array.isArray(galleryRes.data)) {
             setGallery(galleryRes.data);
             setGalleryLoaded(true);
@@ -162,6 +187,9 @@ export function AdminDataProvider({ children }) {
         return true;
       });
       setDoctors(unique);
+      setDoctorsLoaded(true);
+      setDoctorsLoading(false);
+      setDoctorsError(null);
     });
 
     socket.on('gallery:updated', (updatedGallery) => {
@@ -311,11 +339,19 @@ export function AdminDataProvider({ children }) {
   }, []);
 
   const resetDoctors = useCallback(async () => {
+    setDoctorsLoading(true);
+    setDoctorsError(null);
     try {
       const res = await apiFetch('/api/doctors');
-      if (res.success) setDoctors(res.data);
+      if (res.success && Array.isArray(res.data)) {
+        setDoctors(res.data);
+        setDoctorsLoaded(true);
+      }
     } catch (err) {
-      setDoctors(DEFAULT_DOCTORS);
+      console.error('resetDoctors failed:', err.message);
+      setDoctorsError(err.message);
+    } finally {
+      setDoctorsLoading(false);
     }
   }, []);
 
@@ -458,6 +494,10 @@ export function AdminDataProvider({ children }) {
     toggleOffer,
     resetOffers,
     doctors,
+    doctorsLoading,
+    doctorsLoaded,
+    doctorsError,
+    fetchDoctors,
     updateDoctor,
     resetDoctors,
     gallery,
