@@ -2,13 +2,13 @@ import React, { useState, useRef, useCallback, memo } from 'react';
 import { animateFadeUp } from '../utils/animations.js';
 
 const SERVICES = [
-  'Dr. Soumen Dandapath (Phaco Surgeon) – Sunday Chamber',
-  'Optom. Apurbo Kumar Patra (Optometrist) – Thursday Chamber',
   'Comprehensive Computerized Eye Examination',
   'Contact Lens Fitting & Trial Session',
   'Progressive / Multifocal Lens Consultation',
   'Pediatric Eye Screening & Myopia Control',
   'Spectacle Power Check & Frame Selection',
+  'High-Index & Blue-Cut Lens Consultation',
+  'Frame Fitting & Pupillary Distance Adjustment',
 ];
 
 const TIME_SLOTS = [
@@ -36,7 +36,7 @@ function BookingSectionComponent() {
     const e = {};
     if (!form.name.trim()) e.name = 'Please enter your full name';
     if (!form.phone.trim() || !/^\+?[\d\s\-]{7,15}$/.test(form.phone)) e.phone = 'Valid phone number required';
-    if (!form.service) e.service = 'Please select a doctor or service';
+    if (!form.service) e.service = 'Please select an in-store service';
     if (!form.date) e.date = 'Please pick a preferred date';
     if (!form.timeSlot) e.timeSlot = 'Please select a time slot';
     return e;
@@ -53,10 +53,10 @@ function BookingSectionComponent() {
 
     const msg = encodeURIComponent(
       `Hello Dey Optical (Beliatore)! 🙏\n\n` +
-      `I would like to book an eye care appointment:\n\n` +
+      `I would like to book a shop / clinic optical appointment:\n\n` +
       `👤 *Name:* ${form.name.trim()}\n` +
       `📱 *Phone:* ${form.phone.trim()}\n` +
-      `🩺 *Doctor / Service:* ${form.service}\n` +
+      `👁️ *Service:* ${form.service}\n` +
       `📅 *Preferred Date:* ${form.date}\n` +
       `🕐 *Time Slot:* ${form.timeSlot}\n` +
       (form.notes.trim() ? `📝 *Notes / Concern:* ${form.notes.trim()}\n` : '') +
@@ -141,23 +141,23 @@ function BookingSectionComponent() {
                   </div>
                 </div>
 
-                {/* Visiting Specialists Schedule */}
+                {/* In-Store Optical Services */}
                 <div className="flex items-start gap-3">
                   <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="material-symbols-outlined text-[19px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      stethoscope
+                      visibility
                     </span>
                   </div>
                   <div className="flex-1">
-                    <div className="font-semibold text-on-surface text-[14px]">Doctor Visiting Schedule</div>
+                    <div className="font-semibold text-on-surface text-[14px]">Optical &amp; Store Services</div>
                     <div className="mt-1 space-y-1.5 text-[12px]">
                       <div className="bg-white/80 rounded-lg p-2 border border-outline-variant/20">
-                        <span className="font-bold text-primary block">Dr. Soumen Dandapath (MBBS, DOMS)</span>
-                        <span className="text-secondary">Phaco Surgeon · Every Sunday (11:30 AM – 1:00 PM)</span>
+                        <span className="font-bold text-primary block">Computerized Eye Testing</span>
+                        <span className="text-secondary">Precision auto-refractometer vision check &amp; trial session</span>
                       </div>
                       <div className="bg-white/80 rounded-lg p-2 border border-outline-variant/20">
-                        <span className="font-bold text-primary block">Optom. Apurbo Kumar Patra (D.OPT, R.I.O.)</span>
-                        <span className="text-secondary">Clinical Optometrist · Every Thursday (9:30 AM – 11:00 AM)</span>
+                        <span className="font-bold text-primary block">Boutique Eyewear &amp; Lenses</span>
+                        <span className="text-secondary">Digital progressive, blue-cut defense &amp; custom fitting</span>
                       </div>
                     </div>
                   </div>
@@ -201,7 +201,7 @@ function BookingSectionComponent() {
                 </div>
 
                 <a
-                  href="https://wa.me/917551808245?text=Hello%20Dey%20Optical%20(Beliatore)%2C%20I%20would%20like%20to%20enquire%20about%20your%20services%20and%20doctor%20appointments."
+                  href="https://wa.me/917551808245?text=Hello%20Dey%20Optical%20(Beliatore)%2C%20I%20would%20like%20to%20enquire%20about%20your%20eye%20testing%20services%20and%20eyewear."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[14px] text-white transition-all duration-200 hover:opacity-95 active:scale-95 shadow-xs"
@@ -282,12 +282,12 @@ function BookingSectionComponent() {
                       className="material-symbols-outlined text-primary text-[22px] sm:text-[24px]"
                       style={{ fontVariationSettings: "'FILL' 1" }}
                     >
-                      edit_calendar
+                      storefront
                     </span>
-                    <span>Online Appointment Booking</span>
+                    <span>Shop &amp; Clinic Appointment</span>
                   </h3>
                   <p className="text-[13px] sm:text-[14px] text-secondary mt-1">
-                    Fill in your details below to instantly reserve your consultation slot.
+                    Reserve your slot for computerized vision checkup, contact lens session, or frame trial.
                   </p>
                 </div>
 
@@ -328,14 +328,14 @@ function BookingSectionComponent() {
                 {/* Service Selection */}
                 <div>
                   <label className="block text-[13px] font-semibold text-on-surface mb-1.5">
-                    Select Doctor or Clinical Service <span className="text-error">*</span>
+                    Select In-Store Service <span className="text-error">*</span>
                   </label>
                   <select
                     value={form.service}
                     onChange={(e) => setForm((f) => ({ ...f, service: e.target.value }))}
                     className={`${inputClass('service')} cursor-pointer`}
                   >
-                    <option value="">-- Choose a visiting doctor or service --</option>
+                    <option value="">-- Choose an eye care service --</option>
                     {SERVICES.map((s) => (
                       <option key={s} value={s}>
                         {s}
@@ -390,7 +390,7 @@ function BookingSectionComponent() {
                     rows={2}
                     value={form.notes}
                     onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-                    placeholder="e.g. Cataract consultation, blurry distant vision, headache while reading..."
+                    placeholder="e.g. Blurry distant vision, digital screen fatigue, progressive power check, contact lens trial..."
                     className={`${inputClass('notes')} resize-none`}
                   />
                 </div>

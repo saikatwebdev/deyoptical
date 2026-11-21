@@ -8,16 +8,19 @@ function BookingPageComponent({ navigate }) {
   const doctorsCount = (doctors || []).length;
 
   const [activeTab, setActiveTab] = useState(() => {
-    if (typeof window !== 'undefined' && window.location.hash.toLowerCase().includes('doctor')) {
-      return 'doctors';
+    if (typeof window !== 'undefined' && window.location.hash.toLowerCase().includes('shop')) {
+      return 'shop';
     }
-    return 'shop';
+    return 'doctors';
   });
 
-  // Sync hash changes if user navigates with #doctors
+  // Sync hash changes if user navigates with #shop or #doctors
   useEffect(() => {
     const handleHash = () => {
-      if (window.location.hash.toLowerCase().includes('doctor')) {
+      const hash = window.location.hash.toLowerCase();
+      if (hash.includes('shop')) {
+        setActiveTab('shop');
+      } else if (hash.includes('doctor')) {
         setActiveTab('doctors');
       }
     };
@@ -49,24 +52,9 @@ function BookingPageComponent({ navigate }) {
           </span>
         </div>
 
-        {/* ── Category Switcher Tabs: Shop vs Doctors ── */}
+        {/* ── Category Switcher Tabs: Visiting Doctor (Left) vs Shop & Clinic (Right) ── */}
         <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8 border-b border-outline-variant/20 pb-3 sm:pb-4 overflow-x-auto scrollbar-none">
-          {/* Tab 1: Shop & Clinic Desk */}
-          <button
-            onClick={() => setActiveTab('shop')}
-            className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap ${
-              activeTab === 'shop'
-                ? 'bg-[#CC0000] text-white shadow-md ring-2 ring-[#FFFF00]/40'
-                : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              storefront
-            </span>
-            <span>Shop &amp; Clinic Desk</span>
-          </button>
-
-          {/* Tab 2: Specialist Doctors */}
+          {/* Left / First Tab: Visiting Doctor (Default) */}
           <button
             onClick={() => setActiveTab('doctors')}
             className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap ${
@@ -78,7 +66,7 @@ function BookingPageComponent({ navigate }) {
             <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
               stethoscope
             </span>
-            <span>Visiting Doctors</span>
+            <span>Visiting Doctor</span>
             {doctorsCount > 0 && (
               <span
                 className={`text-[11px] px-1.5 py-0.2 rounded-full font-semibold ${
@@ -91,16 +79,31 @@ function BookingPageComponent({ navigate }) {
               </span>
             )}
           </button>
+
+          {/* Right / Second Tab: Shop & Clinic */}
+          <button
+            onClick={() => setActiveTab('shop')}
+            className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap ${
+              activeTab === 'shop'
+                ? 'bg-[#CC0000] text-white shadow-md ring-2 ring-[#FFFF00]/40'
+                : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+              storefront
+            </span>
+            <span>Shop &amp; Clinic</span>
+          </button>
         </div>
 
         {/* ── Content View ── */}
-        {activeTab === 'shop' ? (
+        {activeTab === 'doctors' ? (
           <div data-animate="fade-up">
-            <BookingSection />
+            <DoctorPosterSection isEmbedded={true} />
           </div>
         ) : (
           <div data-animate="fade-up">
-            <DoctorPosterSection isEmbedded={true} />
+            <BookingSection />
           </div>
         )}
       </div>
