@@ -9,7 +9,6 @@ import React, {
 import { io } from 'socket.io-client';
 import { SPECIAL_OFFERS } from '../data/specialOffers.js';
 import { DEFAULT_DOCTORS } from '../data/doctorsData.js';
-import { GALLERY_ITEMS } from '../data/mockData.js';
 
 // ── Config ──────────────────────────────────────────────────────────────────
 const RAW_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -37,7 +36,10 @@ export function AdminDataProvider({ children }) {
   // ── Data state ─────────────────────────────────────────────────────────────
   const [offers, setOffers] = useState(SPECIAL_OFFERS);   // fallback to static until API loads
   const [doctors, setDoctors] = useState(DEFAULT_DOCTORS); // fallback to static until API loads
-  const [gallery, setGallery] = useState(GALLERY_ITEMS);   // fallback to static until API loads
+  const [gallery, setGallery] = useState([]);              // purely database-driven, no initial static images
+  const [galleryLoading, setGalleryLoading] = useState(true);
+  const [galleryLoaded, setGalleryLoaded] = useState(false);
+  const [galleryError, setGalleryError] = useState(null);
   const [apiReady, setApiReady] = useState(false);         // true once at least one fetch succeeds
 
   // ── Admin modal & auth state ───────────────────────────────────────────────
@@ -49,26 +51,48 @@ export function AdminDataProvider({ children }) {
   // ── Socket.IO ref ─────────────────────────────────────────────────────────
   const socketRef = useRef(null);
 
+  // ── Fetch Gallery from Database ────────────────────────────────────────────
+  const fetchGallery = useCallback(async () => {
+    setGalleryLoading(true);
+    setGalleryError(null);
+    try {
+      const res = await apiFetch('/api/gallery');
+      if (res.success && Array.isArray(res.data)) {
+        setGallery(res.data);
+      } else {
+        setGallery([]);
+      }
+      setGalleryLoaded(true);
+      return { success: true, data: res.data || [] };
+    } catch (err) {
+      console.warn('⚠️ Failed to load gallery from database:', err.message);
+      setGalleryError(err.message || 'Unable to load gallery photos');
+      setGalleryLoaded(true);
+      return { success: false, error: err.message };
+    } finally {
+      setGalleryLoading(false);
+    }
+  }, []);
+
   // ── Load initial data from API 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [offersRes, doctorsRes, galleryRes] = await Promise.all([
+        const [offersRes, doctorsRes] = await Promise.all([
           apiFetch('/api/offers').catch(() => ({ success: false })),
           apiFetch('/api/doctors').catch(() => ({ success: false })),
-          apiFetch('/api/gallery').catch(() => ({ success: false })),
         ]);
         if (offersRes.success && offersRes.data) setOffers(offersRes.data);
         if (doctorsRes.success && doctorsRes.data) setDoctors(doctorsRes.data);
-        if (galleryRes.success && galleryRes.data) setGallery(galleryRes.data);
         setApiReady(true);
       } catch (err) {
         console.warn('⚠️ Backend not reachable — using static data as fallback.', err.message);
-        // Keep the static fallback data already in state
       }
+      // Pure database fetch for gallery (no local fallback images)
+      await fetchGallery();
     };
     loadData();
-  }, []);
+  }, [fetchGallery]);
 
   // ── Socket.IO / Real-time updates ─────────────────────────────────────────
   useEffect(() => {
@@ -87,7 +111,11 @@ export function AdminDataProvider({ children }) {
           ]);
           if (offersRes.success && offersRes.data) setOffers(offersRes.data);
           if (doctorsRes.success && doctorsRes.data) setDoctors(doctorsRes.data);
-          if (galleryRes.success && galleryRes.data) setGallery(galleryRes.data);
+          if (galleryRes.success && Array.isArray(galleryRes.data)) {
+            setGallery(galleryRes.data);
+            setGalleryLoaded(true);
+            setGalleryLoading(false);
+          }
         } catch {
           // ignore background sync errors
         }
@@ -146,6 +174,9 @@ export function AdminDataProvider({ children }) {
         return true;
       });
       setGallery(unique);
+      setGalleryLoaded(true);
+      setGalleryLoading(false);
+      setGalleryError(null);
     });
 
     socket.on('disconnect', () => {
@@ -374,13 +405,22 @@ export function AdminDataProvider({ children }) {
   }, []);
 
   const resetGallery = useCallback(async () => {
+    setGalleryLoading(true);
+    setGalleryError(null);
     try {
       const res = await apiFetch('/api/gallery/reset', { method: 'POST' });
       if (res.success && res.data) {
         setGallery(res.data);
+        setGalleryLoaded(true);
+        return { success: true, data: res.data };
       }
+      return { success: false, message: res.message };
     } catch (err) {
-      setGallery(GALLERY_ITEMS);
+      console.error('resetGallery error:', err.message);
+      setGalleryError(err.message);
+      return { success: false, message: err.message };
+    } finally {
+      setGalleryLoading(false);
     }
   }, []);
 
@@ -421,6 +461,10 @@ export function AdminDataProvider({ children }) {
     updateDoctor,
     resetDoctors,
     gallery,
+    galleryLoading,
+    galleryLoaded,
+    galleryError,
+    fetchGallery,
     uploadGalleryPhotos,
     addGalleryPhoto,
     updateGalleryPhoto,

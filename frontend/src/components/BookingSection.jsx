@@ -84,35 +84,9 @@ function BookingSectionComponent() {
     } text-on-surface text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 placeholder:text-outline`;
 
   return (
-    <div className="py-16 bg-white relative overflow-hidden">
-      {/* Background decor */}
-      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#CC0000] via-[#FFFF00] to-[#DC143C]" />
-      <div
-        className="absolute inset-0 opacity-40 pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(204,0,0,0.06) 0%, transparent 40%)',
-        }}
-      />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div data-animate="fade-up" className="text-center mb-10 max-w-3xl mx-auto">
-          <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-3">
-            <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              calendar_month
-            </span>
-            Appointments &amp; Enquiries
-          </span>
-          <h2 className="text-[32px] sm:text-[38px] md:text-[44px] font-bold text-on-surface tracking-tight leading-tight mb-3">
-            Book Your Eye Care <span className="text-primary">Appointment</span>
-          </h2>
-          <p className="text-[15px] sm:text-[16px] text-on-surface-variant max-w-xl mx-auto leading-relaxed">
-            Schedule a visit with our visiting eye specialists or book a precision vision checkup at Dey Optical, Beliatore.
-          </p>
-        </div>
-
-        {/* 2-Column Responsive Layout: Contact & Address Card + Form */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+    <div className="relative">
+      {/* 2-Column Responsive Layout: Contact & Address Card + Form */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-start">
 
           {/* ── Left Column: Contact, Chamber & Address Card (lg: 5 cols) ── */}
           <div data-animate="fade-up" className="lg:col-span-5 order-2 lg:order-1">
@@ -440,7 +414,6 @@ function BookingSectionComponent() {
           </div>
 
         </div>
-      </div>
     </div>
   );
 }
